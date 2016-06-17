@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        int len1 = nums1.size();
+        int len2 = nums2.size();
+        vector<int> result;
+        if(nums1.size() == 0 || nums2.size() == 0) {
+            return result;
+        }
+        
+        map<int, int> counter;
+        
+        for(int i = 0; i < len1; i++) {
+            counter[nums1[i]]++;
+        }
+        
+        for(int j = 0; j < len2; j++) {
+            if(counter.count(nums2[j])) {
+                result.push_back(nums2[j]);
+                counter.erase(nums2[j]);
+            }
+        }
+        
+        return result;
+    }
+};
