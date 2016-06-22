@@ -11,3 +11,18 @@ public class Solution {
         return result;
     }
 }
+/*
+public class Solution {
+    public int titleToNumber(String s) {
+        if(null == s) return 0;
+        
+        int i = 0;
+        int result = 0;
+        while(i < s.length()) {
+            result = result * 26 + s.charAt(i) - 'A' + 1;
+            i++;
+        }
+        
+        return result;
+    }
+}*/
