@@ -1,0 +1,16 @@
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        map<int, int> counter;
+        int len = nums.size();
+        for(int i = 0; i < len; i++) {
+            if(counter.count(nums[i]) > 0) {
+                return true;
+            } else {
+                counter[nums[i]]++;
+            }
+        }
+        
+        return false;
+    }
+};
