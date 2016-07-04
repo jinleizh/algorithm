@@ -1,0 +1,25 @@
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        int len = s.length();
+        if(len != t.length()) return false;
+        
+        int counter[26] = {0};
+        int i = 0, j = 0;
+        while(i < len) {
+            counter[s[i] - 'a']++;
+            i++;
+        }
+        
+        while(j < len) {
+            counter[t[j] - 'a']--;
+            j++;
+        }
+        
+        for(i=0; i<26; i++) {
+            if(counter[i] != 0) return false;
+        }
+        
+        return true;
+    }
+};
