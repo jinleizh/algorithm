@@ -1,0 +1,25 @@
+public class Solution {
+    public int majorityElement(int[] nums) {
+        if(0 == nums.length) return 0;
+    
+        int curHead = nums[0];
+        int curHeadCount = 1;
+        int i = 1;
+        int len = nums.length;
+        while(i < len) {
+            if(nums[i] == curHead) {
+                curHeadCount++;
+            } else {
+                curHeadCount--;
+                if(0 == curHeadCount && i+1 < len) {
+                    curHead = nums[++i];
+                    curHeadCount = 1;
+                }
+            }
+            
+            ++i;
+        }
+        
+        return curHead;
+    }
+}
