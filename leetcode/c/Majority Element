@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        
+        map<int, int> counter;
+        int curHead = nums[0];
+        counter[curHead] = 1;
+        int len = nums.size();
+        int i = 1;
+        while(i < len) {
+            if(nums[i] == curHead) {
+                counter[curHead]++;
+            } else {
+                counter[curHead]--;
+                if(0 == counter[curHead] && i + 1 < len) {
+                    curHead = nums[++i];
+                    counter[curHead] = 1;
+                }
+            }
+            
+            ++i;
+        }
+        
+        map<int, int>::iterator mit = counter.begin();
+        while(mit != counter.end()) {
+            if(mit->second > 0) {
+                return mit->first;
+            }
+            
+            mit++;
+        }
+        
+        return 0;
+    }
+};
