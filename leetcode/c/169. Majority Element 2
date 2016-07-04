@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int curHead = nums[0];
+        int counter = 1;
+        int i = 1;
+        int len = nums.size();
+        while(i < len) {
+            if(counter == 0) {
+                curHead = nums[i];
+                counter++;
+            } else if(nums[i] == curHead) {
+                counter++;
+            } else {
+                counter--;
+            }
+            
+            i++;
+        }
+        
+        return curHead;
+    }
+};
