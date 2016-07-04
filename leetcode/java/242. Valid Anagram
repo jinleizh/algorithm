@@ -1,0 +1,13 @@
+public class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length() != t.length()) return false;
+        
+        byte[] srcBytes = s.getBytes();
+        byte[] dstBytes = t.getBytes();
+        
+        Arrays.sort(srcBytes);
+        Arrays.sort(dstBytes);
+        
+        return new String(srcBytes).equals(new String(dstBytes));
+    }
+}
