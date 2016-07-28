@@ -1,0 +1,24 @@
+public class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+ 		Arrays.sort(nums1);
+		Arrays.sort(nums2);
+		int len = Math.min(nums1.length, nums2.length);
+		int[] result = new int[len];
+		int pos = 0, left = 0, right = 0;
+
+		while(left < nums1.length && right < nums2.length) {
+			if(nums1[left] > nums2[right]) {
+				right++;
+			} else if(nums1[left] < nums2[right]) {
+				left++;
+			} else {
+				result[pos] = nums1[left];
+				right++;
+				left++;
+				pos++;
+			}
+		}
+
+		return Arrays.copyOf(result, pos);
+    }
+}
