@@ -1,0 +1,24 @@
+public class Solution {
+    public boolean isHappy(int n) {
+        if(n < 1) return false;
+        Set<Integer> vset = new HashSet<Integer>();
+        return check(n, vset);
+    }
+    
+    public boolean check(int n, Set<Integer> vset) {
+        if(1 == n) return true;
+        
+        int digit = 0;
+        int newN = 0;
+        while(n > 0) {
+            digit = n % 10;
+            n /= 10;
+            newN += digit * digit;
+        }
+        
+        if(!vset.add(newN)) return false;
+        
+        return check(newN, vset);
+    }
+    
+}
