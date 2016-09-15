@@ -1,0 +1,26 @@
+class Solution {
+public:
+    bool isHappy(int n) {
+        if(n < 1) return false;
+        set<int> vs;
+        return check(n, vs);
+    }
+    
+    bool check(int n, set<int>& vs) {
+        if(1 == n) return true;
+        
+        pair<set<int>::iterator, bool> result;
+        result = vs.insert(n);
+        if(!result.second) return false;
+        
+        int digit = 0;
+        int newNumber  = 0;
+        while(n > 0) {
+            digit = n % 10;
+            n /= 10;
+            newNumber += digit * digit;
+        }           
+        
+        return check(newNumber, vs);
+    }
+};
