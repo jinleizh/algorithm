@@ -7,6 +7,7 @@ public class Solution {
     
     public boolean check(int n, Set<Integer> vset) {
         if(1 == n) return true;
+        if(!vset.add(n)) return false;
         
         int digit = 0;
         int newN = 0;
@@ -15,8 +16,6 @@ public class Solution {
             n /= 10;
             newN += digit * digit;
         }
-        
-        if(!vset.add(newN)) return false;
         
         return check(newN, vset);
     }
