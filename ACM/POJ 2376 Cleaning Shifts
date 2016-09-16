@@ -1,0 +1,78 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct Point {
+	int start;
+	int end;
+
+	bool operator < (const Point& a) const {
+		if(start == a.start) {
+			return end > a.end;
+		}
+
+		return start < a.start;
+	}
+};
+
+int greedy(Point l[], int t, int n);
+
+int main() {
+	int n, t;
+	cin>>n>>t;
+	
+	Point ap[25000];
+
+	for(int i=0; i<n; i++) {
+		cin>>ap[i].start>>ap[i].end;
+		if(ap[i].start > ap[i].end) {
+			swap(ap[i].start, ap[i].end);
+		}
+	}
+
+	int result = greedy(ap, t, n);
+	cout<<result;
+
+	return 0;
+}
+
+
+/*
+最小区间覆盖
+当符合区间时，要找距离终点最远的，找到以后，要合并区间，
+合并完成后，继续找，若找不到就返回-1
+*/
+int greedy(Point l[], int t, int n) {
+	//排好序
+	sort(l, l+n);
+	
+	//若不是从1开始，则直接报错
+	if(1 != l[0].start) return -1;
+
+	//第一个终点
+	int time = l[0].end;
+	int maxEnd = time;
+	int i = 1;
+	int count = 1;
+
+	//time还没到终点时
+	while(time < t) {
+
+		if(i >= n) return -1;
+
+		//在符合条件的区间内，找到最远的终点
+		while(i < n && l[i].start <= time + 1) {
+			if(l[i].end > maxEnd) {
+				maxEnd = l[i].end;
+			}
+			i++;
+		}
+
+		//合并区间, 若发现没有可合并的区间，则返回-1
+		if(time == maxEnd) return -1;
+		time = maxEnd;
+		count++;
+	}
+
+	return count;
+}
