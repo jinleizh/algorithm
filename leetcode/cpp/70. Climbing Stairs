@@ -1,0 +1,13 @@
+class Solution {
+public:
+    int climbStairs(int n) {
+        if(n < 3) return n;
+        return add(1, 2, 3, n);
+    }
+    
+    int add(int l, int r, int i, int n) {
+        int sum = l + r;
+        if(i == n) return sum;
+        return add(r, sum, i+1, n);
+    }
+};
