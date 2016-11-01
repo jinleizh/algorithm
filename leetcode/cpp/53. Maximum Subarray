@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int maxSubArray(int arr[], int n) {
+        if(0 == n) return 0;
+        if(1 == n) return arr[0];
+        
+        int mid = n - 1/2;
+        int maxSum = max(maxSubArray(arr, mid + 1), maxSubArray(arr+mid+1, n - 1 - mid));
+        int sum = 0, mayMax = 0;
+        for(int i = mid; i >=0; i--) {
+            mayMax = max(mayMax, sum += arr[i]);
+        }
+        
+        sum = mayMax;
+        for(int j = mid + 1; j < n; j++) {
+            mayMax = max(mayMax, sum += arr[j]);
+        }
+        
+        return max(maxSum, mayMax);
+    }
+};
