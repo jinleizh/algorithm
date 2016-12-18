@@ -1,0 +1,82 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+      if(NULL == head || NULL == head->next) return head;
+     
+      int len = 0;
+	  ListNode* tmp = head;
+      while(tmp != NULL) {
+         len++;
+         tmp = tmp->next;
+      }
+      
+      return mergeSort(head, len);
+    }
+    
+    ListNode* mergeSort(ListNode* head, int len) {
+        if(1 >= len) return head;
+
+        int idx = 0;
+        int mid = len / 2;
+        ListNode* otherHead = head;
+        while(idx < mid) {
+			if(mid - 1 == idx) {
+				ListNode* tmp = otherHead->next;
+				otherHead->next = NULL;
+				otherHead = tmp;
+			} else {
+				otherHead = otherHead->next;
+			}
+
+			idx++;
+        }
+
+        ListNode* leftHead = mergeSort(head, mid);
+        ListNode* rightHead = mergeSort(otherHead, len-mid);
+        
+        int seq = 0;
+        ListNode* newHead = NULL;
+        ListNode* tail = NULL;
+        while(leftHead != NULL && rightHead != NULL) {
+            if(leftHead->val < rightHead->val) {
+                if(0 == seq) {
+                    newHead = leftHead;
+                    tail = newHead;
+                } else {
+                    tail->next = leftHead;
+                    tail = tail->next;
+                }
+
+				leftHead = leftHead->next;
+            } else {
+                if(0 == seq) {
+                    newHead = rightHead;
+                    tail = newHead;
+                } else {
+                    tail->next = rightHead;
+                    tail = tail->next;
+                }
+
+				rightHead = rightHead->next;
+            }
+            
+            seq++;
+        }
+        
+        if(NULL == leftHead) {
+            tail->next = rightHead;
+        } else {
+            tail->next = leftHead;
+        }
+        
+        return newHead;
+    }
+};
