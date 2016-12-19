@@ -1,0 +1,54 @@
+/**
+* o(n3) 效率比较低
+*/
+class Solution {
+public:
+    int totalHammingDistance(vector<int>& nums) {
+        int size = nums.size();
+        int i = 0, j = 0, sum = 0;
+        while(i < size) {
+            j = i;
+            while(j < size) {
+                sum += diff(nums.at(i), nums.at(j));  
+                j++;
+            }
+            
+            i++;
+        }
+        
+        return sum;
+    }
+    
+    int diff(int x, int y) {
+        int result = x ^ y;
+        int count = 0;
+        while(result) {
+            result &= result - 1;
+            count++;
+        }
+        
+        return count;
+    }
+};
+
+/*
+* o(k*n)
+*/
+class Solution {
+public:
+    int totalHammingDistance(vector<int>& nums) {
+        int size = nums.size();
+        int total = 0;
+        
+        for(int i = 0; i < 32; i++) {
+            int bitCount = 0;
+            for(int j = 0; j < size; j++) {
+                bitCount += (nums.at(j) >> i) & 0x1;        
+            }
+            
+            total += bitCount * (size - bitCount);
+        }
+        
+        return total;
+    }
+};
