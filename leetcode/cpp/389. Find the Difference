@@ -1,0 +1,22 @@
+class Solution {
+public:
+    char findTheDifference(string s, string t) {
+        map<char, int> m;
+        int i = 0;
+        while(i < t.length()) {
+            m[t[i++]]++;
+        }
+        
+        int j=0;
+        while(j < s.length()) {
+            m[s[j++]]--;
+        }
+        
+        map<char, int>::iterator mit = m.begin();
+        for(; mit != m.end(); mit++) {
+            if(mit->second != 0) break;
+        }
+        
+        return mit->first;
+    }
+};
