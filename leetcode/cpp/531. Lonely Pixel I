@@ -1,0 +1,103 @@
+/**
+解法一： 时间复杂度o(n^3) 额外空间复杂度o(1) 
+缺点: 仅在行的维度，做了剪枝，当某一行发现第一个'B'时，改行后面的元素将不需要继续判断（因为已经无法满足行唯一的条件）
+**/
+
+class Solution {
+public:
+    int findLonelyPixel(vector<vector<char>>& picture) {
+        //1.检查行 2.检查列 3.循环遍历
+        int row = picture.size();
+        int col = picture[0].size();
+        int count = 0;
+       
+        //3
+        for(int i=0; i<row; i++) {
+            for(int j=0; j<col; j++) {
+                if(picture[i][j] == 'B') {    
+                    //1
+                    bool find = false;
+                    for(int k=0; k<col; k++) {
+                        if(k != j && picture[i][k] == 'B') {
+                            find = true;
+                            break;
+                        };
+                    }
+                    
+                    //2
+                    if(!find) {
+                        for(int k=0; k<row; k++) {
+                            if(k != i && picture[k][j] == 'B') {
+                                find = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if(!find) {
+                        count++;
+                    }
+                    
+                    break;
+                }   
+            }
+        }
+        
+        return count;
+    }
+};
+
+/**
+解法二: 优化
+记录列状态 - 对列也进行剪枝 时间复杂度o(n^3), 但是比方案一少了重复的列判断, 空间复杂度o(n)
+**/
+class Solution {
+public:
+    int findLonelyPixel(vector<vector<char>>& picture) {
+        //1.检查行 2.检查列 3.循环遍历
+        int row = picture.size();
+        int col = picture[0].size();
+        int count = 0;
+
+        //列可用标记
+        vector<bool> colFlag(col, false);
+        
+        //3
+        for(int i=0; i<row; i++) {
+            for(int j=0; j<col; j++) {
+                if(picture[i][j] == 'B') {
+                    if(!colFlag[j]) {
+                        colFlag[j] = true;
+                        
+                        //1
+                        bool find = false;
+                        for(int k=0; k<col; k++) {
+                            if(k != j && picture[i][k] == 'B') {
+                                find = true;
+                                break;
+                            };
+                        }
+                        
+                        //2
+                        if(!find) {
+                            for(int k=0; k<row; k++) {
+                                if(k != i && picture[k][j] == 'B') {
+                                    find = true;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if(!find) {
+                            count++;
+                        }
+                    }
+                    
+                    break;
+                } 
+            }
+        }
+        
+        return count;
+    }
+};
