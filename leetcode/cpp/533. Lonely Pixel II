@@ -1,0 +1,103 @@
+/**复杂度: 时间复杂度 o(n^3) 空间复杂度o(n^2)
+思路: 
+1.使用vector保存 i行 和 j列中 b 的个数, 空间复杂度o(n)
+2.使用二维数组，vc 保存了i行和j行，是否相同,  时间复杂度o(n^3) 空间复杂度o(n^2)
+3.遍历 o(n^3) 此处可以优化为o(n^2)， 可将遍历 列j 的过程优化掉, 即，提前计算好列j中, 出现B的行是否都相同，将处理结果提前保存到vector中，
+这样就不需要每次都遍历同一列(判断该列上有B的行，是否相同)， 空间复杂度为o(n)， 时间复杂度同样为o(n^3), 但是计算量少了.
+vector<int> v(col, 0);
+int prevLine = -1;
+bool result = true;
+for(int j=0; j<col; j++) {
+  prevLine = -1;
+  result = true;
+  for(int i=0; i<row; i++) {
+    if(picture[i][j] == 'B') {
+      if(prevLine != -1) {
+        result = compare(picture[prevLine], picture[i]);
+        if(result == false) {
+          break;
+        }
+      }
+  
+      prevLine = i;
+    }
+  }
+  
+  if(result) {
+    v[j] = 1; 
+  }
+}
+**/
+
+class Solution {
+public:
+    int findBlackPixel(vector<vector<char>>& picture, int N) {
+        //1.计算出行列中b的个数
+        if(N<=0) return 0;
+        int row = picture.size();
+        int col = picture[0].size();
+        if(row==0 || col==0) return 0;
+        
+        vector<int> vRow(row, 0);
+        vector<int> vCol(col, 0);
+        
+        for(int i=0; i<row; i++) {
+            for(int j=0; j<col; j++) {
+                if(picture[i][j] == 'B') {
+                    vRow[i]++;
+                    vCol[j]++;
+                }
+            }
+        }
+        
+        //2.计算出相同列
+        vector<vector<bool> > vc(row, vector<bool>(col));
+        for(int i=0; i<row; i++) {
+            for(int j=i; j<row; j++) {
+                //比较两列内容是否相同
+                if(j == i) {
+                    vc[i][j] = vc[j][i] = true;
+                } else {
+                    vc[i][j] = vc[j][i] = compare(picture[i], picture[j]);
+                }
+            }
+        }
+        
+        //3.逐个判断
+        int count = 0;
+        for(int i=0; i<row; i++) {
+            for(int j=0; j<col; j++) {
+                bool find = false;
+                if(picture[i][j] == 'B' && vRow[i] == vCol[j] && vRow[i] == N) {
+                    for(int k=0; k<row; k++) {
+                        if(picture[k][j] == 'B') {
+                            if(vc[i][k]) {
+                                find = true;
+                            } else {
+                                find = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                if(find) {
+                    ++count;
+                }
+            }
+        }
+    
+        return count;
+    }
+    
+    bool compare(vector<char>& vl, vector<char>& vr) {
+        int nl = vl.size();
+        int nr = vr.size();
+        if(nl != nr) return false;
+        for(int i=0; i<nl; i++) {
+            if(vl[i] != vr[i]) return false;
+        }
+    
+        return true;
+    }
+};
