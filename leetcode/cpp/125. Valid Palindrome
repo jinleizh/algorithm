@@ -1,0 +1,28 @@
+/**
+两个下标, 从左找第一个字母, 从右找第一个字母, 比较两者
+字符串中含有 0个 奇数个 偶数个 字母,  当个数为0时, i > j , 当为偶数时, i > j, 当为奇数是, i = j， 故判断成功的条件为 i >= j
+**/
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int n = s.length();
+        if(s.empty() || 1 == n) return true;
+        
+        int i = 0; 
+        int j = n - 1;
+        while(i < j) {
+            while(i < n && !isalnum(s[i])) {
+                i++;
+            }
+            
+            while(j > 0 && !isalnum(s[j])) {
+                j--;
+            }
+            
+            if(i >= j) return true;
+            if(tolower(s[i++]) != tolower(s[j--])) return false;
+        }
+        
+        return true;
+    }
+};
