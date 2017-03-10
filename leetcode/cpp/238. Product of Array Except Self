@@ -1,0 +1,25 @@
+/**
+思路: 先从左向右计算出前n-1项的值, 再从右向左计算出结果
+**/
+
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> output(n, 0);
+        if(n <=1 ) return output;
+        
+        output[0] = 1;
+        for(int i = 1; i<n; i++) {
+            output[i] = output[i-1]*nums[i-1]; 
+        }
+        
+        int right = 1;
+        for(int i =  n - 1; i>=0; i--) {
+            output[i] *= right;
+            right *= nums[i];
+        }
+        
+        return output;
+    }
+};
