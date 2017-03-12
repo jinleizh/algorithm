@@ -1,0 +1,72 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* str2tree(string s) {
+        int n = s.length();
+        if(n == 0) return NULL;
+        
+        stack<TreeNode*> data;
+        stack<char> symbol;
+        TreeNode* curRoot = NULL;
+        
+        int i = 0;
+        bool minus = false;
+        while(i < n) {
+            if(s[i] == '-') {
+                minus = true;
+            }
+            //入栈
+            else if (isdigit(s[i])) {
+                int value = s[i] - '0';
+                int j = i + 1;
+                while(j < n && isdigit(s[j])) {
+                    value = value * 10 + s[j] - '0';
+                    j++;
+                }
+                
+                i = j - 1;
+    
+                if(minus) {
+                    value = -value;
+                    minus = false;
+                }
+                
+                TreeNode* tmp = new TreeNode(value);
+                data.push(tmp);
+                if(curRoot != NULL) {
+                    if(curRoot->left == NULL) {
+                        curRoot->left = tmp;
+                    } else { 
+                        if (curRoot->right == NULL) {
+                            curRoot->right = tmp;
+                        }
+                    }
+                }
+                
+                curRoot = tmp;
+            } 
+            //换根
+            else if(s[i] == '(') {
+                symbol.push(s[i]);
+            } 
+            //出栈
+            else if(s[i] == ')') {
+                data.pop();
+                curRoot = data.top();
+                symbol.pop();
+            }
+            
+            i++;
+        }
+        
+        return curRoot;
+    }
+};
