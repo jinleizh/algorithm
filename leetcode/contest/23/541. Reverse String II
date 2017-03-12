@@ -1,0 +1,34 @@
+class Solution {
+public:
+    string reverseStr(string s, int k) {
+       int n = s.length();
+       if(n <= 1 || k <= 0) return s;
+       
+       int start = 0; 
+       int end = n - 1;
+       
+       while(start <= end) {
+            int l = start, r = end;
+            if(start + k - 1 >= end) {
+               while(l < r) {
+                   swap(s[l++], s[r--]);
+               }
+            } else {
+                r = l + k -1;
+                while(l < r) {
+                    swap(s[l++], s[r--]);
+                }
+            }
+           
+           start += 2 * k;
+       }
+       
+       return s;
+    }
+    
+    void swap(char& l, char& r) {
+        char tmp = l;
+        l = r;
+        r = tmp;
+    }
+};
