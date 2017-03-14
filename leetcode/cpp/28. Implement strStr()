@@ -1,0 +1,31 @@
+/**时间复杂度为o(n*m)  没有KMP算法o(n+m)快
+思路: 依次从头开始尝试, 不满足条件则, 继续从下一个元素开始判断
+**/
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int h = haystack.length();
+        int n = needle.length();
+        
+        if(0 == n) return 0;
+        
+        if(n > h) return -1;
+        
+        if(n == h) {
+            if(haystack != needle) return -1;
+            return 0;
+        }
+        
+        int i = 0;
+        for(int i = 0; i <= h - n; i++) {
+            int j = 0;
+            
+            while(i < h && haystack[i+j] == needle[j]) {
+                j++;
+                if(j == n) return i;
+            }
+        }
+    
+        return -1;
+    }
+};
