@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int i=0, j=0;
+        int n = s.size();
+        int maxLen = 0;
+        bool flag[256] = {false};
+        
+        while(j < n) {
+            if(flag[s[j]]) {
+                maxLen = (maxLen > j - i ? maxLen : j - i);
+                while(s[i] != s[j]) {
+                    flag[s[i++]] = false;
+                }
+                i++;
+            } else {
+                flag[s[j]] = true;
+            }
+            
+            j++;
+        }
+        
+        maxLen = (maxLen > n - i ? maxLen : n - i);
+        
+        return maxLen;
+    }
+};
