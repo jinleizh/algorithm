@@ -1,0 +1,44 @@
+/**注意,
+使用stringsteam 将整数转换为字符串
+**/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<int> vi(100);
+        vector<string> vs;
+        int count = 0;
+        helper(vs, vi, root, count);
+        return vs;
+    }
+    
+    void test(vector<string>& vs) {
+        return;
+    }
+    
+    void helper(vector<string>& vs, vector<int>& vi, TreeNode* root, int count) {
+        if(root == NULL) return;
+        
+        vi[count] = root->val;
+        if(root->left == NULL && root->right == NULL) {
+            stringstream tmp;
+            tmp<<vi[0];
+            for(int i = 1; i<=count; i++) {
+                tmp<<"->"<<vi[i];
+            }
+            vs.push_back(tmp.str());
+        }
+        
+        helper(vs, vi, root->left, count+1);
+        helper(vs, vi, root->right, count+1);
+    }
+};
