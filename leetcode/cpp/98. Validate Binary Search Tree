@@ -1,0 +1,31 @@
+/**
+思路: 边界使用LONG_MIN 和 LONG_MAX , 使用INT_MAX和INT_MIN会遇到边界的问题解决
+
+解决问题的思路: 每个节点都符合的规律, 必然适用于根节点,  被注释的代码是最初的思路, 将该思路提升到根节点, 代码更优雅，更短
+**/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        return helper(root, LONG_MIN, LONG_MAX);
+    }
+    
+    bool helper(TreeNode* root, long low, long high) {
+        if(root == NULL) return true;
+        if(root->val <= low || root->val >= high) return false;
+        
+        //if(root->left != NULL && (root->left->val <= low || root->left->val >= root->val)) return false;
+        //if(root->right != NULL && (root->right->val <= root->val || root->right->val >= high)) return false;
+        
+        return helper(root->left, low, root->val) && helper(root->right, root->val, high);
+    }
+};
