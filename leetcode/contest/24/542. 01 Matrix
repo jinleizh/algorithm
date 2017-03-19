@@ -1,0 +1,48 @@
+class Solution {
+public:
+    /*
+    * 广度优先, 本题不适用深度优先, 因为题目要找的是最近点的距离, 从内向外逐步扩散更新.
+    * 广度优先需借助队列
+    */
+    vector<vector<int>> updateMatrix(vector<vector<int>>& matrix) {
+        if(matrix.empty()) return matrix;
+        int n = matrix.size(), m = matrix[0].size();
+        vector<int> row(m);
+        vector<vector<int> > result(n, row);
+        
+        typedef pair<int, int> pii;
+        queue<pii> q;
+        
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<m; j++) {
+                if(0 == matrix[i][j]) {
+                    result[i][j] = 0;
+                    q.push(pii(i,j));
+                } else {
+                    result[i][j] = INT_MAX;
+                }
+            }
+        }
+        
+        while(!q.empty()) {
+            pii c = q.front();
+            q.pop();
+            int x = c.first;
+            int y = c.second;
+            int dx[] = {0, 0, -1, 1};
+            int dy[] = {1, -1, 0, 0};
+            
+            int tx = 0, ty = 0;
+            for(int i=0; i<4; i++) {
+                tx = x + dx[i];
+                ty = y + dy[i];
+                if(tx >=0 && tx < n && ty >= 0 && ty < m && result[tx][ty] == INT_MAX) {
+                    result[tx][ty] = result[x][y] + 1;
+                    q.push(pii(tx, ty));
+                }
+            }
+        }
+        
+        return result;
+    }
+};
