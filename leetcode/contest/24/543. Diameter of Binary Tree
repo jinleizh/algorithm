@@ -1,3 +1,13 @@
+/*
+
+思路: 距离分三种情况 1.左子树 2.右子树 3.根节点 + 左子树树高 + 右子树树高
+
+求diameter时, 遇到叶子节点, 返回0
+树边长 等于 树高度 - 1
+
+
+*/
+
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
