@@ -48,3 +48,37 @@ public:
         return left > right ? left : right;
     }
 };
+
+/**
+ * 简洁的写法 
+ *
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    /*
+    * 思路: 左边的子树树高 + 右边的子树树高 与 当前最大的diameter比较
+    *       同时返回左右子树的最大值, 给上层使用
+    */
+    int ans;
+    int diameterOfBinaryTree(TreeNode* root) {
+        ans = 0;
+        dfs(root);
+        return ans;
+    }
+    
+    int dfs(TreeNode* root) {
+        if(NULL == root) return -1;
+        int lh = dfs(root->left) + 1;
+        int rh = dfs(root->right) + 1;
+        
+        ans = max(ans, lh + rh);
+        return max(lh, rh);
+    }
+};
