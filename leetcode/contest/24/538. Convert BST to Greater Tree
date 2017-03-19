@@ -43,3 +43,41 @@ public:
         return sum(root->left) + sum(root->right) + root->val; 
     }
 };
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    /*
+    * 思路: 中序遍历, 从右到左， 如果是求小于等于, 则进行从左到右即可
+    */
+    int sum;
+    TreeNode* convertBST(TreeNode* root) {
+        sum = 0;
+        dfs(root);
+        return root;
+    }
+    
+    void dfs(TreeNode* root) {
+        if(!root) return;
+        
+        //右
+        dfs(root->right);
+        
+        //根节点操作
+        int tmp = root->val;
+        root->val += sum;
+        sum += tmp;
+        
+        //左
+        dfs(root->left);
+    }
+};
