@@ -1,0 +1,54 @@
+//注意vector的用法, 未初始化二纬vector时, 会报错, 可以使用vector的push_back操作二纬数组
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<int> row;
+        vector<vector<int> > d;
+        if(NULL == root) return d;
+        
+        typedef pair<TreeNode*, int> pii;
+        queue<pii> q;
+        q.push(pii(root, 0));
+        
+        int cl = 0;
+        while(!q.empty()) {
+            pii c = q.front();
+            root = c.first;
+            q.pop();
+            
+            if(c.second > cl) {
+                d.push_back(row);
+                row.clear();
+                cl = c.second;
+            }
+            
+            row.push_back(root->val);
+        
+            //left
+            if(root->left) {
+                q.push(pii(root->left, cl + 1));
+            }
+            
+            //right
+            if(root->right) {
+                q.push(pii(root->right, cl + 1));
+            }
+        }
+        
+        if(!row.empty()) {
+            d.push_back(row);
+            row.clear();
+        }
+    
+        return d;
+    }
+};
