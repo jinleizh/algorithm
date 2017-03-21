@@ -1,0 +1,26 @@
+// Forward declaration of isBadVersion API.
+bool isBadVersion(int version);
+
+class Solution {
+public:
+    /**
+     * 思路: 结果=左子树或右子树或mid值, 
+     * 若根节点为bad, 则结果为左子树的bad结果，当左子树找不到时，返回-1, 则mid为结果值， 否则返回左子树的值
+     * 若根节点不为bad时，返回右子树的bad值.
+     */
+    int firstBadVersion(int n) {
+        return helper(1, n);
+    }
+
+    int helper(long start, long end) {
+        if(start > end) return -1;
+
+        int mid = (start + end) / 2;;
+        if(isBadVersion(mid)) {
+            int pos = helper(start, mid - 1);
+            return -1 == pos ? mid : pos;
+        } else {
+            return helper(mid + 1, end);
+        }
+    }
+};
