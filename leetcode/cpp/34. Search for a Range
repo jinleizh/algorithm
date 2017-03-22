@@ -1,0 +1,76 @@
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        vector<int> vi(2, -1);
+        int start = 0; 
+        int end = nums.size() - 1;
+        vi[0] = start;
+        vi[1] = end;
+        return helper(nums, target, vi);
+    }
+    
+    vector<int> helper(vector<int>& nums, int target, vector<int>& vi) {
+        if(vi[0] > vi[1]) {
+            vector<int> tmp(2, -1);
+            return tmp;
+        }
+        
+        int start = vi[0];
+        int end = vi[1];
+        int mid = ( start + end ) / 2;
+        
+        if(target == nums[mid]) {
+            vector<int> vl;
+            vector<int> vr;
+            vector<int> vt(2, -1);
+            vt[0] = start;
+            vt[1] = mid - 1;
+            vl = helper(nums, target, vt);
+            
+            vt[0] = mid + 1;
+            vt[1] = end;
+            vr = helper(nums, target, vt);
+            
+            return merge(vl, vr, mid);
+        }
+        
+        if(target < nums[mid]) {
+            vi[0] = start;
+            vi[1] = mid - 1;
+            return helper(nums, target, vi);
+        }
+        
+        if(target > nums[mid]) {
+            vi[0] = mid + 1;
+            vi[1] = end;
+            return helper(nums, target, vi);
+        }
+    }
+    
+    vector<int> merge(vector<int>& vl, vector<int>& vr, int mid) {
+        vector<int> vp(2, -1);
+        if(vl[0] != -1) {
+            vp[0] = vl[0];
+        } else {
+            vp[0] = vr[0];
+        }
+        
+        if(vr[1] != -1) {
+            vp[1] = vr[1];
+        } else {
+            vp[1] = vl[1];
+        }
+        
+        if(vp[0] == -1) {
+            vp[0] = vp[1] = mid;
+        } else if(vp[0] < mid){
+            if(vp[1] < mid) {
+                vp[1] = mid;
+            }
+        } else {
+            vp[0] = mid;
+        }
+        
+        return vp;
+    }
+};
