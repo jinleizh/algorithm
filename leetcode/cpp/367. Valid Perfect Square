@@ -1,0 +1,26 @@
+class Solution {
+public:
+/**
+ * 用除法，不要用乘法, 复杂度o(logN) 
+ */
+    bool isPerfectSquare(int num) {
+        return helper(num, 1, num);
+    }
+    
+    bool helper(int num, int start, int end) {
+        if(start > end) return false;
+        
+        int mid = (start + end) / 2;
+        int tmp = num / mid;
+        int rem = num % mid;
+        if(tmp == mid && 0 == rem) return true;
+        
+        if(tmp < mid) {
+            return helper(num, start, mid - 1);
+        }
+        
+        if(tmp >= mid) {
+            return helper(num, mid+1, end);
+        }
+    }
+};
