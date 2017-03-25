@@ -1,0 +1,61 @@
+class Solution {
+public:
+/**
+ * 思路:递归, 左右子串, 再合并, 根据运算符号进行左右分割
+ */ 
+    vector<int> diffWaysToCompute(string input) {
+        vector<int> vl;//左结果集合
+        vector<int> vr;//右结果集合
+        vector<int> vs;//最终结果集合
+        
+        //分割字符串
+        int pos = 0;
+        while(pos < input.size()) {
+            pos = input.find_first_of("+-*", pos);
+            
+            //没找到
+            if(pos == string::npos) break;
+            
+            char op = input[pos]; 
+            
+            //计算左子串结果
+            vl = diffWaysToCompute(input.substr(0, pos));    
+            //return vl;
+            
+            //计算右子串结果
+            vr = diffWaysToCompute(input.substr(pos+1));
+            //return vr;
+            
+            //合并左右子串结果
+            for(int i=0; i<vl.size(); i++) {
+                for(int j=0; j<vr.size(); j++) {
+                    switch(op) {
+                        case '+':
+                            vs.push_back(vl[i] + vr[j]);
+                            break;
+                        case '-':
+                            vs.push_back(vl[i] - vr[j]);
+                            break;
+                        case '*':
+                            vs.push_back(vl[i] * vr[j]);
+                            break;
+                    }        
+                }
+            }
+            
+            pos++;
+        }
+        
+        if(vs.empty()) {
+            stringstream ss;
+            ss<<input;
+            int tmp;
+            ss>>tmp;
+            ss.clear();
+            vs.push_back(tmp);
+            //vs.push_back(atoi(input.c_str()));
+        }
+        
+        return vs;
+    }
+};
