@@ -1,0 +1,31 @@
+class Solution {
+public:
+/**
+ * 思路: 因为需要去重复，且要求时间复杂度为o(n), 当全部数据可以放入内存时, 只需要保存三个最大值, 遍历一次即可
+ * 如果是海量数据，由于不能一次性加入内存, 可以考虑建立小顶堆, 遇到比堆顶元素大的输入值, 则堆顶取输入值，
+ * 堆调整复杂度o(logK), 遍历一次, 复杂度为o(nlogK)
+ */ 
+    int thirdMax(vector<int>& nums) {
+        long min = LONG_MIN;
+        long max = LONG_MAX;
+        long f = min, s = min, t = min;
+        
+        for(int i = 0; i< nums.size(); i++) {
+            if(nums[i] == f || nums[i] == s || nums[i] == t) continue;
+            
+            if(nums[i] > f) {
+                t = s;
+                s = f;
+                f = nums[i];
+            } else if(nums[i] > s) {
+                t = s;
+                s = nums[i];
+            } else if(nums[i] > t) {
+                t = nums[i];
+            } 
+        }
+        
+        if(t == min) return f;
+        return t;
+    }
+};
