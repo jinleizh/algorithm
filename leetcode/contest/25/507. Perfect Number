@@ -1,0 +1,19 @@
+class Solution {
+public:
+    bool checkPerfectNumber(int num) {
+        if(num <= 1) return false;
+
+        int i=2, sum = 1, end = num;
+        while(i < end) {
+            if(num % i == 0) {
+                sum += i + num / i;
+                end = num / i;
+            }
+        
+            i++;
+        }
+        
+        if(sum == num) return true;
+        return false;
+    }
+};
