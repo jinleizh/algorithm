@@ -1,0 +1,67 @@
+struct Node {
+    int val;
+    int idx;
+};
+/**
+ * 随机--利用数组下标 
+ * 删除--数组利用和最后一个元素交换的方式实现
+ * 插入--直接在数组的最后一位进行插入
+ * 
+ * 可见, 这里的o(1), 都是基于vector<int> 实现的, 但问题是如何在o(1)的时间内定位元素, 则只有hashmap可以做到o(1)
+ * 所以, 通过hashmap, 可以在o(1)时间内定位到元素在数组中的位置.
+ * 之后在o(1)的时间内进行删除和插入, 随机
+ * 故 map<int, vector<int> >  以元素的值为key, 以元素在数组中的下标数组为value, 快速定位元素, 并进行插入和删除.
+ * 如果不用map, 则只能直接使用数组下标, 但是数组下标对于出现多个相同值得情况, 无法有效解决, 而map是一个好的方案. 
+ */
+ 
+class RandomizedCollection {
+public:
+    vector<Node> v;
+    unordered_map<int, vector<int> > m;
+    /** Initialize your data structure here. */
+    RandomizedCollection() {
+        
+    }
+    
+    /** Inserts a value to the collection. Returns true if the collection did not already contain the specified element. */
+    bool insert(int val) {
+        bool result = (m.find(val) == m.end());
+        m[val].push_back(v.size());
+        Node tmp;
+        tmp.val = val;
+        tmp.idx = m[val].size() - 1;
+        v.push_back(tmp);
+        return result;
+    }
+    
+    /** Removes a value from the collection. Returns true if the collection contained the specified element. */
+    bool remove(int val) {
+        if( m.find(val) == m.end()) return false;
+        int idx = m[val].back();
+        Node last = v.back();
+        m[last.val][last.idx] = idx;
+        v[idx] = last;
+        
+        m[val].pop_back();
+        if(m[val].empty()) {
+            m.erase(val);
+        }
+        v.pop_back();
+        
+        return true;
+    }
+    
+    /** Get a random element from the collection. */
+    int getRandom() {
+        if(v.empty()) return -1;
+        return v[rand() % v.size()].val;
+    }
+};
+
+/**
+ * Your RandomizedCollection object will be instantiated and called as such:
+ * RandomizedCollection obj = new RandomizedCollection();
+ * bool param_1 = obj.insert(val);
+ * bool param_2 = obj.remove(val);
+ * int param_3 = obj.getRandom();
+ */
