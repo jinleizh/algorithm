@@ -1,0 +1,106 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+/**
+ * 需要考虑，左子树为空，右子树为空，左右子树都为空
+ */ 
+    vector<int> boundaryOfBinaryTree(TreeNode* root) {
+        vector<int> lb;
+        if(NULL == root) return lb;
+        
+        TreeNode *tmp = root;
+        
+        //lb
+        lb.push_back(tmp->val);
+        
+        //根节点第一层如果左子树为空, 则lb为根节点
+        if(tmp -> left != NULL) {
+            while((tmp->left != NULL || tmp->right != NULL)) {
+                if(tmp->left != NULL) {
+                    lb.push_back(tmp->left->val);
+                    tmp = tmp->left;
+                } else {
+                    lb.push_back(tmp->right->val);
+                    tmp = tmp->right;
+                }
+            }
+        }
+        
+        //rb
+        stack<int> rb;
+        tmp = root;
+        if(tmp->right != NULL) {
+            while((tmp->right != NULL || tmp->left != NULL))
+            {
+                if(tmp->right != NULL) {
+                    rb.push(tmp->right->val);
+                    tmp = tmp->right;
+                } else {
+                    rb.push(tmp->left->val);
+                    tmp = tmp->left;
+                }
+            }
+        }
+        
+        //leaf
+        vector<int> leaf; 
+        traverse(root, leaf);
+        
+        //去掉lb最后一个节点, 条件：左子树存在
+        if(root->left != NULL)
+        {
+            lb.pop_back();
+        } 
+        
+        //如果只有一个根节点
+        if(root->left == NULL && root->right == NULL) {
+            lb.pop_back();
+        }
+        
+        //合并
+        int i = 0;
+        while(i < leaf.size()) {
+            lb.push_back(leaf[i]);
+            i++;
+        }
+        
+        //ouput 最后一个叶节点
+        if(!rb.empty()) {
+            rb.pop();
+        }
+        
+        while(!rb.empty()) {
+            lb.push_back(rb.top());
+            rb.pop();
+        }
+        
+        return lb;
+    }
+    
+    void traverse(TreeNode* root, vector<int>& v) {
+        if(root->left == NULL && root->right == NULL) {
+            v.push_back(root->val);
+            return;
+        }
+        
+        //左
+        if(root->left != NULL) {
+            traverse(root->left, v);
+        }
+    
+        //右
+        if(root->right) {
+            traverse(root->right, v);
+        }
+        
+        //根
+    }
+};
