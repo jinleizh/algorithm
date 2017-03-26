@@ -1,0 +1,51 @@
+class Solution {
+public:
+    string complexNumberMultiply(string a, string b) {
+        //分割
+        int pos = a.find_first_of("+");
+        string la = a.substr(0, pos);
+        string ra = a.substr(pos + 1);
+        int nPos = ra.find_first_of("i");
+        string raVal = ra.substr(0, nPos);
+        
+        pos = b.find_first_of("+");
+        string lb = b.substr(0, pos);
+        string rb = b.substr(pos + 1);
+        nPos = rb.find_first_of("i");
+        string rbVal = rb.substr(0, nPos);
+    
+        //左1乘右1
+        int resultL1R1 = my_atoi(la) * my_atoi(lb);
+        
+        //左1乘右2
+        int resultL1R2 = my_atoi(la) * my_atoi(rbVal);
+    
+        //左2乘右1
+        int resultL2R1 = my_atoi(raVal) * my_atoi(lb);
+        
+        //左2乘右2
+        int resultL2R2 = my_atoi(raVal) * my_atoi(rbVal);
+        
+        //合并结果
+        int resultLeft = resultL1R1 - resultL2R2;
+        int resultRight = resultL1R2 + resultL2R1;
+        
+        return my_itoa(resultLeft) + "+" + my_itoa(resultRight) + "i";
+    }
+    
+    int my_atoi(string input) {
+        int result;
+        stringstream ss;
+        ss<<input;
+        ss>>result;
+        return result;
+    }
+    
+    string my_itoa(int input) {
+        string tmp;
+        stringstream ss;
+        ss<<input;
+        ss>>tmp;
+        return tmp;
+    }
+};
