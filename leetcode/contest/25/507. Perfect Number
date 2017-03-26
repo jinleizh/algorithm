@@ -6,7 +6,10 @@ public:
         int i=2, sum = 1, end = num;
         while(i < end) {
             if(num % i == 0) {
-                sum += i + num / i;
+                sum += i;
+                if(i != num / i) {
+                    sum += num/i;
+                }
                 end = num / i;
             }
         
