@@ -1,0 +1,45 @@
+class Solution {
+public:
+    void gameOfLife(vector<vector<int>>& board) {
+        vector<vector<int>> result;
+        int row = board.size();
+        result.resize(row);
+        int col = board[0].size();
+        for(int i=0; i<row; i++) {
+            for(int j=0; j<col; j++) {
+                result[i].push_back(decide(i, j, row, col, board));        
+            
+                //result[i].push_back(1);
+            }
+        }
+        
+        swap(board, result);
+    }
+    
+    int decide(int i, int j, int row, int col, vector<vector<int>>& board) {
+        int liveNeb = 0; 
+        int dx[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+        int dy[8] = {-1,-1, -1, 0, 0, 1, 1, 1};
+        
+        for(int k=0; k<8; k++) {
+            int l = i + dx[k];
+            int r = j + dy[k];
+            
+            if(l >= 0 &&  l < row && r >= 0 && r < col) {
+                if(board[l][r] == 1) {
+                    liveNeb++;
+                }
+            }
+        }
+        
+        return isLive(board[i][j], liveNeb);
+    }
+    
+    int isLive(int status, int n) {
+        if(1 == status) {
+            return n < 2 || n > 3 ? 0 : 1;
+        }
+        
+        return n == 3 && status == 0 ? 1 : 0;
+    }
+};
