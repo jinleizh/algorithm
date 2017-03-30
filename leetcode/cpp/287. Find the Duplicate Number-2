@@ -1,0 +1,24 @@
+class Solution {
+public:
+    /**
+     * 数组也是链表, 将其值认为是next指针, 则1-n个完全不同的数, 必然会形成环.
+     * 环，即链表，快慢必相遇
+     */ 
+    int findDuplicate(vector<int>& nums) {
+        int low = nums[0];
+        int fast = nums[nums[0]];
+        
+        while(low != fast) {
+            low = nums[low];
+            fast = nums[nums[fast]];
+        }
+        
+        fast = 0;
+        while(low != fast) {
+            low = nums[low];
+            fast = nums[fast];
+        }
+        
+        return fast;
+    }
+};
