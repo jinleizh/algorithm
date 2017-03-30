@@ -1,0 +1,32 @@
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int n = nums.size();
+        int i = 0, j = 0;
+        
+        while(i < n) {
+            while(i < n && 0 != nums[i]) {
+                i++;
+            }
+            
+            if(i>=n) break;
+            
+            if(j <= i) j = i + 1;
+            
+            while(0 == nums[j]) {
+                j++;
+            }
+            
+            if(j>=n) break;
+            
+            swap(nums[i], nums[j]);
+            i++;
+        }
+    }
+    
+    void swap(int& a, int& b) {
+        a = a + b;
+        b = a - b;
+        a = a - b;
+    }
+};
