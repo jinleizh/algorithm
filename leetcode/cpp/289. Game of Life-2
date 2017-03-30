@@ -1,0 +1,41 @@
+class Solution {
+public:
+    void gameOfLife(vector<vector<int>>& board) {
+        int dx[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int dy[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+        for(int i=0; i<board.size(); i++) {
+            for(int j=0; j<board[0].size(); j++) {
+                int live = 0, rx = 0, ry = 0;
+                int status = board[i][j] & 1;
+                for(int k=0; k<8; k++) {
+                    rx = i + dx[k];
+                    ry = j + dy[k];
+                    if(rx >=0 && rx <board.size() && ry >=0 && ry < board[0].size()) {
+                        if(board[rx][ry] & 1) live++;
+                    }
+                }
+                
+                if(status) {
+                    if(live < 2 || live > 3) {
+                        board[i][j] = 1;
+                    }
+                    
+                    if(live == 2 || live == 3) {
+                        board[i][j] = 3;
+                    }
+                } else {
+                    if(live == 3) {
+                        board[i][j] = 2;
+                    }
+                }
+            }   
+        }
+        
+        for(int i=0; i<board.size(); i++) {
+            for(int j =0; j<board[0].size(); j++) {
+                board[i][j] >>= 1;
+            }
+        }
+        
+    }
+};
