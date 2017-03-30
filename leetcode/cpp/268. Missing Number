@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int n = nums.size();
+        int j = 0;
+        for(int i=0; i<nums.size(); i++) {
+            if(abs(nums[i]) == nums.size()) {
+                n = -1 * n;
+            } else {
+                nums[abs(nums[i])] = -1 * nums[abs(nums[i])];
+            }
+        }
+        
+        if(n > 0) return n;
+        for(int i=0; i<nums.size(); i++) {
+            if(nums[i] > 0) return i;
+            if(nums[i] == 0) j = i;
+        }
+        
+        return j;
+    }
+};
