@@ -1,0 +1,44 @@
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        vector<string> result;
+        int n = nums.size();
+        if(0 == nums.size()) return result;
+        
+        int start = 0;
+        int end = 0;
+        for(int i=0; i<nums.size() - 1; i++) {
+            if(nums[i+1] == nums[i] + 1) {
+                end = i + 1;
+            } else {
+                push(result, nums[start], nums[end]);
+                end = start = i + 1;
+            }
+        }
+        
+        push(result, nums[start], nums[end]);
+        return result;
+    }
+    
+    void push(vector<string>& result, int start, int end) {
+        stringstream ss;
+        ss<<start;
+        string st;
+        ss>>st;
+        ss.clear();
+        
+        ss<<end;
+        string ed;
+        ss>>ed;
+        ss.clear();
+        
+        string s;
+        if(start != end) {
+            s = st + "->" + ed;
+        } else {
+            s = st;
+        }
+        
+        result.push_back(s);
+    }
+};
