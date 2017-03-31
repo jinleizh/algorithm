@@ -1,0 +1,41 @@
+class Solution {
+public:
+    /**
+     * 计数算法: 每三个不同的元素一组, 用2个元素计数
+     * 类似找出出现次数大于n/2的数, 使用一个变量计数, 相同+1， 不同-1， 清0则重新计数
+     * 三个元素也是如此, 其中任何一个元素计数为0，则重新使用一个备选者
+     */ 
+    vector<int> majorityElement(vector<int>& nums) {
+        int count1 = 0, count2=0, can1=0, can2=0;
+        for(int i=0; i<nums.size(); i++) {
+            if(can1 == nums[i]) {
+                count1++;
+            } else if(can2 == nums[i]) {
+                count2++;
+            } else if(count1 == 0) {
+                can1 = nums[i];
+                count1 = 1;
+            } else if(count2 == 0){
+                can2 = nums[i];
+                count2 = 1;
+            } else {
+                count1--;
+                count2--;
+            }
+        }
+        
+        vector<int> result;
+        int n1 = 0, n2 = 0;
+        for(int i=0; i<nums.size(); i++) {
+            if(can1 == nums[i]) n1++;
+            if(can2 == nums[i]) n2++;
+        }
+        
+        if(n1 > nums.size() / 3) result.push_back(can1);
+        if(can1 != can2) {
+            if(n2 > nums.size() / 3) result.push_back(can2);
+        }
+        
+        return result;
+    }
+};
