@@ -1,0 +1,28 @@
+class Solution {
+public:
+    /**
+     * 思路: 使用map, 保存数值元素和它对应的下标, 然后计算每个元素的下标差值，与K比较大小
+     * 时间复杂度o(2n)
+     * 空间复杂度o(2n)
+     */ 
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        if(0 >= k) return false;
+        
+        map<int, vector<int>> idxMap;
+        for(int i=0; i<nums.size(); i++) {
+            idxMap[nums[i]].push_back(i);
+        }
+        
+        map<int, vector<int>>::iterator mit = idxMap.begin();
+        while(mit != idxMap.end()) {
+            vector<int> v = mit->second;
+            for(int i=0; i<v.size() - 1; i++) {
+                if(v[i+1] - v[i] <= k) return true;
+            }
+            
+            mit++;
+        }
+        
+        return false;
+    }
+};
