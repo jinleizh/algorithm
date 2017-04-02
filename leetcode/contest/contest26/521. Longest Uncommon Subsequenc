@@ -1,0 +1,17 @@
+class Solution {
+/**
+* 优先取大的， 如果长度相同，则判断是否相等，相等返回-1，不等取长度即可
+*/
+public:
+    int findLUSlength(string a, string b) {
+        int la = a.length();
+        int lb = b.length();
+        if(la < lb) return lb;
+        if(la > lb) return la;
+        if(la == lb) {
+            if(a == b) return -1;
+        }
+        
+        return la;
+    }
+};
