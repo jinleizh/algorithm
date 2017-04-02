@@ -1,0 +1,66 @@
+/*
+* 思路: 使用map<int, map<string,int>> 嵌套的数据结构
+* 找到某一层后，继续分层遍历, 查看是否是子串 
+* 子串的定义: 在母串里查找子串，找到后，截断母船，继续查找下一个，直到子串的所有字符都找到为止
+*/
+class Solution {
+public:
+    int findLUSlength(vector<string>& strs) {
+        map<int, map<string, int>> strMap;
+        int len = 0;
+        for(int i=0; i<strs.size(); i++) {
+            len = strs[i].length();
+            strMap[len][strs[i]]++;
+        }
+        
+        len = 10;
+        while(len > 0) {
+            if(strMap.find(len) != strMap.end()) {
+                map<string, int>::iterator mit = strMap[len].begin();
+                while(mit != strMap[len].end()) {
+                    if(mit->second == 1) {
+                        int k = 10;
+                        bool find = false;
+                        string tmpStr = mit->first;
+                        while(k > len) {
+                            if(strMap.find(k) != strMap.end()) {
+                                map<string, int> tm = strMap[k];
+                                map<string, int>::iterator tmpItr = tm.begin();
+                                while(tmpItr != tm.end()) {
+                                    if(isSubStr(tmpItr->first,tmpStr)) {
+                                        find = true;
+                                        break;    
+                                    }
+                                    
+                                    tmpItr++;        
+                                }
+                                
+                                if(find) break;
+                            }
+                            
+                            k--;
+                        }
+                    
+                        if(!find) return len;
+                    }
+                    
+                    mit++;
+                }
+            }
+            
+            len--;
+        }
+        
+        return -1;
+    }
+    
+    bool isSubStr(string s, string sub) {
+        for(int i=0; i<sub.size(); i++) {
+            int pos = s.find_first_of(sub[i]);
+            if(pos == string::npos) return false;
+            s = s.substr(pos+1);
+        }
+        
+        return true;
+    }
+};
