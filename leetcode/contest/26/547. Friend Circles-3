@@ -1,0 +1,38 @@
+class Solution {
+public:
+/**
+ * 思路: bfs
+ * 把同一组的都遍历一遍,计数
+ * 每次挑选未使用的点，开始遍历出所有关联的点
+ * 
+ * 这个是最符合题意的解法
+ */ 
+    vector<int> used;
+    vector<int> que;
+    int findCircleNum(vector<vector<int>>& M) {
+        int n = M.size();
+        int x = 0;
+        used.resize(n, 0);
+        int ans = 0;
+        for(int i=0; i<n; i++) {
+            if(0 == used[i]) {
+                used[i] = 1;
+                ++ans;
+                que.clear();
+                que.push_back(i);
+                
+                for(int j=0; j<que.size(); j++) {
+                    x = que[j];
+                    for(int k=0; k<n; k++) {
+                        if(1 == M[x][k] && used[k] == 0) {
+                            used[k] = 1;
+                            que.push_back(k);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
