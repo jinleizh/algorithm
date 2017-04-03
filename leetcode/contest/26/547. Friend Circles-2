@@ -1,0 +1,52 @@
+class Solution {
+public:
+/**
+ * 思路: 优化的并查集算法
+ * 采用了树根的形式，保存元素所在的组
+ * 
+ * 初始化根节点
+ * 当两个组合并时, 只需要变更两个组的根节点的关系, 例如M[I][J]=1 在I所在组的根节点和J所在组的根节点，比较根节点是否相同
+ * 相同，则跳过，继续遍历二维数组
+ * 不相同，则将J组的根节点，改为指向I节点的根节点, 即
+ * root[J] = root[I]
+ * 
+ * root[I] = findRoot(I);
+ * 
+ * 根节点的条件: root[I] = I, 初始时均为根节点
+ */
+    vector<int> group;
+    int findCircleNum(vector<vector<int>>& M) {
+        vector<int> group;
+        int n = M.size();
+        for(int i=0; i<n; i++) {
+            group.push_back(i);
+        }
+        
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                if(i != j && M[i][j] == 1) {
+                    int parentI = find(group, i);
+                    int parentJ = find(group, j);
+                    if(parentI != parentJ) {
+                        group[parentJ] = parentI;
+                    }
+                }
+            }
+        }
+        
+        int cnt = 0;
+        for(int i=0; i<n; i++) {
+            if(i == group[i]) cnt++;
+        }
+        
+        return cnt;
+    }
+    
+    int find(vector<int>& group, int i) {
+        while(i != group[i]) {
+            i = group[group[i]];
+        }
+        
+        return i;
+    }
+};
