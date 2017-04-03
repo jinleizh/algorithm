@@ -1,0 +1,42 @@
+class Solution {
+    /**
+     * 思路: n个元素，初始为n个不同的组
+     * 依次遍历每一个元素, 合并M[i][j]=1的组, 
+     * 合并方法: 遍历组号和j元素相同的, 将这些元素的组号都替换为i对应的组号, 或者反过来，把和元素i组号相同的(包含i),
+     * 全都替换为j的组号
+     * 最后使用一个set, 保存最终独立的组号, 输出set的大小即可
+     * 
+     * 时间复杂度o(n3)
+     * 空间复杂度o(2n)
+     */ 
+public:
+    vector<int> group;
+    int findCircleNum(vector<vector<int>>& M) {
+        int n = M.size();
+        for(int i=0; i<n; i++) {
+            group.push_back(i);
+        }
+        
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                if(1 == M[i][j] && i != j) {
+                    if(group[i] != group[j]) {
+                        int tmp = group[j];
+                        for(int k=0; k<n; k++) {
+                            if(tmp == group[k]) {
+                                group[k] = group[i];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        set<int> s;
+        for(int i=0; i<n; i++) {
+            s.insert(group[i]);
+        }
+        
+        return s.size();
+    }
+};
