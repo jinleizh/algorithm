@@ -1,0 +1,47 @@
+class Solution {
+/**
+ * 思路: 递归枚举所有可能的组合, 暴力搜索
+ * 分为以1,2,3,...,8,9开头的
+ * 以1开头的组, 在剩余的数里找所有和为N-1的组合
+ * 以2开头的组，在剩余的数里找所有和为N-2的组合
+ * ...
+ * 然后从所有组合中, 挑出个数为K的, 输出
+ */ 
+public:
+    vector<vector<int>> combinationSum3(int k, int n) {
+        vector<vector<int>> gVec;
+        if(0 >= k || n > 45) return gVec;
+        
+        vector<int> tVec;
+        for(int i=1; i<=9; i++) {
+            helper(i, n, tVec, gVec);
+        }
+        
+        vector<vector<int>> result;
+        for(int i=0; i<gVec.size(); i++) {
+            if(gVec[i].size() == k) {
+                result.push_back(gVec[i]);
+            }
+        }
+        
+        return result;
+    }
+
+    void helper(int start, int n, vector<int>& tv, vector<vector<int>>& gv) {
+        if(start > 9 || start > n) return;
+        
+        tv.push_back(start);
+        if(start == n) {
+            vector<int> tmp(tv);
+            gv.push_back(tmp);
+            tv.pop_back();
+            return;
+        }
+        
+        for(int i=1; i<=9; i++) {
+            helper(start+i, n-start, tv, gv);
+        }
+        
+        tv.pop_back();
+    }
+};
