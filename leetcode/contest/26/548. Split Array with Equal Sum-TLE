@@ -1,0 +1,55 @@
+class Solution {
+public:
+    bool splitArray(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> vv;
+        vv.resize(n, vector<int>());
+        for(int i=0; i<n; i++) {
+            vv[i].resize(n, 0);
+        }
+        
+        vector<int> sumVec;
+        sumVec.resize(n, 0);
+        
+        sumVec[0] = nums[0];
+        for(int i=0; i<n-1; i++) {
+            sumVec[i+1] = sumVec[i] + nums[i];
+        }
+        
+        for(int i=0; i<n; i++) {
+            for(int j=i; j<n; j++) {
+                vv[i][j] = sumVec[j] - sumVec[i-1];
+            }
+        }
+    
+        int target = 0;
+        int k = 1;
+        bool find = false;
+
+        for(int j=0; j<n; j++) {
+            target = vv[0][j];
+            find = helper(k+1, j+2, n-1, target, vv);
+            if(find) return true;
+        }
+        
+        return false;
+    }
+    
+    bool helper(int count, int start, int end, int target, vector<vector<int>>& vv) {
+        if(start > end) return false;
+        if(count == 4) {
+            if(target != vv[start][end]) return false;
+            return true;
+        }
+        
+        bool find = false;
+        for(int j = start; j<end; j++) {
+            if(target == vv[start][j]) {
+                find = helper(count+1, j+2, end, target, vv);
+                if(find) return true;
+            }
+        }
+        
+        return false;
+    }
+};
