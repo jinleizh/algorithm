@@ -1,0 +1,18 @@
+class Solution {
+/***
+* 思路: 单个元素 和 多个元素
+* 因为即使是有重复元素, 从头开始的升序队列一定最终可以到达最大值, 然后出现最小值
+* 故, i = 1， 比较i和前一个元素的大小关系,  a[i] < a[i-1] 时, 即满足条件, 返回a[i]
+* 若一直没找到，则表明序列时从小到大开始的, 故取第一个元素
+*/
+public:
+    int findMin(vector<int>& nums) {
+        int n = nums.size();
+        if(1 == n) return nums[0];
+        
+        int i = 1;
+        while(i<n && nums[i-1] <= nums[i]) i++;
+        if(i == n) return nums[0]; 
+        return nums[i];
+    }
+};
