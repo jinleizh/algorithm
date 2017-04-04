@@ -1,0 +1,76 @@
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int n = nums.size();
+        if(1 == n) return nums[0];
+        
+        vector<int> valArr;
+        vector<int> tmpVal;
+        
+        /*
+        * 定位0的位置, 将数组分段, 分别计算各自的最大值
+        */
+        vector<int> zeroPos;
+        for(int i=0; i<n; i++) {
+            if(0 == nums[i]) zeroPos.push_back(i);
+        }
+        
+        int k=0, i=0, t=0;
+        long max = LONG_MIN;
+        
+        while(k < zeroPos.size()) {
+            while(i < zeroPos[k]) {
+                if(0 == t) {
+                    valArr.push_back(nums[i]);
+                } else {
+                    valArr.push_back(valArr.back() * nums[i]);    
+                }
+                tmpVal.push_back(nums[i]);
+                
+                t++;
+                i++;
+            }
+            
+            int tmp = 0;
+            for(int t=0; t<valArr.size(); t++) {
+                for(int j=t; j<valArr.size(); j++) {
+                    tmp = valArr[j] / valArr[t] * tmpVal[t];
+                    max = max > tmp ? max : tmp;
+                }
+            }
+            
+            valArr.clear();
+            tmpVal.clear();
+            t=0;
+            i++;
+            k++;
+        }
+        
+        if(zeroPos.size() >= 1) {
+            i = zeroPos[k-1] + 1;
+        } else {
+            i = 0;
+        }
+        
+        while(i < n) {
+            if(0 == t) {
+                valArr.push_back(nums[i]);
+            } else {
+                valArr.push_back(valArr.back() * nums[i]);
+            }
+            tmpVal.push_back(nums[i]);
+            t++;
+            i++;
+        }
+        
+        int tmp = 0;
+        for(int t=0; t<valArr.size(); t++) {
+            for(int j=t; j<valArr.size(); j++) {
+                tmp = valArr[j] / valArr[t] * tmpVal[t];
+                max = max > tmp ? max : tmp;
+            }
+        }
+
+        return max > 0 ? max : 0;
+    }
+};
