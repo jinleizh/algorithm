@@ -1,0 +1,31 @@
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#define min(a,b) (((a) > (b)) ? (b) : (a))
+class Solution {
+public:
+/**
+ * 思路: 以i结尾的乘积最大值=max(nums[i], 以i-1结尾的最大值*nums[i], 以i-1结尾的最小值*nums[i])
+ * 
+ * 
+ */ 
+    int maxProduct(vector<int>& nums) {
+        int n=nums.size();
+        if(1==n) return nums[0];
+        
+        int curMax = nums[0];
+        int curMin = nums[0];
+        int max = curMax;
+        int min = curMin;
+        
+        for(int i=1; i<n; i++) {
+            int l = max(max(curMax*nums[i], curMin*nums[i]), nums[i]);
+            int r = min(min(curMax*nums[i], curMin*nums[i]), nums[i]);
+            curMax = l;
+            curMin = r;
+            
+            if(curMax > max) max = curMax;
+            if(curMin < min) min = curMin;
+        }
+        
+        return max;
+    }
+};
