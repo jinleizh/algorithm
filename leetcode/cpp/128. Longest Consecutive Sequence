@@ -1,0 +1,36 @@
+class Solution {
+public:
+/**
+ * 利用map的有序性, 并计数, 利用o(n)的空间复杂度, 换取o(n)的时间复杂度
+ * 
+ */ 
+    int longestConsecutive(vector<int>& nums) {
+        if(0 == nums.size()) return 0;
+        
+        map<int, int> vm;
+        for(int i=0; i<nums.size(); i++) {
+            vm[nums[i]]++;
+        }
+        
+        int maxLen = 0;
+        int tmpLen = 1;
+        map<int, int>::iterator mit = vm.begin();
+        int last = mit->first;
+        mit++;
+        
+        while(mit != vm.end()) {
+            if(mit->first == last + 1) {
+                last = mit->first;
+                tmpLen += 1;
+            } else {
+                if(tmpLen > maxLen) maxLen = tmpLen;
+                tmpLen = 1;
+                last = mit->first;
+            }
+            
+            mit++;
+        }
+        
+        return maxLen > tmpLen ? maxLen : tmpLen;
+    }
+};
