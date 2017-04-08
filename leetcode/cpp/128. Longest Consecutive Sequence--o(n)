@@ -1,0 +1,33 @@
+class Solution {
+public:
+/**
+ * 思路: 参考高票答案
+ * 寻找n-1 n+1, 更新头和尾 n - left, n + right
+ */ 
+    int longestConsecutive(vector<int>& nums) {
+        unordered_map<int, int> um;
+        int x = 0;
+        int max = 0;
+        for(int i=0; i<nums.size(); i++) {
+            x = nums[i];
+            //若x已存在, 则不需要考虑
+            if(um.find(x) != um.end()) continue;
+            
+            int left = 0;
+            if(um.find(x-1) != um.end()) left = um[x-1];
+            
+            int right = 0;
+            if(um.find(x+1) != um.end()) right = um[x+1];
+            
+            int sum = left + right + 1;
+            um[x] = sum;
+            
+            if(sum > max) max = sum;
+            
+            um[x - left] = sum;
+            um[x + right] = sum;
+        }
+        
+        return max;
+    }
+};
