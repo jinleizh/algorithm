@@ -1,0 +1,147 @@
+class Solution {
+public:
+/**
+ * 思路: dfs 回溯  
+ * 
+ * 0.预处理列表中的每一个串
+ * 1.找出目的串的所有子串s
+ * 2.找出有子串s的原始串t, 需排除当前串
+ * 3.判断原始串t和起始串是否可达, 如果可达, 则保存到结果集合.
+ * 4.对t中的每个串ts,重复进行第1步
+ * 
+ */ 
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        //初始化
+        vector<vector<string>> gv;
+        vector<string> tv;
+        map<string, map<string, int>> strMap;
+        for(int i=0; i<wordList.size(); i++) {
+            if(wordList[i] == beginWord) continue;
+            vector<string> tmp = getSubStr(wordList[i]);
+            for(int j=0; j<tmp.size(); j++) {
+                strMap[wordList[i]][tmp[j]] = 0;
+            }
+        }
+        
+        map<string, int> bwMap;
+        vector<string> bwVec = getSubStr(beginWord);
+        for(int i=0; i<bwVec.size(); i++) {
+            bwMap[bwVec[i]] = 0;
+        }
+        
+        //初始化标记
+        map<string, int> flagMap;
+        for(int i=0; i<wordList.size(); i++) {
+            flagMap[wordList[i]] = 0;
+        }
+        
+        tv.push_back(beginWord);
+        dfs(beginWord, endWord, gv, tv, strMap, flagMap, bwMap);
+        
+        int min = INT_MAX;
+        for(int i = 0; i<gv.size(); i++) {
+            if(min > gv[i].size()) {
+                min = gv[i].size();
+            }
+        }
+        
+        vector<vector<string>> result;
+        /*
+        for(int i = 0; i<gv.size(); i++) {
+            if(gv[i].size() == min) {
+                reverse(gv[i].begin()+1, gv[i].end());
+                result.push_back(gv[i]);
+            }
+        }*/
+        
+        return result;
+    }
+    
+    /**
+     * 得到子串数组
+     */ 
+    vector<string> getSubStr(string s) {
+        vector<string> store;
+        string tmp;
+        for(int i=0; i<s.length(); i++) {
+            if(i == 0) {
+                tmp = s.substr(1);
+            } else {
+                tmp = s.substr(0, i) + s.substr(i+1);
+            }
+            
+            store.push_back(tmp);
+        }
+        
+        return store;
+    }
+    
+    void dfs(string bw, string s, 
+            vector<vector<string>>& gv, 
+            vector<string>& tv, 
+            map<string, map<string, int>>& strMap, 
+            map<string, int>& flagMap,
+            map<string, int>& bwMap) {
+        if(0 == flagMap[s]) {
+            //入栈
+            tv.push_back(s);
+            flagMap[s] = 1;
+            
+            map<string, int>::iterator mit = strMap[s].begin();
+            while(mit != strMap[s].end()) {
+                string target = mit->first;
+                
+                //vector<string> tmp(1,target + "=" + s);
+                //gv.push_back(tmp);
+                
+                //target是否已经判断过
+                if(1 == strMap[s][target]) {
+                    //vector<string> tmp(1, "pass " + target);
+                    //gv.push_back(tmp);
+                    mit++;
+                    continue;
+                }
+                
+                //若源串可达目标子串
+                if(bwMap.find(target) != bwMap.end() && isOneDiff(bw, s)) {
+                    vector<string> tmp(tv);
+                    gv.push_back(tmp);
+                    break;
+                }
+                
+                //若源串不可达目标子串，但当前串包括目标子串, 则继续查找
+                map<string, map<string, int>>::iterator strMit = strMap.begin();
+                while(strMit != strMap.end()) {
+                    if(0 == flagMap[strMit->first]) {
+                        map<string, int> curStrMap = strMit->second;
+                        if(curStrMap.find(target) != curStrMap.end()) {
+                            (strMit->second)[target] = 1;
+                            //vector<string> gtmp(1, strMit->first + " " + target);
+                            //gv.push_back(gtmp);
+                            dfs(bw, strMit->first, gv, tv, strMap, flagMap, bwMap);
+                            (strMit->second)[target] = 0;
+                        }
+                    }
+                    
+                    strMit++;
+                }
+                
+                mit++;
+            }
+            
+            //出栈
+            flagMap[s] = 0;
+            tv.pop_back();
+        }
+    }
+    
+    bool isOneDiff(string s, string d) {
+        int count = 0;
+        for(int i=0; i<s.size(); i++) {
+            if(s[i] != d[i]) count++;
+            if(count > 1) return false;
+        }
+        
+        return true;
+    }
+};
