@@ -1,0 +1,43 @@
+class Solution {
+public:
+    /**
+     * 思路: bfs - 广度优先搜索(逐层遍历)
+     */ 
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        queue<string> q;//保存字符串
+        q.push(beginWord);
+        int count = 1;
+        unordered_set<string> ust(wordList.begin(), wordList.end());
+        int level = 1;
+        
+        //集合不为空
+        while(!q.empty()) {
+            string curWord = q.front();
+            q.pop();
+            ust.erase(beginWord);//删除选中串, 以后不会再走该串
+            count--;
+            
+            for(int i=0; i<curWord.length(); i++) {
+                string tmp = curWord;
+                for(int j='a'; j<='z'; j++) {
+                    if(tmp[i] == j) continue;
+                    tmp[i] = j;
+                    
+                    //查找wordList中是否有
+                    if(ust.find(tmp) != ust.end()) {
+                        //比较是否和endWord相同, 可以终止查询了
+                        if(tmp == endWord) return level + 1;
+                        q.push(tmp);
+                    }
+                }
+            }
+            
+            if(count == 0) {
+                level++;
+                count = q.size();
+            }
+        }
+        
+        return 0;
+    }
+};
