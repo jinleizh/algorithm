@@ -69,3 +69,23 @@ public:
         return ret;
     }
 };
+
+class Solution {
+public:
+    string reverseWords(string s) {
+        string ret = "", t = "";
+        for(int i=0; i<s.size(); i++) {
+            if(s[i] == ' ') {
+                reverse(t.begin(), t.end());
+                ret += t + " ";
+                t = "";
+            } else {
+                t += s[i];
+            }
+        }
+        
+        reverse(t.begin(), t.end());
+        ret += t;
+        return ret;
+    }
+};
