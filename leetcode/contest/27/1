@@ -31,3 +31,41 @@ public:
         return s;
     }
 };
+
+/*
+* 思路: 利用翻转rbegin, rend
+*/
+class Solution {
+public:
+    string reverseWords(string s) {
+        stringstream ss(s);
+        string ret = "";
+        while(ss >> s) {
+            if(ret.size()) ret += " ";
+            ret += string(s.rbegin(), s.rend());
+        }
+        
+        return ret;
+    }
+};
+
+/**
+* 思路： 常规的string操作
+*/
+class Solution {
+public:
+    string reverseWords(string s) {
+        string ret = "", s1="";
+        s += " ";
+        while(s.size()) {
+            int pos = s.find_first_of(' ');
+            s1 = s.substr(0, pos);
+            reverse(s1.begin(), s1.end());
+            if(ret.size()) ret += " ";
+            ret += s1;
+            s.erase(0, pos + 1);
+        }
+        
+        return ret;
+    }
+};
