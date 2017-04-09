@@ -1,0 +1,52 @@
+class Solution {
+public:
+    int leastBricks(vector<vector<int>>& wall) {
+        if(0 == wall.size()) return 0;
+        
+        set<int> split;
+        
+        for(int i=0; i<wall.size(); i++) {
+            for(int j=0; j<wall[i].size(); j++) {
+                if(j > 0) {
+                    wall[i][j] += wall[i][j-1];
+                }
+                
+                split.insert(wall[i][j]);
+            }
+        }
+        
+        int least = wall.size();
+        int n = wall[0].size();
+        if(0 == n) return least;
+        
+        int max = wall[0][n-1];
+        set<int>::iterator sit = split.begin();
+        while(sit != split.end() && *sit != max) {
+            int ans = 0;
+            for(int j=0; j<wall.size(); j++) {
+                if(isThrough(*sit, wall[j])) {
+                    ans += 1;
+                }
+            }
+            
+            if(ans < least) {
+                least = ans;
+            }
+            
+            sit++;
+        }
+        
+        return least;
+    }
+    
+    bool isThrough(int k, vector<int>& row) {
+        int n = row.size();
+        int i = 0;
+        while(i < n && k > row[i]) {
+            i++;
+        }
+    
+        if(k == row[i]) return false;
+        return true;
+    }
+};
