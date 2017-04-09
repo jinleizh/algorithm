@@ -59,3 +59,25 @@ public:
         return result > INT_MAX ? -1 : result;
     }
 };
+
+
+class Solution {
+public:
+/**
+ * 思路: 数无非两种情况, 结尾升序, 结尾降序
+ * 如果是找下一个较大的, 则
+ * 如果已知的数, 末尾两位为升序, 则替换即可
+ * 如果已知的数, 末尾两位为降序, 则需要找到第一个不降序的点
+ * 因为降序是最大数的特性, 找到第一个升序点, 进行升序排列
+ * 
+ */ 
+    int nextGreaterElement(int n) {
+        string s = to_string(n);
+        if(!next_permutation(s.begin(), s.end())) return -1;
+        long ans;
+        sscanf(s.c_str(), "%ld", &ans);
+        
+        if(ans >= INT_MAX) return -1;
+        return ans;
+    }
+};
