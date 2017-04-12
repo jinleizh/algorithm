@@ -1,0 +1,64 @@
+class Solution {
+public:
+/**
+ * 思路: 计算出一次购买的最大收益, 计算出两次购买的最大收益
+ * 两次购买的最大收益, 即挑选一天k, 计算以k为划分, 取s[0,k] s[k,prices.size()-1]两者的最大值
+ * 
+ * 优化: 利用缓存计算结果, 削减重复计算, 但是还是TLE
+ * 
+ * TLE
+ */ 
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if(0 == n) return 0;
+        int profit = 0, tmp = 0;
+        
+        vector<vector<int>> mem;
+        mem.resize(n, vector<int>());
+        for(int i=0; i<n; i++) {
+            mem[i].resize(n, -1);
+        }
+        
+        //买两次(包含买一次)
+        int left = 0, right = 0;
+        for(int s=0; s<n; s++) {
+            for(int k=s; k<n; k++) {
+                if(-1 != mem[s][k]) {
+                    left = mem[s][k];
+                } else {
+                    left = buy(prices, 0, k);
+                }
+                
+                if(-1 != mem[k][n-1]) {
+                    right = mem[k][n-1];
+                } else {
+                    right = buy(prices, k, n-1);
+                }
+                
+                tmp = left + right; 
+                if(tmp > profit) profit = tmp;
+            }
+        }
+        
+        return profit;
+    }
+    
+    int buy(vector<int>&prices, int start, int end) {
+        if(start >= end) return 0;
+        
+        int profit = 0, tmp = 0;
+        int min = prices[start];
+        for(int i=start+1; i<=end; i++) {
+            if(prices[i] > min) {
+                tmp = prices[i] - min;
+                if(tmp > profit) {
+                    profit = tmp;
+                }
+            } else if(prices[i] < min) {
+                min = prices[i];
+            }
+        }
+        
+        return profit;
+    }
+};
