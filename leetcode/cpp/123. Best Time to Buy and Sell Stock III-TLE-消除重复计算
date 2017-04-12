@@ -27,12 +27,14 @@ public:
                     left = mem[s][k];
                 } else {
                     left = buy(prices, 0, k);
+                    mem[s][k] = left;
                 }
                 
                 if(-1 != mem[k][n-1]) {
                     right = mem[k][n-1];
                 } else {
                     right = buy(prices, k, n-1);
+                    mem[k][n-1] = right;
                 }
                 
                 tmp = left + right; 
