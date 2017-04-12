@@ -1,0 +1,46 @@
+class Solution {
+public:
+/**
+ * 思路: 计算出一次购买的最大收益, 计算出两次购买的最大收益
+ * 两次购买的最大收益, 即挑选一天k, 计算以k为划分, 取s[0,k] s[k,prices.size()-1]两者的最大值
+ * 
+ * TLE
+ */ 
+    int maxProfit(vector<int>& prices) {
+        if(0 == prices.size()) return 0;
+        int profit1 = 0, profit2 = 0, tmp = 0;
+        
+        //买一次
+        profit1 = buy(prices, 0, prices.size()-1);
+        
+        //买两次
+        for(int s=0; s<prices.size()-1; s++) {
+            for(int k=s+1; k<prices.size(); k++) {
+                tmp = buy(prices, 0, k) + buy(prices, k, prices.size()-1);
+                if(tmp > profit2) profit2 = tmp;
+            }
+        }
+        
+        return profit2;
+        return max(profit1, profit2);
+    }
+    
+    int buy(vector<int>&prices, int start, int end) {
+        int profit = 0, tmp = 0;
+        int min = prices[start];
+        
+        //买一次
+        for(int i=start+1; i<=end; i++) {
+            if(prices[i] > min) {
+                tmp = prices[i] - min;
+                if(tmp > profit) {
+                    profit = tmp;
+                }
+            } else if(prices[i] < min) {
+                min = prices[i];
+            }
+        }
+        
+        return profit;
+    }
+};
