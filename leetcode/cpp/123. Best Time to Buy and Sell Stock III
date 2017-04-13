@@ -1,0 +1,27 @@
+class Solution {
+public:
+/**
+ * 思路: 每个点我们可以做四个动作
+ * 第一次买
+ * 第一次卖
+ * 第二次买
+ * 第二次卖
+ * 如果当前点可以得到本次操作的最优价，则当前操作可以作为备选点
+ */ 
+    int maxProfit(vector<int>& prices) {
+        int firstBuy = INT_MIN, firstSell = 0;
+        int secBuy = INT_MIN, secSell = 0;
+        for(int i=0; i<prices.size(); i++) {
+            firstBuy = max(firstBuy, -prices[i]);
+            firstSell = max(firstSell, prices[i] + firstBuy);
+            secBuy = max(secBuy, firstSell - prices[i]);
+            secSell = max(secSell, secBuy + prices[i]);
+        }
+        
+        return secSell;
+    }
+        
+    int Max(int a, int b) {
+        return a > b ? a : b;
+    }
+};
