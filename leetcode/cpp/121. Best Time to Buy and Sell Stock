@@ -16,3 +16,30 @@ public:
         return profit;
     }
 };
+
+
+class Solution {
+public:
+/**
+ * 思路: 每次遇到一个更小的值时, profit的计算将和之前的min无关
+ * 
+ */ 
+    int maxProfit(vector<int>& prices) {
+        int min = INT_MAX; 
+        int max = 0;
+        for(int i=0; i<prices.size(); i++) {
+            min = Min(min, prices[i]);
+            max = Max(max, prices[i] - min);
+        }
+        
+        return max;
+    }
+    
+    int Min(int a, int b) {
+        return a > b ? b : a;
+    }
+    
+    int Max(int a, int b) {
+        return a > b ? a : b;
+    }
+};
