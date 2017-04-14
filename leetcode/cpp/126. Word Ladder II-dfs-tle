@@ -1,0 +1,87 @@
+class Solution {
+public:
+/**
+ * 思路: 
+ * dfs, 采用标记数组, 遍历所有节点, 输出所有可能
+ * 如果只是输出最短的长度, 则使用bfs更快.
+ * 
+ */ 
+    int minLen;
+    
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        vector<string> debug;
+        
+        //删除开始单词
+        vector<string>::iterator vit = wordList.begin();
+        while(vit != wordList.end()) {
+            if(*vit == beginWord) {
+                vit = wordList.erase(vit);
+            } else {
+                vit++;
+            }
+        }
+        
+        //标记数组
+        vector<int> flag(wordList.size(), 0);
+        
+        //存放结果的
+        vector<string> tv;
+        vector<vector<string>> gv;
+        
+        tv.push_back(beginWord);
+        minLen = INT_MAX;
+        dfs(beginWord, endWord, wordList, flag, tv, gv);
+    
+        vector<vector<string>> result;
+        for(int i=0; i<gv.size(); i++) {
+            if(gv[i].size() == minLen) {
+                result.push_back(gv[i]);
+            }
+        }
+        
+        debug.push_back(to_string(minLen));
+        //result.push_back(debug);
+        return result;
+    }
+    
+    void dfs(string beginWord, string endWord, vector<string>& wordList, vector<int>& flag, vector<string>& tv, vector<vector<string>>& gv) {
+        for(int i = 0; i<wordList.size(); i++) {
+            //如果是可跳转的节点, 则探索该节点
+            if(0 == flag[i] && canTransfer(beginWord, wordList[i])) {
+                //入栈
+                tv.push_back(wordList[i]);
+                
+                //为终点
+                if(wordList[i] == endWord) {
+                    vector<string> tmp(tv);
+                    gv.push_back(tv);
+                    
+                    if(minLen > tv.size()) {
+                        minLen = tv.size();
+                    }
+                    
+                    tv.pop_back();
+                    //满足条件可以返回了
+                    return;
+                } else {
+                    //不为终点,则继续
+                    flag[i] = 1;
+                    dfs(wordList[i], endWord, wordList, flag, tv, gv);
+                    flag[i] = 0;
+                }
+                
+                //出栈
+                tv.pop_back();
+            }
+        }
+    }
+    
+    bool canTransfer(string src, string dst) {
+        int count = 0;
+        for(int i=0; i<src.size(); i++) {
+            if(src[i] != dst[i]) count++;
+        }
+        
+        return count == 1;
+    }
+};
