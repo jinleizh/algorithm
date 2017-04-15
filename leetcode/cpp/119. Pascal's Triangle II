@@ -1,0 +1,33 @@
+class Solution {
+public:
+/**
+ * 思路: 因为要O(k)空间, 所以是从左到右依次更新的
+ * a[j] = a[j] + a[j-1]
+ * 这里我们利用了两个变量 left right, 保存上一层的两个值
+ * 初始时均为0, 每次移动时, sec = first, first=下一个值, 更新下一层是, first + sec 即可.
+ * 进入下一层循环后, 继续sec = first, first=下一个值.
+ * 
+ * 中心思想就是暂存被加数.
+ */ 
+    vector<int> getRow(int rowIndex) {
+        vector<int> result(1, 1);
+        int i = 1;
+        while(i <= rowIndex+1) {
+            int first = 0, sec = 0;
+            for(int j=0; j<i; j++) {
+                sec = first;
+                first = result[j];
+                if(0 == j) {
+                    //nothing
+                } else if(i-1 == j) {
+                    result.push_back(1);
+                } else {
+                    result[j] = first + sec;
+                }
+            }
+            i++;
+        }
+        
+        return result;
+    }
+};
