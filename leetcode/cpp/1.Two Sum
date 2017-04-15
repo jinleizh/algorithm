@@ -1,0 +1,35 @@
+class Solution {
+public:
+/**
+ * 思路: 利用map缓存结果
+ * 
+ */ 
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, vector<int>> um;
+        for(int i=0; i<nums.size(); i++) {
+            um[nums[i]].push_back(i);
+        }
+        
+        vector<int> result;
+        
+        for(int i=0; i<nums.size(); i++) {
+            int expected = target - nums[i];
+            int count = um[expected].size();
+            if(count > 0) {
+                if(expected == nums[i] && count >= 2) {
+                    result.push_back(i);
+                    result.push_back(um[expected][1]);
+                    break;
+                }
+                
+                if(expected != nums[i]) {
+                    result.push_back(i);
+                    result.push_back(um[expected][0]);
+                    break;
+                }
+            }
+        }
+        
+        return result;
+    }
+};
