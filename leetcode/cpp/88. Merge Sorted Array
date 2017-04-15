@@ -50,3 +50,33 @@ public:
         nums1.swap(tmp);
     }
 };
+
+class Solution {
+public:
+/**
+ * 思路: 原地更新
+ * 利用num1较大的空间, 从后往前更新
+ */ 
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        if(m > nums1.size()) m = nums1.size();
+        if(n > nums2.size()) n = nums2.size();
+        
+        int i = m - 1;
+        int j = n - 1;
+        int k = m + n - 1;
+        
+        while(i >=0 && j>=0) {
+            if(nums1[i] >= nums2[j]) {
+                nums1[k--] = nums1[i--];    
+            } else {
+                nums1[k--] = nums2[j--];
+            }
+        }
+        
+        if(i < 0 ) {
+            while(j >= 0) {
+                nums1[k--] = nums2[j--];
+            }
+        }
+    }
+};
