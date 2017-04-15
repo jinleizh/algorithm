@@ -1,0 +1,31 @@
+class Solution {
+public:
+/**
+ * 思路: 遇到符合条件的元素, 则跟最有一个不为val的元素交换
+ * 需要注意的是, 如果从左到右找到了val, 但是从右到左没找到不为val的, 则表示到了数组末尾, 则直接长度-1即可.
+ */ 
+    int removeElement(vector<int>& nums, int val) {
+        int length = nums.size();
+        for(int i=0; i<length; i++) {
+            if(nums[i] == val) {
+                //从后面开始找到第一个不为val的元素,进行交换
+                while(length-1 > i && nums[length-1] == val) {
+                    length--;
+                }
+                
+                //没找到, 则该元素为最后一个元素
+                if(length-1 == i) {
+                    return --length;
+                }
+                
+                //找到了,进行交换, 长度-1
+                int tmp = nums[i];
+                nums[i] = nums[length-1];
+                nums[length-1] = tmp;
+                length--;
+            }
+        }
+        
+        return length;
+    }
+};
