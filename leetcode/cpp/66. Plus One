@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<int> plusOne(vector<int>& digits) { 
+        int flag = 1;
+        
+        //先取反
+        reverse(digits.begin(), digits.end());
+        
+        int i = 0;
+        while(i < digits.size()) {
+            int val = digits[i] + flag;
+        
+            if(val >= 10) {
+                flag = 1;
+                digits[i] = val - 10;
+            } else {
+                flag = 0;
+                digits[i] = val;
+            }
+            
+            i++;
+        }
+        
+        if(1 == flag) digits.push_back(1);
+        
+        //再取反
+        reverse(digits.begin(), digits.end());
+        
+        return digits;
+    }
+};
