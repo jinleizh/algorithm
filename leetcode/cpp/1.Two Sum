@@ -33,3 +33,29 @@ public:
         return result;
     }
 };
+
+
+class Solution {
+public:
+/**
+ * 思路: 顺序添加的思路, 从后面往前找, 而不是传统的从前往后查找
+ */ 
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> um;
+        int findVal = 0;
+        vector<int> result;
+        for(int i=0; i<nums.size(); i++) {
+            findVal = target - nums[i];
+            if(um.find(findVal) != um.end()) {
+                result.push_back(um[findVal]);
+                result.push_back(i);
+                return result;
+            }
+            
+            //插入元素
+            um[nums[i]] = i;
+        }
+        
+        return result;
+    }
+};
