@@ -1,0 +1,52 @@
+class Solution {
+public:
+/**
+ * 思路: 两个数组A B, 每次从A数组中, 找到第一个大于B数组元素的值
+ * 数组B的元素插入到数组A, A元素右移一位
+ * A右移一位
+ * B右移一位
+ *
+ * 若A已经处理完, B添加到后面, 输出
+ * 若B已处理完, 则输出
+ */ 
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int i=0, j=0;
+        int ln = nums1.size();
+        int rn = nums2.size();
+        if(m > ln) m = ln;
+        if(n > rn) n = rn;
+        
+        vector<int> tmp;
+        
+        while(i < m && j < n) {
+            if(nums1[i] <= nums2[j]) {
+                tmp.push_back(nums1[i]);
+                i++;
+            } else {
+                tmp.push_back(nums2[j]);
+                j++;
+            }
+        }
+        
+        if(i == m) {
+            while(j < n) {
+                tmp.push_back(nums2[j]);
+                j++;
+            }
+        }
+        
+        if(j == n) {
+            while(i < m) {
+                tmp.push_back(nums1[i]);
+                i++;
+            }
+        }
+        
+        /*
+        for(int k=m; k<ln; k++) {
+            tmp.push_back(nums1[k]);
+        }*/
+        
+        nums1.swap(tmp);
+    }
+};
