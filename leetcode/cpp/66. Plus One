@@ -29,3 +29,48 @@ public:
         return digits;
     }
 };
+
+class Solution {
+public:
+/**
+ * 思路: 
+ * 遇到9需要继续, 当前位置0, 下一轮时下一位要进1
+ * 遇到非9加1, 返回
+ */ 
+    vector<int> plusOne(vector<int>& digits) {
+        for(int i=digits.size()-1; i>=0; i--) {
+            if(digits[i] == 9) {
+                digits[i] = 0;
+            } else {
+                digits[i] += 1;
+                return digits;
+            }
+        }
+        
+        digits[0] = 1;
+        digits.push_back(0);
+        return digits;
+    }
+};
+class Solution {
+public:
+/**
+ * 思路: 
+ * 遇到9需要继续, 当前位置0, 下一轮时下一位要进1
+ * 遇到非9加1, 返回
+ */ 
+    vector<int> plusOne(vector<int>& digits) {
+        for(int i=digits.size()-1; i>=0; i--) {
+            if(digits[i] == 9) {
+                digits[i] = 0;
+            } else {
+                digits[i] += 1;
+                return digits;
+            }
+        }
+        
+        digits[0] = 1;
+        digits.push_back(0);
+        return digits;
+    }
+};
