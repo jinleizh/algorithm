@@ -1,0 +1,38 @@
+class Solution {
+public:
+/**
+ * 思路: 根据题意, 如果有两个A, 或者有连续的LLL, 则不符合发奖条件
+ * 判断LLL有三种写法
+ * 1. 利用string的find('LLL')
+ * 2. 利用i i-1 i-2 判断
+ * 3. 计数 count++ --> count=0
+ */ 
+    bool checkRecord(string s) {
+        int countA = 0;
+        for(int i=0; i<s.size(); i++) {
+            if(s[i] == 'A') countA++;
+            if(countA > 1) return false;
+        }
+        
+        //if(s.find("LLL") != string::npos) return false;
+        
+        /*
+        int countL = 0;
+        for(int i=0; i<s.size(); i++) {
+            if(s[i] == 'L') {
+                countL++;
+                if(countL > 2) return false;
+            } else {
+                countL = 0;
+            }
+            
+        }
+        */
+        
+        for(int i=2; i<s.length(); i++) {
+            if(s[i-1] == 'L' && s[i-2] == 'L' && s[i] == 'L') return false;
+        }
+        
+        return true;
+    }
+};
