@@ -1,0 +1,75 @@
+class Solution {
+public:
+/**
+ * 思路：
+ * 1.数学方法, 因为除数都是整数, 所以最大值是第一个数 / (后面的结果), 所以直接输出即可
+ * 2.使用bfs, 递归的求解
+ */ 
+    string optimalDivision(vector<int>& nums) {
+        int n = nums.size();
+        if(1 == n) return to_string(nums[0]);
+        if(2 == n) return to_string(nums[0]) + "/" + to_string(nums[1]);
+        
+        //如果超过3, 涉及到加括号
+        string ans = to_string(nums[0]) + "/";
+        string tmp = to_string(nums[1]);
+        for(int i=2; i<nums.size(); i++) {
+            tmp += "/";
+            tmp += to_string(nums[i]);
+        }
+        
+        tmp = "(" + tmp + ")";
+        return ans + tmp;
+    }
+};
+
+
+
+class Solution {
+public:
+/**
+ * 思路:
+ * 1.数学方法, 因为除数都是整数, 所以最大值是第一个数 / (后面的结果), 所以直接输出即可
+ * 2.使用bfs, 递归的求解, 此题的难点在于, 如何合并和保存字符串, 这里参考了高rank选手的答案
+ */
+    typedef pair<double, string> pds;
+    string optimalDivision(vector<int>& nums) {
+        return dfs(nums, 0, nums.size()-1, true).second;
+    }
+  
+    pds dfs(vector<int>& nums, int start, int end, bool findMax) {
+        if(start == end) return pds(nums[start], to_string(nums[start]));
+        
+        //每一层都要如此, 因为需要的是当前层的最大值或最小值，而不是全局的最大值
+        //在当前层最大值或最小值的基础上, 再计算出上一层的最大值
+        pds result;
+        if(findMax) { 
+            result.first = -1; 
+        } else {
+            result.first = 1e40;
+        }
+        
+        for(int i=start; i<=end-1; i++) {
+            pds left = dfs(nums, start, i, findMax);
+            pds right = dfs(nums, i+1, end, !findMax);
+            pds tmp = merge(left, right);
+            if(findMax) {
+                if(result < tmp) {
+                    result = tmp;
+                }
+            } else {
+                if(result > tmp) {
+                    result = tmp;
+                }
+            }
+        }
+        
+        return result;
+    }
+    
+    pds merge(pds x, pds y)
+    {
+        if(y.second.find("/") != string::npos) y.second = string("(") + y.second + string(")");
+        return pds(x.first / y.first, x.second + "/" + y.second);
+    }
+};
