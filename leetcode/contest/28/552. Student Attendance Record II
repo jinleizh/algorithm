@@ -1,0 +1,55 @@
+class Solution {
+public:
+/**
+ * 思路: 这个题的想法很妙, 参考了高票答案
+ * 1. 将问题分解为包含A和不包含A两种
+ * 1-1 包含A, 因为只能包含一个, 故可以转换为不包含A的串之间的乘积
+ * 1-2 不包含A, 可见第一种情况依赖第二种的答案, 
+ * 根据长度, dp[i] 表示长度为i的串, 是不包含A的串的个数.
+ * dp[i] = dp[i-1] + dp[i-2] + dp[i-3]
+ * 因为 dp[i] 可包含几种情况
+ * dp[i-1] 后接P和L
+ * 1) 接P 有dp[i-1]种可能
+ * 2) 接L 则包括 PL 和 LL 两种可能
+ * 接PL 有dp[i-2]种, 
+ * 接LL 分 PLL 和 LLL 两种, 
+ * PLL 有dp[i-3]种可能
+ * LLL 是非法的.
+ * 故得出以上递推式
+ * 
+ * 根据1-2的递推式,
+ * 计算1-1 包含A的可能性
+ * 因为A可以出现在1-n个位置, 假设A出现在K, 则 dp[K-1长度的串] * dp[n-k长度的串] 即为符合条件的个数
+ * 
+ * 这里累加所有A的可能即可,
+ * 
+ * 最终答案为 dp[n] + countA
+ */
+    int checkRecord(int n) {
+        int num = 1e9 + 7;
+        
+        //不包含A的可能有
+        //dp[i]表示长度为I的串中, 符合条件, 且不包含A的串个数
+        //p : dp[i-1]
+        //L : PL dp[i-2]
+        //  : LL : PLL dp[i-3]
+        vector<long> dp(n+1, 0);
+        dp[0] = 1;
+        dp[1] = 2;
+        dp[2] = 4;
+        
+        for(int i=3; i<=n; i++) {
+            dp[i] = (dp[i-1] + dp[i-2] + dp[i-3]) % num;
+        }
+        
+        //包含A的可能有
+        //长度为N的串, 有N个位置包含A, 更新dp[i]
+        int countA = 0;
+        for(int i=1; i<=n; i++) {
+            countA += (dp[i-1] * dp[n-i]) % num;
+            countA %= num;
+        }
+        
+        return (dp[n] + countA) % num;
+    }
+};
