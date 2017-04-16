@@ -1,0 +1,50 @@
+class Solution {
+public:
+/**
+ * 思路: 
+ * 1.选出分割串, 其余串需保持为最大状态
+ * 2.分割串需考虑正向和逆向
+ * 3.取分割串中每一个位置,进行分割, substr, 拼接成一个可能值, 和最优解进行比较.
+ * 4.返回最优解
+ */ 
+    string reverse(string s) {
+        return string(s.rbegin(), s.rend());
+    }
+    
+    string getBigStr(string s) {
+        string rs = reverse(s);
+        if(rs > s) return rs;
+        return s;
+    }
+    
+    string splitLoopedString(vector<string>& strs) {
+        string ans = "";
+        string tmp = "";
+        int n = strs.size();
+        for(int i=0; i<n; i++) {
+            string remainStr = "";
+            //以strs[i]做为分割串
+            for(int j=i+1; j<n; j++) {
+                remainStr += getBigStr(strs[j]);
+            }
+            
+            for(int j=0; j<i; j++) {
+                remainStr += getBigStr(strs[j]);
+            }
+            
+            int sLen = strs[i].length();
+            for(int k=0; k<sLen; k++) {
+                tmp = strs[i].substr(k, sLen-k) + remainStr + strs[i].substr(0,k);
+                if(tmp > ans) ans = tmp;
+            }
+            
+            string rs = reverse(strs[i]);
+            for(int k=0; k<sLen; k++) {
+                tmp = rs.substr(k, sLen-k) + remainStr + rs.substr(0, k);
+                if(tmp > ans) ans = tmp;
+            }
+        }
+        
+        return ans;
+    }
+};
