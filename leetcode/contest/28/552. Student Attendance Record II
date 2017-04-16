@@ -53,3 +53,44 @@ public:
         return (dp[n] + countA) % num;
     }
 };
+
+
+class Solution {
+public:
+/**
+ * 思路: 状态方程
+ * 1.分为有A和没A两类
+ * a : no A, end with one L
+ * b : no A, end with LL
+ * c : no A, end with p
+ * d : A, end with one L
+ * e : A, end with LL
+ * f : A, end with P
+ * g : A, end with A
+ */
+    int m = 1e9 + 7;
+    int checkRecord(int n) {
+        if(n == 1) return 3;
+        //a, b, c, d, e, f, g = c, a, (a + b + c) % mod, (f+g)%mod, d, (d+e+f+g)%mod, (a+b+c)%mod;
+        long a = 1, b = 1, c = 2, d = 1, e = 0, f = 1, g = 2;
+        long na, nb, nc, nd, ne, nf, ng;
+        for(int i=3; i<=n; i++) {
+            na = c % m;
+            nb = a % m;
+            nc = (a + b+ c) % m;
+            nd = (f + g) % m;
+            ne = d % m;
+            nf = (d + e + f+ g) % m;
+            ng = (a+b+c) % m;
+            a = na;
+            b = nb;
+            c = nc;
+            d = nd;
+            e = ne;
+            f = nf;
+            g = ng;
+        }
+        
+        return (a+b+c+d+e+f+g) % m;
+    }
+};
