@@ -1,0 +1,22 @@
+class Solution {
+public:
+/**
+ * 思路1: 递归
+ * 父子关系的定义 i=0 左2*i+1 右2*i+2
+ * 
+ * 2.自底向上递增, 赋给上一层最小值. 状态传递.
+ * 
+ */ 
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int i = triangle.size() - 1;
+        while(i >= 1) {
+            for(int k=0; k<=i-1; k++) {
+                triangle[i-1][k] += min(triangle[i][k], triangle[i][k+1]);    
+            }
+            
+            i--;
+        }
+        
+        return triangle[0][0];
+    }
+};
