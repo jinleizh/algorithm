@@ -1,0 +1,51 @@
+class Solution {
+public:
+/**
+ * 思路: 分两步
+ * 1.把2换到最后
+ * 2.从2的前一个位置开始,把1换到0后面
+ */ 
+    void sortColors(vector<int>& nums) {
+        int n = nums.size();
+        
+        //换2到最后
+        int i=0, j=n-1;
+        while(i < j) {
+            while(i<j && nums[i]!=2) i++;
+            if(i == j) {
+                break;
+            }
+            
+            while(i<j && nums[j]==2) j--;
+            if(i == j) {
+                break;
+            }
+            
+            //交换
+            int tmp = nums[j];
+            nums[j] = nums[i];
+            nums[i] = tmp;
+            i++;
+            j--;
+        } 
+        
+        //j之前都是0和1
+        i = 0;
+        if(nums[j] == 2) j--;
+        
+        while(i < j) {
+            while(i<j && nums[i]==0) i++;
+            if(i == j) break;
+            
+            while(i<j && nums[j]==1) j--;
+            if(i == j) break;
+            
+            //交换
+            int tmp = nums[j];
+            nums[j] = nums[i];
+            nums[i] = tmp;
+            i++;
+            j--;
+        }
+    } 
+};
