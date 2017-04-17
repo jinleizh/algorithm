@@ -1,7 +1,7 @@
 class Solution {
 public:
 /**
- * 思路: 分两步
+ * 思路: 分两步  考虑好边界:1)交换后, j<i, 或者i==j, 如果j == i, 则j需要减1
  * 1.把2换到最后
  * 2.从2的前一个位置开始,把1换到0后面
  */ 
@@ -48,4 +48,25 @@ public:
             j--;
         }
     } 
+};
+
+
+class Solution {
+public:
+/**
+ * 思路: 2往后移动 0往前移动
+ */ 
+    void sortColors(vector<int>& nums) {
+        int first = 0, second = nums.size() - 1;
+        for(int i=0; i<nums.size(); i++) {
+            while(nums[i] == 2 && i < second) exchange(nums[i], nums[second--]);
+            while(nums[i] == 0 && i > first) exchange(nums[i], nums[first++]);
+        }
+    } 
+    
+    void exchange(int& a, int& b) {
+        int tmp = a;
+        a = b;
+        b = tmp;
+    }
 };
