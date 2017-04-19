@@ -1,0 +1,40 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        int n = preorder.size();
+        if(n == 0) return NULL;
+
+        TreeNode *root = new TreeNode(preorder[0]);
+        if(n == 1) return root;
+        
+        //找到根节点
+        vector<int> lpre, rpre, lin, rin;
+        int rootVal = preorder[0];
+        int i;
+        for(i=0; i<inorder.size(); i++) {
+            if(inorder[i] == rootVal) break;
+        }
+        
+        //inorder 左,右
+        lin = vector<int>(inorder.begin(), inorder.begin()+i);
+        rin = vector<int>(inorder.begin()+i+1, inorder.end());
+        
+        //preorder 左 右
+        lpre = vector<int>(preorder.begin()+1, preorder.begin()+i+1);
+        rpre = vector<int>(preorder.begin()+i+1, preorder.end());
+        
+        root->left = buildTree(lpre, lin);
+        root->right = buildTree(rpre, rin);
+        
+        return root;
+    }
+};
