@@ -1,0 +1,21 @@
+class Solution {
+public:
+/**
+ * 思路: 位操作
+ * 时间复杂度o(2^n * n)
+ * 
+ * 共2^n种可能, 采用n位数表示
+ */ 
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = nums.size();
+        int k = pow(2, n);
+        vector<vector<int>> vv(k, vector<int>());
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<k; j++) {
+                if(j>>i & 1) vv[j].push_back(nums[i]);
+            }
+        }
+        
+        return vv;
+    }
+};
