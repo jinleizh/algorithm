@@ -1,0 +1,40 @@
+class Solution {
+public:
+/**
+ * 思路: 记录上一次添加的元素下标, 如果当前i和上一个元素相同, 则只针对新增元素扩展集合元素
+ */ 
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        vector<vector<int>> result;
+        int n = nums.size();
+        if(0 == n) return result;
+        
+        result.push_back(vector<int>());
+        sort(nums.begin(), nums.end());
+        result.push_back(vector<int>(1, nums[0]));
+        if(nums.size() == 1) return result;
+        
+        //上一次的扩展元素下表
+        int m = 1;
+        for(int i=1; i<n; i++) {
+            int vn = result.size();
+            if(nums[i] == nums[i-1]) {
+                //从添加的元素开始扩展
+                for(int k=m; k < vn; k++) {
+                    vector<int> tmp(result[k]);
+                    tmp.push_back(nums[i]);
+                    result.push_back(tmp);
+                }
+            } else {
+                for(int k=0; k < vn; k++) {
+                    vector<int> tmp(result[k]);
+                    tmp.push_back(nums[i]);
+                    result.push_back(tmp); 
+                }
+            }
+            
+            m = vn;
+        }
+        
+        return result;
+    }
+};
