@@ -1,0 +1,80 @@
+class Solution {
+/*
+* 空间复杂度o(4*col) 
+* 时间复杂度o(row*col)
+* 思路: 四个方向, 向上 可以直接在当前项累加,  向左， 因为在更新后的值上进行求解， 所以从左到右更新， 后项+前项更新后的值也符合题意
+* 左上和右上比较特殊, 因为它们要利用原始值, 进行更新, 所以 计算右上时, 左边先更新, 从左到右计算, 以保留右值.
+* 计算左上时，要从右到左更新, 以保留左值.
+*/
+public:
+    int longestLine(vector<vector<int>>& M) {
+        int row = M.size();
+        if(0 == row) return 0;
+        
+        int col = M[0].size();
+        if(0 == col) return 0;
+        
+        int max = 0;
+        int arr[col][4] = {0};
+        
+        for(int i=0; i<row; i++) {
+            for(int j=0; j<col; j++) {
+                if(1 == M[i][j]) {
+                    //left
+                    if(isValid(i, j-1, M)) {
+                        arr[j][0] = arr[j-1][0] + 1;
+                    } else{
+                        arr[j][0] = 1;
+                    }
+                    max = getMax(max, arr[j][0]);
+                    
+                    //top
+                    if(isValid(i-1, j, M)) {
+                        arr[j][1] += 1;
+                    } else {
+                        arr[j][1] = 1;
+                    }
+                    max = getMax(max, arr[j][1]);
+                    
+                    //right-corner
+                    if(isValid(i-1, j+1, M)) {
+                        arr[j][2] = arr[j+1][2] + 1;
+                    } else {
+                        arr[j][2] = 1;
+                    }
+                    max = getMax(max, arr[j][2]);
+                } else {
+                    for(int k=0; k<3; k++) {
+                        arr[j][k] = 0;
+                    }
+                }
+            }
+            
+            for(int j=col-1; j>=0; j--) {
+                if(1 == M[i][j]) {
+                    //left-corner
+                    if(isValid(i-1, j-1, M)) {
+                        arr[j][3] = arr[j-1][3] + 1;
+                    } else {
+                        arr[j][3] = 1;
+                    }
+                    max = getMax(max, arr[j][3]);
+                } else {
+                    arr[j][3] = 0;
+                }
+            }
+        }
+        
+        return max;
+    }
+    
+    bool isValid(int x, int y, vector<vector<int>>& M) {
+        int row = M.size();
+        int col = M[0].size();
+        return x>=0 && x<row && y>=0 && y<col && M[x][y];
+    }
+    
+    int getMax(int a, int b) {
+        return a > b ? a : b;
+    }
+};
