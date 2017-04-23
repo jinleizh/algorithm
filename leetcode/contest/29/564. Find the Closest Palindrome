@@ -1,0 +1,89 @@
+class Solution {
+public:
+/**
+ * 思路: 回文串的特点 XAX--X0X, X1X, X2X, ... X9X, (X+1)0(X+1), ...,(X+N)0(x+N), (X+N)1(X+N),...(X+N)9(X+N)
+ *       所以, 可知某个串的前一个串和后一个串, 可以通过递增和递减获得, 则此题只需要求出上一个串和下一个串, 比较distance的
+ *       大小, 取小者即可.
+ */ 
+    string nearestPalindromic(string n) {
+        long curVal = stol(n);
+        long big = stol(getBig(curVal+1));//这里很关键
+        long small = stol(getSmall(curVal-1));//这里很关键
+        
+        if(big - curVal >= curVal - small) {
+            return to_string(small);
+        } else {
+            return to_string(big);    
+        }
+    }
+    
+    string getBig(long val) {
+        string s = to_string(val);
+        int m = s.length();
+        string t(s);
+        
+        //回文串
+        for(int i=0; i<m/2; i++) {
+            t[m-1-i] = t[i];    
+        }
+        
+        for(int i=0; i<m; i++) {
+            //从中间元素开始递增, 不可能出现9999...999, 如果出现则不满足s[i]>t[i]
+            if(s[i] > t[i]) {
+                for(int k=(m-1)/2; k>=0; k--) {
+                    if(++t[k] > '9') {
+                        t[k] = '0';
+                    } else {
+                        break;
+                    }
+                }
+                
+                for(int i=0; i<m/2; i++) {
+                    t[m-1-i] = t[i];
+                }
+                
+                return t;
+            } else if(s[i] < t[i]) {
+                return t;
+            }
+        }
+        
+        return s;
+    }
+    
+    string getSmall(long val) {
+        string s = to_string(val);
+        string t(s);
+        int m = s.length();
+        for(int i=0; i<m/2; i++) {
+            t[m-1-i] = t[i];
+        }
+        
+        for(int i=0; i<m; i++) {
+            if(s[i] < t[i]) {
+                for(int k=(m-1)/2; k>=0; k--) {
+                    if(--t[k] < '0') {
+                        t[k] = '9';
+                    } else {
+                        break;
+                    }
+                }
+                
+                if(t[0] == '0') {
+                    if(1 == m) return 0;
+                    string tt(m-1, '9');
+                    return tt;
+                } else {
+                    for(int i=0; i<m/2; i++) {
+                        t[m-1-i] = t[i];       
+                    }
+                    return t;
+                }
+            } else if(s[i] > t[i]) {
+                return t;
+            }
+        }
+        
+        return s;
+    }
+};
