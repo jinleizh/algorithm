@@ -1,4 +1,7 @@
 class Solution {
+/**
+* 思路：空间复杂度o(n), 使用map记录索引, 查找返回结果
+*/
 public:
     int search(vector<int>& nums, int target) {
         map<int, int> dm;
@@ -8,5 +11,45 @@ public:
         
         if(dm.find(target) != dm.end()) return dm[target];
         return -1;
+    }
+};
+
+class Solution {
+public:
+/**
+ * 思路: 找到分割点, 左右子串进行二分查找
+ * 优点: 空间复杂度o(1), 时间复杂度o(n)
+ * 
+ */ 
+    int search(vector<int>& nums, int target) {
+        int piv = find(nums);
+        if(piv == -1) {
+            return bs(nums, 0, nums.size()-1, target);
+        } 
+
+        if(nums[0] == target) return 0;
+        if(nums[piv] == target) return piv;
+        
+        if(nums[0] < target) {
+            return bs(nums, 1, piv-1, target);
+        }
+        
+        return bs(nums, piv+1, nums.size()-1, target);
+    }
+    
+    int find(vector<int>& nums) {
+        for(int i=1; i<nums.size(); i++) {
+            if(nums[i] < nums[i-1]) return i;
+        }
+        
+        return -1;
+    }
+    
+    int bs(vector<int>& nums, int s, int e, int target) {
+        if(s > e) return -1;
+        int mid = (s+e)/2;
+        if(nums[mid] == target) return mid;
+        if(nums[mid] < target) return bs(nums, mid+1, e, target);
+        return bs(nums, s, mid-1, target);
     }
 };
