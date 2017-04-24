@@ -1,0 +1,45 @@
+class Solution {
+public:
+/**
+ * 思路:穷举, 定义以i为最小元素的解
+ * 1 2 3 4 5 6
+ * 1 2 3 x x x
+ * 1 2 x 4 x x
+ * 1 2 x x 5 x
+ * 1 2 x x x 6
+ * 
+ * 穷举法需要考虑, 存在 正数 负数 0, 所以即使提前达到或超过了target, 也要到第四步算完之后才有结论.
+ */ 
+    vector<vector<int>> result;
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        vector<int> vals;
+        dfs(nums, vals, 1, 0, target, 0);
+        
+        //result去重复
+        set<vector<int>> s(result.begin(), result.end());
+        vector<vector<int>> vs(s.begin(), s.end());
+        return vs;
+    }
+    
+    void dfs(vector<int>& nums, vector<int>& vals, int level, int sum, int target, int start) {
+        if(level == 4) {
+            for(int i=start; i<nums.size(); i++) {
+                if(sum + nums[i] < target) continue;
+                if(sum + nums[i] > target) break;
+                
+                vector<int> tmp(vals);
+                tmp.push_back(nums[i]);
+                result.push_back(tmp);
+            }
+        
+            return;
+        }
+        
+        for(int i=start; i<nums.size(); i++) {
+            vals.push_back(nums[i]);
+            dfs(nums, vals, level+1, sum + nums[i], target, i+1);
+            vals.pop_back();
+        }
+    }
+};
