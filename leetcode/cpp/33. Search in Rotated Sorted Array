@@ -1,0 +1,12 @@
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        map<int, int> dm;
+        for(int i=0; i<nums.size(); i++) {
+            dm[nums[i]] = i;
+        }
+        
+        if(dm.find(target) != dm.end()) return dm[target];
+        return -1;
+    }
+};
