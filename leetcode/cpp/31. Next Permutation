@@ -1,0 +1,53 @@
+class Solution {
+public:
+/**
+ * 思路: 求升序, 所以要从右往左寻找第一个降序点,
+ * 然后将降序点和右侧第一个比它大的元素交换,
+ * 再升序右侧所有元素
+ */ 
+    void nextPermutation(vector<int>& nums) {
+        int n = nums.size();
+        if(n < 2) return;
+        
+        //找到降序点
+        int i = 0;
+        for(i=n-1; i>=1; i--) {
+            if(nums[i] > nums[i-1]) break;
+        }
+        
+        //没找到, 则从小到大排列
+        if(0 == i) {
+            //表示完全是降序, 原地交换
+            int l = 0, r = n - 1;
+            while(l < r) {
+                swap(nums, l, r);
+                l++;
+                r--;
+            }
+        } else {
+            //找到
+            int pos = i - 1;
+            //找第一个大于pos的数
+            for(int k=n-1; k>pos; k--) {
+                if(nums[k] > nums[pos]) {
+                    swap(nums, k, pos);
+                    int l = pos + 1;
+                    int r = n - 1;
+                    while(l < r) {
+                        swap(nums, l, r);
+                        l++;
+                        r--;
+                    }
+                    
+                    break;
+                }
+            }
+        }
+    }
+    
+    void swap(vector<int>& nums , int l, int r) {
+        int tmp = nums[l];
+        nums[l] = nums[r];
+        nums[r] = tmp;
+    }
+};
