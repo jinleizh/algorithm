@@ -43,3 +43,65 @@ public:
         }
     }
 };
+
+class Solution {
+public:
+/**
+ * 思路:穷举法复杂度为N* (N-1) * (n-2) * (N-3)
+ * 优化:采用2sum, 3sum，求4sum
+ * 所有的解决方案可以分为 以nums[0]开头, 以nums[1]开头, ...以nums[N-3]开头
+ * 依次考虑各种解决方案. 时间复杂度为o(n^3)
+ */
+    vector<vector<int>> result;
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        //o(NlogN)
+        sort(nums.begin(), nums.end());
+        
+        vector<int> val;
+        
+        //4sum
+        int n = nums.size();
+        for(int i=0; i<n-3; i++) {
+            val.push_back(nums[i]);
+            //以nums[i]开头的threeSum解决方案
+            threeSum(nums, i+1, target-nums[i], val);
+            val.pop_back();
+        }
+        
+        set<vector<int>> s(result.begin(), result.end());
+        vector<vector<int>> rr(s.begin(), s.end());
+        return rr;
+        
+        //return result;
+    }
+    
+    void threeSum(vector<int>& nums, int start, int target, vector<int>& val) {
+        for(int i=start; i<nums.size()-2; i++) {
+            val.push_back(nums[i]);
+            //以nums[i]开头的twoSum解决方案
+            twoSum(nums, i+1, target-nums[i], val);
+            val.pop_back();
+        }
+    }
+    
+    void twoSum(vector<int>& nums, int start, int target, vector<int>& val) {
+        int i = start;
+        int j = nums.size() - 1;
+        while(i < j) {
+            int tmpSum = nums[i] + nums[j];
+            if(tmpSum > target) {
+                j--;
+            } else if(tmpSum < target) {
+                i++;
+            } else {
+                vector<int> tmp(val);
+                tmp.push_back(nums[i]);
+                tmp.push_back(nums[j]);
+                result.push_back(tmp);
+                i++;
+                j--;
+            }
+        }
+    }
+};
+
