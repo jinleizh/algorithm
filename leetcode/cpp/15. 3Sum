@@ -1,0 +1,41 @@
+class Solution {
+public:
+/**
+ * 思路: 在2sum基础上做, 注意细节, 起始和终止下标
+ * 优化: 前后相同则直接跳过, 因为元素已经排序, 前面求到解, 后面求到的解必重复
+ * 
+ */ 
+    vector<vector<int>> result;
+    vector<int> val;
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        for(int i = 0; i < n-2; i++) {
+            if(i > 0 && nums[i] == nums[i-1]) continue;
+            val.push_back(nums[i]);
+            twoSum(nums, val, i+1, n-1, -nums[i]);
+            val.pop_back();
+        }
+        
+        set<vector<int>> s(result.begin(), result.end());
+        vector<vector<int>> rr(s.begin(), s.end());
+        return rr;
+    }
+    
+    void twoSum(vector<int>& nums, vector<int>& val, int start, int end, int target) {
+        int tmpSum = 0;
+        while(start < end) {
+            tmpSum = nums[start] + nums[end];
+            if(tmpSum > target) { end--; }
+            else if(tmpSum < target) { start++; } 
+            else {
+                vector<int> tmp(val);
+                tmp.push_back(nums[start]);
+                tmp.push_back(nums[end]);
+                result.push_back(tmp);
+                while(start < end && nums[start] == nums[++start]);
+                while(start < end && nums[end] == nums[--end]);
+            }
+        }
+    }
+};
