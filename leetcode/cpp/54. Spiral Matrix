@@ -1,0 +1,53 @@
+class Solution {
+public:
+/**
+ * 思路: 遍历矩形, 直到变成1条边
+ */ 
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> result;
+        int row = matrix.size();
+        if(0 == row) return result;
+        
+        int col = matrix[0].size();
+        if(0 == col) return result;
+        
+        int l = 0, r = col-1, t = 0, b = row-1;
+        while(r>l && b>t) {
+            //左
+            for(int k=l; k<=r; k++) {
+                result.push_back(matrix[t][k]);
+            }
+            //下
+            for(int k=t+1; k<=b-1; k++) {
+                result.push_back(matrix[k][r]);
+            }
+            
+            //右
+            for(int k=r; k>=l; k--) {
+                result.push_back(matrix[b][k]);
+            }
+            
+            //上
+            for(int k=b-1; k>=t+1; k--) {
+                result.push_back(matrix[k][l]);
+            }
+            
+            l++;
+            r--;
+            t++;
+            b--;
+        }
+        
+        if(r == l) {
+            for(int k=t; k<=b; k++) {
+                result.push_back(matrix[k][l]);
+            }
+        } else if(t == b) {
+            for(int k=l; k<=r; k++) {
+                result.push_back(matrix[t][k]);
+            }
+        }
+        
+        return result;
+    }
+};
