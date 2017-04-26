@@ -1,0 +1,32 @@
+class Solution {
+public:
+/**
+ * 思路:枚举dfs, 注意检查细节, 如dfs起始下标
+ * 
+ */ 
+    vector<vector<int>> result;
+    vector<int> val;
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        dfs(candidates, val, 0, 0, target);
+        set<vector<int>> s(result.begin(), result.end());
+        vector<vector<int>> ss(s.begin(), s.end());
+        return ss;
+    }
+    
+    void dfs(vector<int>& cand, vector<int>& val, int sum, int start, int target) {
+        for(int i = start; i < cand.size(); i++) {
+            if(sum + cand[i] > target) break;
+            if(sum + cand[i] == target) {
+                vector<int> tmp(val);
+                tmp.push_back(cand[i]);
+                result.push_back(tmp);
+                break;
+            } else {
+                val.push_back(cand[i]);
+                dfs(cand, val, sum + cand[i], i + 1, target);
+                val.pop_back();
+            }
+        }
+    }
+};
