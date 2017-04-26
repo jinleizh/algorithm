@@ -1,0 +1,49 @@
+class Solution {
+public:
+/**
+ * 思路:本题要求原地, 需要交换列, 细节一定要考虑清楚
+ *      非原地的方案比较简单, 直接遍历数组, 原来的row变成col. 按顺序插入到新数组中即可.
+ * 
+ */ 
+    void rotate(vector<vector<int>>& matrix) {
+        int r = matrix.size() - 1;
+        int b = r;
+        int l = 0;
+        int t = l;
+        while(l < r) {
+            rotateMatrix(matrix, l, r, t, b);
+            l++;
+            t++;
+            r--;
+            b--;
+        }
+    }
+    
+    void rotateMatrix(vector<vector<int>>& matrix, int l, int r, int t, int b) {
+        //顺时针的第1条边和第4条边换, 不包括边的最后一个元素
+        for(int i=l,j=b; i<=r-1&&j>=l+1; i++, j--) {
+            swap(matrix[t][i], matrix[j][l]);
+        }
+        
+        //3 和 4 换
+        for(int i=r; i>=l+1; i--) {
+            swap(matrix[b][i], matrix[i][l]);
+        }
+        
+        //2 和 3 换
+        for(int i=t,j=r; i<=b-1&&j>=l+1; i++, j--) {
+            swap(matrix[i][r], matrix[b][j]);
+        }
+    }
+    
+    void swap(int& a, int& b) {
+        a = a + b;
+        b = a - b;
+        a = a - b;
+        /*
+        int tmp = a;
+        a = b;
+        b = tmp;
+        */
+    }
+};
