@@ -1,0 +1,20 @@
+class Solution {
+public:
+/**
+ * 思路:d[i]表示从0到i是否可达, 假设存在点p可达i, 则问题转换为d[p]是否可达
+ */ 
+    bool canJump(vector<int>& nums) {
+        int i = 0, max = 0;
+        int n = nums.size() - 1;
+        if(0 >= n) return true;
+        
+        int reach = 0;
+        while(i < n && i <= reach) {
+            reach = (reach > i + nums[i]) ? reach : i + nums[i];
+            if(reach >= n) return true;
+            i++;
+        }
+        
+        return false;
+    }
+};
