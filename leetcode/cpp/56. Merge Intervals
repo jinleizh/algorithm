@@ -1,0 +1,50 @@
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+ bool compare(Interval l, Interval r) {
+    return l.start < r.start;
+}
+
+class Solution {
+/**
+ * 思路: 关键是初始时要排序, 然后判断l.end 和 r.start
+ * 如果l.end < r.start, 表示两者没有交集, 可以先输出l
+ * 如果l.end >= r.start, 表示两者有交集, 因为l.start<=r.start
+ * 所以, 合并后的集合, start节点一定是l.start, 结束的节点一定是l.end和r.end的最大值.
+ * 
+ */ 
+public:
+    vector<Interval> merge(vector<Interval>& intervals) {
+        //排序
+        vector<Interval> result;
+        sort(intervals.begin(), intervals.end(), compare);
+        int n = intervals.size();
+        
+        Interval l, r;
+        for(int i=1; i<intervals.size(); i++) {
+            l = intervals[i-1];
+            r = intervals[i];
+            
+            if(l.end < r.start) {
+                result.push_back(l);
+            } else {
+                r.start = l.start;
+                r.end = (r.end > l.end) ? r.end : l.end;
+                intervals[i] = r;
+            }
+        }
+        
+        if(n > 0) {
+            result.push_back(intervals[n-1]);
+            //result.push_back(r);
+        }
+        
+        return result;
+    }
+};
