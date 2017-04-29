@@ -1,0 +1,48 @@
+class Solution {
+public:
+    bool search(vector<int>& nums, int target) {
+        map<int, int> m;
+        for(int i=0; i<nums.size(); i++) {
+            m[nums[i]] = i;
+        }
+        
+        if(m.find(target) != m.end()) return true;
+        return false;
+    }
+};
+
+class Solution {
+public:
+//原地查找--二分
+    bool search(vector<int>& nums, int target) {
+        //找到分割点, i > i + 1
+        int n = nums.size();
+        if(0 == n) return false;
+        
+        int i;
+        for(i=0; i<n-1; i++) {
+            if(nums[i] > nums[i+1]) break;
+        }
+        
+        if(target == nums[0]) {
+            return true;
+        } 
+        
+        if(target > nums[0]) {
+            return search(nums, 0, i, target);
+        }
+        
+        return search(nums, i+1, n-1, target);
+    }
+    
+    bool search(vector<int>& nums, int s, int e, int target) {
+        if(s > e) return false;
+        int mid = (s + e) / 2;
+        if(nums[mid] == target) return true;
+        if(nums[mid] < target) {
+            return search(nums, mid+1, e, target);
+        } else {
+            return search(nums, s, mid-1, target);
+        }
+    } 
+};
