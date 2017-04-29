@@ -1,0 +1,51 @@
+class Solution {
+public:
+    typedef pair<int, int> pii;
+    
+    int threeSumClosest(vector<int>& nums, int target) {
+        vector<int> val;
+        int n = nums.size();
+        assert(n >= 3);
+        
+        int result = 0;
+        int minDiff = INT_MAX;
+        sort(nums.begin(), nums.end());
+        for(int i=0; i<nums.size()-2; i++) {
+            val.push_back(nums[i]);
+            pii tmpResult = twoSum(nums, i+1, target - nums[i], val);
+            if(tmpResult.second < minDiff) {
+                result = tmpResult.first + nums[i];
+                minDiff = tmpResult.second;
+                if(minDiff == 0) break;
+            }
+            val.pop_back();
+        }
+        
+        val.clear();
+        return result;
+    }
+    
+    pii twoSum(vector<int>& nums, int start, int target, vector<int>& val) {
+        int end = nums.size() - 1;
+        int minDiff = INT_MAX;
+        int tmpSum = 0;
+        int tmpResult = 0;
+        while(start < end) {
+            tmpSum = nums[start] + nums[end];
+            if(abs(tmpSum - target) < minDiff) {
+                minDiff = abs(tmpSum - target);
+                tmpResult = tmpSum;
+                if(minDiff == 0) return pii(tmpResult, minDiff);
+            }
+            
+            if(tmpSum > target) {
+                end--;
+            } else {
+                start++;   
+            }
+        }
+        
+        return pii(tmpResult, minDiff);
+    }
+    
+};
