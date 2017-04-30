@@ -1,0 +1,42 @@
+class Solution {
+public:
+    vector<vector<int>> matrixReshape(vector<vector<int>>& nums, int r, int c) {
+        long tn = r * c;
+        int sr = nums.size();
+        if(sr == 0) return nums;
+        
+        int sc = nums[0].size();
+        if(sc == 0) return nums;
+        
+        long sn = sr * sc;
+        if(tn != sn) return nums;
+        
+        vector<int> tmp;
+        tmp.resize(tn, 0);
+        
+        vector<vector<int>> result;
+        vector<int> a(c, 0);
+        result.resize(r, a);
+        
+        int count = 0;
+        for(int i=0; i<sr; i++) {
+            for(int j=0; j<sc; j++) {
+                tmp[count++] = nums[i][j]; 
+            }
+        }
+        
+        int m = -1 , n = -1;
+        for(int i=0; i<count; i++) {
+            if(i % c == 0) {
+                m++;
+                n=0;
+            } else {
+                n++;
+            }
+            
+            result[m][n] = tmp[i];
+        }
+        
+        return result;
+    }
+};
