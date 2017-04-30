@@ -1,40 +1,23 @@
 class Solution {
 public:
     vector<vector<int>> matrixReshape(vector<vector<int>>& nums, int r, int c) {
-        long tn = r * c;
-        int sr = nums.size();
-        if(sr == 0) return nums;
+        int nr = nums.size();
+        if(0 == nr) return nums; 
         
-        int sc = nums[0].size();
-        if(sc == 0) return nums;
+        int nc = nums[0].size();
+        if(0 == nc) return nums;
         
-        long sn = sr * sc;
-        if(tn != sn) return nums;
-        
-        vector<int> tmp;
-        tmp.resize(tn, 0);
+        if(nr * nc != r*c) return nums;
         
         vector<vector<int>> result;
-        vector<int> a(c, 0);
-        result.resize(r, a);
+        result.resize(r, vector<int>(c, 0));
         
-        int count = 0;
-        for(int i=0; i<sr; i++) {
-            for(int j=0; j<sc; j++) {
-                tmp[count++] = nums[i][j]; 
+        int pos = 0;
+        for(int i=0; i<nr; i++) {
+            for(int j=0; j<nc; j++) {
+                pos = i*nc + j;
+                result[pos/c][pos%c] = nums[i][j];
             }
-        }
-        
-        int m = -1 , n = -1;
-        for(int i=0; i<count; i++) {
-            if(i % c == 0) {
-                m++;
-                n=0;
-            } else {
-                n++;
-            }
-            
-            result[m][n] = tmp[i];
         }
         
         return result;
