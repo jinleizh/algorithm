@@ -1,0 +1,30 @@
+class Solution {
+public:
+/**
+ * 思路: 滑动窗口
+ * 通过计数的方式, 比较两个vector, 比使用字符串查找效率高, 因为不涉及到排序.
+ */ 
+    bool checkInclusion(string s1, string s2) {
+        if(s1.size() > s2.size()) return false;
+        
+        vector<int> c1(26, 0);
+        for(int i=0; i<s1.size(); i++) {
+            c1[s1[i] - 'a']++;
+        }
+        
+        vector<int> c2(26, 0);
+        for(int i=0; i<s1.size(); i++) {
+            c2[s2[i]  - 'a']++;
+        }
+        
+        if(c1 == c2) return true;
+        
+        for(int k=1; k<=s2.size()-s1.size(); k++) {
+            c2[s2[k-1] - 'a']--;
+            c2[s2[k + s1.size() - 1] - 'a']++;
+            if(c1 == c2) return true;
+        }
+        
+        return false;
+    }
+};
