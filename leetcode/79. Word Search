@@ -1,0 +1,56 @@
+class Solution {
+public:
+/**
+ * 思路: 使用dfs
+ */ 
+    bool exist(vector<vector<char>>& board, string word) {
+        if(word.empty()) return false;
+        
+        int r = board.size();
+        if(0 == r) return false;
+        
+        int c = board[0].size();
+        if(0 == c) return false;
+        
+        bool ret = false;
+        vector<vector<int>> path(r, vector<int>(c, 0));
+        
+        for(int i=0; i<r; i++) {
+            for(int j=0; j<c; j++) {
+                if(word[0] == board[i][j]) {
+                    path[i][j]=1;
+                    ret = search(i, j, r, c, word, 1, path, board);
+                    if(ret) return ret;
+                    path[i][j]=0;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    bool search(int i, int j, int r, int c, string word, int idx, vector<vector<int>>& path, vector<vector<char>>& board) {
+        if(idx == word.length()) return true;
+        
+        int dx[4] = {0, 0, -1, 1};
+        int dy[4] = {-1, 1, 0, 0};
+        
+        char ch = word[idx];
+        bool ret = false;
+        int m, n;
+        for(int k=0; k<4; k++) {
+            m = i + dx[k];
+            n = j + dy[k];
+            if(m>=0 && m<r && n>=0 && n<c && path[m][n] == 0) {
+                if(ch == board[m][n]) {
+                    path[m][n] = 1;
+                    ret = search(m, n, r, c, word, idx+1, path, board);
+                    if(ret) return ret;
+                    path[m][n] = 0;
+                }
+            }
+        }
+        
+        return false;
+    }
+};
