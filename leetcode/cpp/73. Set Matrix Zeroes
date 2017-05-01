@@ -1,0 +1,130 @@
+class Solution {
+public:
+/**
+ * 思路: 避免重复赋0,需要维护一个数组, 记录置0的状态
+ * 
+ */ 
+    void setZeroes(vector<vector<int>>& matrix) {
+        int r = matrix.size();
+        if(0 == r) return;
+        
+        int c = matrix[0].size();
+        if(0 == c) return;
+        
+        vector<int> colStat(c, 0);
+        vector<int> rowStat(r, 0);
+        
+        for(int i=0; i<r; i++) {
+            for(int j=0; j<c; j++) {
+                if(matrix[i][j] == 0) {
+                    colStat[j] = 1;
+                    rowStat[i] = 1;
+                }
+            }
+        }
+        
+        for(int k=0; k<c; k++) {
+            if(colStat[k] == 1) {
+                for(int i=0; i<r; i++) {
+                    matrix[i][k] = 0;
+                }
+            }
+        }
+        
+        for(int k=0; k<r; k++) {
+            if(rowStat[k] == 1) {
+                for(int i=0; i<c; i++) {
+                    matrix[k][i] = 0;
+                }
+            }
+        }
+    }
+};
+
+class Solution {
+public:
+/**
+ * 思路: 使用o(1)的解法, 通常是利用已有的数组, 来保存中间信息,
+ * 这里我们使用首行和首列来保存, 各行和各列是否需要置为0
+ */ 
+    void setZeroes(vector<vector<int>>& matrix) {
+        int r = matrix.size();
+        if(0 == r) return;
+        
+        int c = matrix[0].size();
+        if(0 == c) return;
+        
+        int cols = 1;
+        for(int i=0; i<r; i++) {
+            if(matrix[i][0] == 0) cols = 0;
+            for(int j=1; j<c; j++) {
+                if(0 == matrix[i][j]) {
+                    matrix[i][0] = matrix[0][j] = 0;
+                }
+            }
+        }
+        
+        for(int i=1; i<r; i++) {
+            if(matrix[i][0] == 0) {
+                for(int j=0; j<c; j++) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        
+        for(int i=1; i<c; i++) {
+            if(matrix[0][i] == 0) {
+                for(int j=0; j<r; j++) {
+                    matrix[j][i] = 0;
+                }
+            }
+        }
+        
+        if(0 == matrix[0][0]) {
+            for(int i=0; i<c; i++) {
+                matrix[0][i] = 0;
+            }
+        }
+        
+        if(0 == cols) {
+            for(int i=0; i<r; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+};
+
+class Solution {
+public:
+/**
+ * 思路: 使用o(1)的解法, 通常是利用已有的数组, 来保存中间信息,
+ * 这里我们使用首行和首列来保存, 各行和各列是否需要置为0
+ */ 
+    void setZeroes(vector<vector<int>>& matrix) {
+        int r = matrix.size();
+        if(0 == r) return;
+        
+        int c = matrix[0].size();
+        if(0 == c) return;
+        
+        int cols = 1;
+        for(int i=0; i<r; i++) {
+            if(matrix[i][0] == 0) cols = 0;
+            for(int j=1; j<c; j++) {
+                if(0 == matrix[i][j]) {
+                    matrix[i][0] = matrix[0][j] = 0;
+                }
+            }
+        }
+        
+        for(int i=r-1; i>=0; i--) {
+            for(int j=1; j<c; j++) {
+                if(matrix[0][j] == 0 || matrix[i][0] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+            
+            if(cols == 0) matrix[i][0] = 0;
+        }
+    }
+};
