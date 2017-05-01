@@ -1,0 +1,52 @@
+class Solution {
+public:
+    vector<vector<int>> result;
+    vector<vector<int>> generateMatrix(int n) {
+        result.resize(n, vector<int>(n, 0));
+        
+        int l=0, t=0, r=n-1, b=n-1;
+        int cnt = 0;
+        while(n > 0) {
+            if(1 == n) {
+                result[l][l] = ++cnt;
+                break;
+            }
+            
+            //上
+            int idx = l;
+            while(idx < r) {
+                result[t][idx] = ++cnt;       
+                idx++;
+            }
+            
+            //右
+            idx = t;
+            while(idx < b) {
+                result[idx][r] = ++cnt;
+                idx++;
+            }
+            
+            //下
+            idx = r;
+            while(idx > l) {
+                result[b][idx] = ++cnt;
+                idx--;
+            }
+            
+            //左
+            idx = b; 
+            while(idx > t) {
+                result[idx][l] = ++cnt;
+                idx--;
+            }
+            
+            n -= 2;
+            l++;
+            r--;
+            t++;
+            b--;
+        }
+        
+        return result;
+    }
+};
