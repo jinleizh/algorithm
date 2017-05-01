@@ -1,0 +1,52 @@
+class Solution {
+public:
+/**
+ * 思路: 题目中给出了day[N][K] - 表示第N个城市在第K周的假日天数. 
+ * 已知我们从第一个城市出发, 之后根据f, 选择下一个城市
+ * 这里城市之间的关联, 是根据f来确定的. 可以使用dfs, 依次尝试不同的城市
+ * dfs(week+1, j, max + d[N][week])  但是dfs是穷举的方法, 在此题, 其复杂度为o(N^K)
+ * 
+ * 我们这里考虑使用bfs, 在上一层基础上, 计算下一层的最优解, 空间复杂度o(n^2) 时间复杂度o(n^3)
+ * 建立二维数组, 表示第K周在J城市的当前最多节日.
+ * 则，我们所求的是, 第K周, 考虑在N个城市时, 节假日最多的那个值.
+ * 
+ * d[i][j] = max(d[i-1][k] + days[j][i]) ((k == j) || (k = 1..N && f[k][j] = 1))
+ * 
+ * 这里考虑到取值范围, 初始化值为-1000, 表示不可达, 因为一周7天, 范围是100周以内.
+ * 
+ */ 
+    int maxVacationDays(vector<vector<int>>& flights, vector<vector<int>>& days) {
+        int c = days.size();
+        int w = days[0].size();
+        vector<vector<int>> result(w, vector<int>(c, -1000));
+        
+        //第一周
+        for(int j=0; j<c; j++) {
+            if(j == 0 || flights[0][j] == 1) {
+                result[0][j] = days[j][0]; 
+            }
+        }
+        
+        //随后其它周
+        for(int i=1; i<w; i++) {
+            for(int j=0; j<c; j++) {
+                for(int k=0; k<c; k++) {
+                    if(k == j || flights[k][j] == 1) {
+                        result[i][j] = getMax(result[i][j], result[i-1][k] + days[j][i]);
+                    }
+                }
+            }
+        }
+        
+        int max = 0;
+        for(int i=0; i<c; i++) {
+            max = getMax(max, result[w-1][i]);
+        }
+        
+        return max;
+    }
+    
+    int getMax(int a, int b) {
+        return a > b ? a : b;
+    }
+};
