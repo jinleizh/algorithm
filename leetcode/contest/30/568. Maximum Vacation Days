@@ -37,7 +37,7 @@ public:
                 }
             }
         }
-        
+ 
         int max = 0;
         for(int i=0; i<c; i++) {
             max = getMax(max, result[w-1][i]);
@@ -48,5 +48,43 @@ public:
     
     int getMax(int a, int b) {
         return a > b ? a : b;
+    }
+};
+
+
+class Solution {
+public:
+/**
+ * 思路: dfs 时间复杂度(N阶乘) -- TLE
+ * 还是按照第一周选某个城市为出发点,因为周是有序的, 有序意味着存在递推关系的可能
+ */ 
+    int max;
+    int maxVacationDays(vector<vector<int>>& flights, vector<vector<int>>& days) {
+        max = INT_MIN;
+        int c = days.size();
+        if(0 == c) return 0;
+        
+        int w = days[0].size();
+        if(0 == w) return 0;
+        
+        dfs(flights, days, 0, 0, 0, c, w);
+        return max;
+    }
+    
+    int getMax(int a, int b) {
+        return a > b ? a : b;
+    }
+    
+    void dfs(vector<vector<int>>& flights, vector<vector<int>>& days, int week, int city, int curMax, int c, int w) {
+        if(week == w) {
+            max = getMax(max, curMax);
+            return;
+        }
+        
+        for(int i=0; i<c; i++) {
+            if(city == i || flights[city][i] == 1) {
+                dfs(flights, days, week+1, i, curMax + days[i][week], c, w);
+            }       
+        }
     }
 };
