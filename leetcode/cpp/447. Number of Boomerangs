@@ -1,0 +1,72 @@
+class Solution {
+public:
+/**
+ * 思路:计算好两两之间的距离, 保存下来.
+ */ 
+    int numberOfBoomerangs(vector<pair<int, int>>& points) {
+        int n = points.size();
+        vector<vector<int>> result(n, vector<int>(n, -1));
+        
+        int count = 0;
+        for(int i=0; i<n; i++) {
+            for(int j=i+1; j<n; j++) {
+                result[j][i] = result[i][j] = distance(points[i], points[j]);
+            }
+            
+            for(int m=0; m<n; m++) {
+                for(int p=m+1; p<n; p++) {
+                    if(result[i][m] == result[i][p]) count++;
+                }
+            }
+        }
+        
+        return 2*count;
+    }
+    
+    int distance(pair<int, int> a, pair<int, int> b) {
+        return pow(a.first - b.first, 2) +  pow(a.second - b.second, 2);
+    }
+};
+
+
+class Solution {
+public:
+/**
+ * 思路: 计算好两两之间的距离, 保存下来, 时间复杂度o(n^3) 空间o(n^2)
+ * 优化: 利用map, 在计算两点之间距离的同时, 计算出相同的个数, 空间复杂度降为o(n), 时间复杂度降为o(n^2)
+ * 
+ * 技巧: 这里使用map计数时, m[L] = 1, 发现一个长度等于1的值时, m[L] = 2, 
+ * 此时count计数要 +m[L] 而不是1, 因为map表示的是两两之间的关系, 新增一个点, 
+ * 0 1 => 0 1
+ * 0 1 2 => 0 1 | 0 2 | 1 2
+ * 0 1 2 3 => 0 1 | 0 2 | 1 2 | 0 3| 1 3 | 2 3
+ * 
+ * 优化二: 时间复杂度o(n^2) 空间复杂度o(n) 更好理解的数学方法 求相等的排列个数是Am2 = M * M-1
+ */ 
+    int numberOfBoomerangs(vector<pair<int, int>>& points) {
+        int n = points.size();
+        int nums = 0;
+        for(int i=0; i<n; i++) {
+            unordered_map<int, int> count;
+            for(int j=0; j<n; j++) {
+                int dis = distance(points[i], points[j]);
+                //nums += count[result[i][j]]++;
+                count[dis]++;
+            }
+            
+            unordered_map<int, int>::iterator uit = count.begin();
+            while(uit != count.end()) {
+                int n = uit->second;
+                nums += n * (n-1);
+                uit++;
+            }
+        }
+        
+        return nums;
+        //return 2*nums;
+    }
+    
+    int distance(pair<int, int> a, pair<int, int> b) {
+        return pow(a.first - b.first, 2) +  pow(a.second - b.second, 2);
+    }
+};
