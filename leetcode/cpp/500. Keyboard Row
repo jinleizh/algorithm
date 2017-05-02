@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<string> findWords(vector<string>& words) {
+        vector<string> result;
+        int a[26] = {2,3,3,2,1,2,2,2,1,2,2,2,3,3,1,1,1,1,2,1,1,3,1,3,1,3};
+        
+        for(int i=0; i<words.size(); i++) {
+            bool find = true;
+            for(int j=1; j<words[i].size(); j++) {
+                if(a[tolower(words[i][j]) - 'a'] != a[tolower(words[i][j-1]) - 'a']) {
+                    find = false;
+                    break;
+                }
+            }
+            
+            if(find) {
+                result.push_back(words[i]);
+            }
+        }
+        
+        return result;
+    }
+};
