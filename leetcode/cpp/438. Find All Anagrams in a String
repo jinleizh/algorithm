@@ -1,0 +1,32 @@
+class Solution {
+public:
+/**
+ * 思路: 滑动窗口
+ */ 
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> result;
+        int lp = p.size();
+        int ls = s.size();
+        
+        map<char,int> pm;
+        map<char,int> sm;
+        for(int i=0; i<26; i++) {
+            sm['a'+i] = pm['a'+i] = 0;
+        }
+        
+        for(int i=0; i<lp; i++) {
+            pm[p[i]]++;
+            sm[s[i]]++;
+        }
+        
+        if(pm == sm) result.push_back(0); 
+        
+        for(int i=1; i<=ls-lp; i++) {
+            sm[s[i-1]]--;
+            sm[s[i-1+lp]]++;
+            if(pm == sm) result.push_back(i);
+        }
+        
+        return result;
+    }
+};
