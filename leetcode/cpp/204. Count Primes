@@ -1,0 +1,50 @@
+class Solution {
+public:
+    int countPrimes(int n) {
+        int count = 0;
+        for(int i=1; i<n; i++) {
+            if(isPrime(i)) count++;
+        }
+        
+        return count;
+    }
+    
+    bool isPrime(int a) {
+        if(a == 1) return false;
+        
+        for(int i=2; i*i<=a; i++) {
+            if(a % i == 0 ) return false;
+        }
+        
+        return true;
+    }
+};
+
+class Solution {
+public:
+/**
+ * 埃拉托色尼算法 o(n)
+ * 思路: 
+ * 1. 从2开始, 遇到第一个没删除的数i, 把i的倍数的数全部删除
+ * 2. 继续, 找到下一个没删除的数j, 把j的倍数的数全部删除
+ * 3. 一直找到sqrt(n)即可.
+ */ 
+    int countPrimes(int n) {
+        vector<int> flag(n, 1);
+        
+        int count = 0;
+        for(int i=2; i*i<n; i++) {
+            if(flag[i]) {
+                for(int j=i*i; j<n; j+=i) {
+                    flag[j] = 0;
+                }
+            }
+        }
+        
+        for(int i=2; i<n; i++) {
+            if(flag[i]) count++;
+        }
+        
+        return count;
+    }
+};
