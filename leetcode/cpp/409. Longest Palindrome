@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int longestPalindrome(string s) {
+        map<char, int> m;
+        int count = 0;
+        for(int i=0; i<s.length(); i++) {
+            if(m.find(s[i]) != m.end()) {
+                m.erase(s[i]);
+                count++;
+            } else {
+                m[s[i]]++;
+            }
+        }
+        
+        if(m.empty()) return 2*count;
+        return 2*count + 1;
+    }
+};
