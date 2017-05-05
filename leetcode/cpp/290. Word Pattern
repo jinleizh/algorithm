@@ -40,3 +40,75 @@ public:
         return true;
     }
 };
+
+
+class Solution {
+public:
+/**
+ * 时间复杂度o(n), 空间复杂度o(n)算法
+ * 思路: 建立map<char, string> map<string, char> 利用istringstream 作为输入, 自动分割字符串, 更简洁
+ */ 
+    bool wordPattern(string pattern, string str) {
+        if(pattern.empty() || str.empty()) return false;
+        
+        map<char, string> ctos;
+        map<string, char> stoc;
+        
+        istringstream in(str);
+        string word;
+        int i = 0, n = pattern.length();
+        while(in >> word) {
+            if(i == n) return false;
+            
+            char c = pattern[i];
+            if(ctos.find(c) != ctos.end()) {
+                if(ctos[c] != word) return false;
+            } else {
+                if(stoc.find(word) != stoc.end()) return false;
+                ctos[c] = word;
+                stoc[word] = c;
+            }
+        
+            i++;
+        }
+        
+        return i == n;
+    }
+
+};
+
+class Solution {
+public:
+/**
+ * 时间复杂度o(n), 空间复杂度o(n)算法
+ * 思路: 建立map<char, string> map<string, char> 利用istringstream 作为输入, 自动分割字符串, 更简洁
+ * 思路: 将两个串映射成相同的维度, 例如整数, 或者两者相互之间建立映射.
+ */ 
+    bool wordPattern(string pattern, string str) {
+        if(pattern.empty() || str.empty()) return false;
+        
+        map<char, string> ctos;
+        map<string, char> stoc;
+        
+        istringstream in(str);
+        string word;
+        int i = 0, n = pattern.length();
+        while(in >> word) {
+            if(i == n) return false;
+            
+            char c = pattern[i];
+            if(ctos.find(c) != ctos.end()) {
+                if(ctos[c] != word) return false;
+            } else {
+                if(stoc.find(word) != stoc.end()) return false;
+                ctos[c] = word;
+                stoc[word] = c;
+            }
+        
+            i++;
+        }
+        
+        return i == n;
+    }
+
+};
