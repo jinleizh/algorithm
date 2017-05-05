@@ -1,0 +1,42 @@
+class Solution {
+public:
+/**
+ * 时间复杂度o(n), 空间复杂度o(n)算法
+ * 
+ * 思路: 左边串的每个字符作为key, 右边单词作为value
+ * 遍历左边的字符串, 依次读取左边串的每个字符
+ * 新字符, 必须是新串 
+ * 老字符, 必须是老串
+ */ 
+    bool wordPattern(string pattern, string str) {
+        if(pattern.empty() || str.empty()) return false;
+        
+        map<char, string> vm;
+        map<string, int> exist;
+        
+        int start = 0;
+        for(int i=0; i<pattern.length()-1; i++) {
+            int end = str.find_first_of(' ', start);
+            if(end == string::npos) return false;
+            string right = str.substr(start, end - start);
+            start = end + 1;
+            char left = pattern[i];
+            if(!check(left, right, vm, exist)) return false;
+        }
+        
+        //最后一个元素
+        return check(pattern[pattern.length()-1], str.substr(start), vm, exist);
+    }
+    
+    bool check(char left, string right, map<char, string>& vm, map<string, int>& exist) {
+        if(vm.find(left) != vm.end()) {
+            if(right != vm[left]) return false;
+        } else {
+            if(exist[right] == 1) return false;
+            exist[right] = 1;
+            vm[left] = right;
+        }
+        
+        return true;
+    }
+};
