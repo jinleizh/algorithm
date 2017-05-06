@@ -1,0 +1,37 @@
+class Solution {
+public:
+/**
+ * 思路: 查找所有的砖缝隙, 找到缝隙最多的砖缝
+ * 利用map
+ */ 
+    int leastBricks(vector<vector<int>>& wall) {
+        int row = wall.size();
+        if(0 == row) return 0;
+        
+        int col = wall[0].size();
+        if(0 == col) return 0;
+        
+        map<int, int> count;
+        
+        for(int i=0; i<row; i++) {
+            int num = wall[i].size();
+            count[wall[i][0]]++;
+            for(int j=1; j<num; j++) {
+                wall[i][j] += wall[i][j-1];
+                count[wall[i][j]]++;
+            }
+        }
+        
+        int max = 0;
+        int width = wall[0][col-1];
+        for(auto& it : count) {
+            int pos = it.first;
+            if(pos == width) continue;
+            
+            int cnt = it.second;
+            if(cnt > max) max = cnt;
+        }
+        
+        return row - max;
+    }
+};
