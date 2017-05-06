@@ -37,3 +37,38 @@ public:
         return result;
     }
 };
+
+
+class Solution {
+public:
+/**
+ * 思路: 
+ * 1. 利用map, 统计每个char对应的出现次数
+ * 2. 利用另一个map, 统计出现次数, 对应的字符, map默认有序, 从小到大, 我们这里对次数乘以-1, 让出现次数最多的排在前面
+ * 
+ * 优化: 利用vector中的下标, 利用下标来表示长度
+ */ 
+    string frequencySort(string s) {
+        map<char, int> cm;
+        vector<string> cs(s.size()+1, "");
+        
+        for(char c : s) {
+            cm[c]++;
+        }
+        
+        for(auto& it : cm) {
+            int n = it.second;
+            char c = it.first;
+            cs[n].append(n, c);
+        }
+        
+        string result = "";
+        for(int i=s.size(); i>=1; i--) {
+            if(!cs[i].empty()) {
+                result.append(cs[i]);
+            }
+        }
+        
+        return result;
+    }
+};
