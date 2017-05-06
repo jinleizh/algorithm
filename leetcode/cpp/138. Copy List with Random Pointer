@@ -9,8 +9,13 @@
 class Solution {
 public:
 /**
- * 思路一: 判断是否有环, 找到环的入口点.
- * 思路二: 判断是否有访问过
+ * 思路:
+ * 源列表和目的列表的next指针复制比较简单, 复杂的是random指针
+ * 源列表和目的列表的random指针不同, 但是相对位置是相同的, 故
+ * 1.使用vector保存, 新列表中每个节点的指针
+ * 2.使用map建立起, 源列表, 每个节点对应的random指针, 对应列表中第几个指针的地址
+ *
+ * 当复制链表时, 新列表利用下标, 把对应下标的指针赋给当前节点的random成员
  */ 
     RandomListNode *copyRandomList(RandomListNode *head) {
         if(NULL == head) return head;
@@ -42,10 +47,15 @@ public:
             pos++;
         }
         
-        RandomListNode* head = newHead;
+        head = newHead;
         while(oldHead != NULL) {
-            pos = p2i[oldHead->random];
-            head->random = pv[pos];
+            if(oldHead->random == NULL) {
+                head->random = NULL;    
+            } else {
+                pos = p2i[oldHead->random];
+                head->random = pv[pos];
+            }
+            
             oldHead = oldHead->next;
             head = head->next;
         }
