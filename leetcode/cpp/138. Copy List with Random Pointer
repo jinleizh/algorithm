@@ -1,0 +1,55 @@
+/**
+ * Definition for singly-linked list with a random pointer.
+ * struct RandomListNode {
+ *     int label;
+ *     RandomListNode *next, *random;
+ *     RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
+ * };
+ */
+class Solution {
+public:
+/**
+ * 思路一: 判断是否有环, 找到环的入口点.
+ * 思路二: 判断是否有访问过
+ */ 
+    RandomListNode *copyRandomList(RandomListNode *head) {
+        if(NULL == head) return head;
+        
+        map<RandomListNode*, int> p2i; //源串指针和下标的映射
+        vector<RandomListNode*> pv;//新串的指针列表, 用于根据下标, 填充对应的random指针值
+        RandomListNode * newHead = createNewList(head, p2i, pv); //创建新链表
+        return newHead;
+    }
+    
+    RandomListNode *createNewList(RandomListNode *oldHead, map<RandomListNode*, int>& p2i, vector<RandomListNode*>& pv) {
+        RandomListNode* node = NULL;
+        RandomListNode* prev = NULL;
+        RandomListNode* newHead = NULL;
+        int pos = 0;
+        RandomListNode* head = oldHead;
+        while(head != NULL) {
+            node = new RandomListNode(head->label);
+            if(prev != NULL) {
+                prev->next = node;//尾结点
+            } else {
+                newHead = node;//新头结点
+            }
+            
+            prev = node;
+            pv.push_back(node);
+            p2i[head] = pos;
+            head = head->next;
+            pos++;
+        }
+        
+        RandomListNode* head = newHead;
+        while(oldHead != NULL) {
+            pos = p2i[oldHead->random];
+            head->random = pv[pos];
+            oldHead = oldHead->next;
+            head = head->next;
+        }
+        
+        return newHead;
+    }
+};
