@@ -1,0 +1,44 @@
+class Solution {
+public:
+/**
+ * 思路: bull 是指同位置相同的元素, cow是指不同位置,值相同的, 这里需要考虑到的是个数的问题, 本题分两步
+ * 1. 找出所有的bull元素
+ * 2. 找出所有的cow元素, 即guess中有, secret中也有, 但是位置不同
+ * 3. 从guess 和 secret中找，两者都有，但是个数较少的值
+ */ 
+    string getHint(string secret, string guess) {
+        int bull = 0, cow = 0;
+        int n = secret.size();
+        
+        vector<int> flag(n, 0);
+        map<int, int> sm;
+        map<int, int> gm;
+        
+        for(int i=0; i<n; i++) {
+            if(secret[i] == guess[i]) {
+                bull++;
+                flag[i] = 1;
+            } else {
+                sm[secret[i]]++;
+                gm[guess[i]]++;
+            }
+        }
+    
+        for(auto& mit : gm) {
+            char c = mit.first;
+            int cnt = mit.second;
+            
+            if(sm.find(c) != sm.end()) {
+                int snt = sm[c];
+                cow += (cnt < snt ? cnt : snt);
+            }
+        }
+        
+        ostringstream os;
+        os<<bull;
+        os<<"A";
+        os<<cow;
+        os<<"B";
+        return os.str();
+    }
+};
