@@ -146,3 +146,76 @@ public:
         return 0;
     }
 };
+
+class Solution {
+public:
+/**
+ * 思路: 
+ * 动态规划: dp[i][j][k]表示i,j最多经过k步移出边界
+ * dp[i][j][k] = dp[i-1][j][k-1] + dp[i+1][j][k-1] + dp[i][j-1][k-1] + dp[i][j+1][k-1] + 从i,j开始一步到达的.
+ * 
+ * 从i,j一步到达的, 只有边界点有值, 非边界点最少也要两步才可以移出边界
+ */ 
+    int findPaths(int m, int n, int N, int i, int j) {
+        long dp[50][50][51] = {0};
+        int mod = 1e9 + 7;
+        int x = i, y = j;
+        for(int k=1; k<=N; k++) {
+            for(int i=0; i<m; i++) {
+                for(int j=0; j<n; j++) {
+                    dp[i][j][k] = 
+                    ((i == 0 ? 1 : dp[i-1][j][k-1]) + 
+                    (i == m-1 ? 1 : dp[i+1][j][k-1]) +
+                    (j == 0 ? 1 : dp[i][j-1][k-1]) + 
+                    (j == n-1 ? 1 : dp[i][j+1][k-1]) ) % mod;
+                }
+            }
+        }
+        
+        return dp[x][y][N];
+    }
+};
+
+class Solution {
+public:
+/**
+ * 思路: DFS 存中间结果
+ */ 
+    string out;
+    int findPaths(int m, int n, int N, int i, int j) {
+        vector<vector<long>> dp(m*n, vector<long>(N+2, -1));
+        return dfs(m, n, N, i, j, 0, dp);
+    }
+    
+    int dfs(int m, int n, int N, int x, int y, int level, vector<vector<long>>& dp) {
+        if(level > N) return 0;
+        if(check(m, n, x, y)) return 1;
+        int mod = 1e9 + 7;
+        
+        int dx[4] = {-1, 1, 0, 0};
+        int dy[4] = {0, 0, -1, 1};
+        
+        int ans = 0;
+        int nx, ny;
+        for(int i=0; i<4; i++) {
+            nx = x + dx[i];
+            ny = y + dy[i];
+            
+            if(check(m,n,nx,ny) || -1 == dp[nx*n + ny][level+1]) {
+                ans += dfs(m, n, N, nx, ny, level + 1, dp); 
+            } else {
+                ans += dp[nx*n + ny][level+1];
+            }
+            
+            ans %= mod;
+        }
+        
+        dp[x*n + y][level] = ans % mod;
+        return ans;
+    }
+    
+    bool check(int m, int n, int x, int y) {
+        if(x < 0 || x >=m || y<0 || y>=n) return 1;
+        return 0;
+    }
+};
