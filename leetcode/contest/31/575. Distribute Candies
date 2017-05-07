@@ -1,0 +1,10 @@
+class Solution {
+public:
+    int distributeCandies(vector<int>& candies) {
+        set<int> sc(candies.begin(), candies.end());
+        int num = candies.size();
+        int scNum = sc.size();
+        
+        return scNum >= num/2 ? num / 2 : scNum;
+    }
+};
