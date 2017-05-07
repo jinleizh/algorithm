@@ -1,0 +1,26 @@
+class Solution {
+public:
+/**
+ * 思路: 先把所有的路径和求出来, 在此基础上, 枚举所有的可能, 取最优解
+ * 时间复杂度o(n)
+ */ 
+    int minDistance(int height, int width, vector<int>& tree, vector<int>& squirrel, vector<vector<int>>& nuts) {
+        int nc = nuts.size();
+        int dis = 0;
+        for(int i=0; i<nc; i++) {
+            dis += 2 * dt(tree, nuts[i]);
+        }
+        
+        int min = INT_MAX;
+        for(int i=0; i<nc; i++) {
+            int result = dis - dt(tree, nuts[i]) + dt(squirrel, nuts[i]);
+            if(min > result) min = result;
+        }
+        
+        return min;
+    }
+    
+    int dt(vector<int> a, vector<int> b) {
+        return abs(a[0] - b[0]) + abs(a[1] - b[1]);
+    }
+};
