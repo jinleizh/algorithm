@@ -1,0 +1,148 @@
+class Solution {
+public:
+/**
+ * 思路: DFS -- TLE
+ */ 
+    int total;
+    int findPaths(int m, int n, int N, int i, int j) {
+        dfs(m, n, 0, N, i, j);
+        return total;
+    }
+    
+    void dfs(int m, int n, int level, int N, int i, int j) {
+        if(level > N) return;
+        
+        if(i < 0 || i >=m || j<0 || j>=n) {
+            total++;
+            return;
+        }
+        
+        int dx[4] = {-1, 1, 0, 0};
+        int dy[4] = {0, 0, -1, 1};
+        dfs(m, n, level+1, N, i+dx[0], j+dy[0]);
+        dfs(m, n, level+1, N, i+dx[1], j+dy[1]);
+        dfs(m, n, level+1, N, i+dx[2], j+dy[2]);
+        dfs(m, n, level+1, N, i+dx[3], j+dy[3]);
+    }
+};
+
+class Solution {
+public:
+/**
+ * 思路: BFS - TLE
+ * 可以理解为从起点开始, 经过1步, 经过2步, 经过N步超出表格的路径数之和, 是一个bfs的问题
+ */ 
+    int findPaths(int m, int n, int N, int i, int j) {
+        return bfs(m, n, N, i, j);
+    }
+    
+    int check(int m, int n, int x, int y) {
+        if(x >= m || x < 0 || y >= n || y < 0) return 1;
+        return 0;
+    }
+    
+    int bfs(int m, int n, int N, int i, int j) {
+        int mod = 1e9 + 7;
+        
+        queue<vector<int>> q;
+        vector<int> start;
+        start.push_back(i);
+        start.push_back(j);
+        q.push(start);
+        
+        long count = 0;
+        long level = 1;
+        int dx[4] = {-1, 1, 0, 0};
+        int dy[4] = {0, 0, -1, 1};
+        
+        while(level <= N) {
+            queue<vector<int>> p;
+            while(!q.empty()) {
+                vector<int> s = q.front();
+                q.pop();
+                int x = s[0];
+                int y = s[1];
+                
+                for(int k=0; k<4; k++) {
+                    int lx = x + dx[k];
+                    int ly = y + dy[k];
+                    
+                    int flag = check(m, n, lx, ly);
+                    count += flag;
+                    if(0 == flag) {
+                        vector<int> node;
+                        node.push_back(lx);
+                        node.push_back(ly);
+                        p.push(node);
+                    }
+                }
+                
+                count %= mod;
+            }
+        
+            q = p;
+            level++;
+        }
+        
+        return count % mod; 
+    }
+};
+
+class Solution {
+public:
+/**
+ * 思路: 
+ * 动态规划, 将问题分解为 1步到边界, 2步到边界, 3步到边界 .... N-1步到边界
+ * dp[i][j][k] 表示经过k步到达边界的路径数
+ * 
+ * 则最多移动N步的路径总数为 dp[i][j][1] + dp[i][j][2] + ... + dp[i][j][N-1] + dp[i][j][N]
+ * 
+ * dp[i][j][1] 根据边界检查, 可以得出结果,
+ * dp[i][j][2] = 四周的长度为1的路径数之和, 故得出
+ * 
+ * dp[i][j][k] = dp[i-1][j][k-1] + dp[i][j-1][k-1] + dp[i][j+1][k-1] + dp[i+1][j][k-1]
+ * 
+ */ 
+    int findPaths(int m, int n, int N, int i, int j) {
+        vector<vector<long>> vv(n, vector<long>(N, 0));
+        vector<vector<vector<long>>> dp(m, vv);
+        
+        int x = i, y = j;
+        int nx = 0, ny = 0;
+        int mod = 1e9 + 7;
+
+        int dx[4] = {-1, 1, 0, 0};
+        int dy[4] = {0, 0, -1, 1};
+        
+        for(int k=0; k<N; k++) {
+            for(int i=0; i<m; i++) {
+                for(int j=0; j<n; j++) {
+                    for(int p=0; p<4; p++) {
+                        nx = i + dx[p];
+                        ny = j + dy[p];
+                        
+                        if(k == 0) {
+                            dp[i][j][0] += check(m, n, nx, ny);
+                        } else {
+                            if(check(m, n, nx, ny) == 0) {
+                                dp[i][j][k] += dp[nx][ny][k-1] % mod;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        long sum = 0;
+        for(int i=0; i<N; i++) {
+            sum += dp[x][y][i] % mod;
+        }
+        
+        return sum % mod;
+    }
+    
+    int check(int m, int n, int x, int y) {
+        if(x >= m || x < 0 || y>=n || y<0) return 1;
+        return 0;
+    }
+};
