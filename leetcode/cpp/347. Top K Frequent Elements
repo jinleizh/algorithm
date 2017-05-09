@@ -1,0 +1,46 @@
+class Solution {
+public:
+/**
+ * 思路: 两个map
+ * 时间复杂度o(nlgN) -- 因为用的是BST map, 不是hashmap
+ * 空间复杂度o(n)
+ */ 
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        map<int, int> cntMap;
+        map<int, vector<int>> mfMap;
+        
+        for(int i=0; i<nums.size(); i++) {
+            cntMap[nums[i]]++;
+        }
+        
+        for(auto& it : cntMap) {
+            mfMap[it.second].push_back(it.first);
+        }
+        
+        vector<int> result;
+        int count = 0, size = 0;
+        
+        map<int, vector<int>>::reverse_iterator mit = mfMap.rbegin();
+        while(mit != mfMap.rend()) {
+            if(count == k) break;
+            
+            size = mit->second.size();
+            if(count + size > k) {
+                for(int j=0; j<k-count; j++) {
+                    result.push_back(mit->second[j]);
+                }
+                count = k;
+            } else {
+                for(int j=0; j<size; j++) {
+                    result.push_back(mit->second[j]);
+                }
+                count += size;
+            }
+        
+            mit++;    
+        }
+        
+        return result;
+    }
+};
+
