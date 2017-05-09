@@ -44,3 +44,78 @@ public:
     }
 };
 
+class Solution {
+public:
+/**
+ * 思路: 
+ * 优先队列 -- 时间复杂度o((n-k)log(n-k) + klog(n-k))
+ * 堆 -- 时间复杂度o(nlogK), 求最大需要建小顶堆, 每次出堆顶
+ */ 
+    typedef pair<int, int> pii;
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> cntMap;
+        for(int i=0; i<nums.size(); i++) {
+            cntMap[nums[i]]++;
+        }
+        
+        vector<int> result;
+        
+        priority_queue<pii> pq;
+        for(auto it=cntMap.begin(); it!=cntMap.end(); it++) {
+            pq.push(make_pair(it->second, it->first));
+            if(pq.size() > cntMap.size() - k) {
+                result.push_back(pq.top().second);
+                pq.pop();
+            }
+        }
+        
+        return result;
+    }
+};
+
+
+class Solution {
+public:
+/**
+ * 思路: 
+ * 优先队列 -- 时间复杂度o((n-k)log(n-k) + klog(n-k))
+ * 最小堆 -- 时间复杂度o(nlogK), 求最大需要建小顶堆, 每次出堆顶
+ */ 
+    typedef pair<int, int> pii;
+ 
+    struct bigger {
+        bool operator()(pii& a, pii& b) {
+            return a.second > b.second;
+        } 
+    };
+    
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> cntMap;
+        for(int i=0; i<nums.size(); i++) {
+            cntMap[nums[i]]++;
+        }
+        
+        vector<int> result;
+        
+        priority_queue<pii, vector<pii>, bigger> min_heap;
+        for(auto it = cntMap.begin(); it!=cntMap.end(); it++) {
+            if(min_heap.size() < k) {
+                min_heap.push(*it);
+            } else {
+                if(it->second > min_heap.top().second) {
+                    min_heap.pop();
+                    min_heap.push(*it);
+                }
+            }
+        }
+        
+        while(min_heap.size() > 0) {
+            result.push_back(min_heap.top().first);
+            min_heap.pop();
+        }
+        
+        return result;
+    }
+};
+
+
