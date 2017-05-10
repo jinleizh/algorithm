@@ -1,0 +1,58 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    typedef pair<int, int> pii;
+    
+    struct lessCmp {
+        bool operator() (pii& a, pii& b) {
+            return a.first < b.first;
+        }   
+    };
+
+    vector<int> findFrequentTreeSum(TreeNode* root) {
+        map<int, int> cntMap;
+        sumTree(root, cntMap);
+        vector<int> result;
+        
+        //优先队列
+        priority_queue<pii, vector<pii>, lessCmp> pq;
+        for(auto& it : cntMap) {
+            pq.push(pii(it.second, it.first));
+        }
+        
+        pii t;
+        if(pq.size() > 0) {
+            t = pq.top();
+            result.push_back(t.second);
+            pq.pop();
+        }
+        
+        while(pq.size() > 0) {
+            if(pq.top().first == t.first) {
+                result.push_back(pq.top().second);
+                pq.pop();
+            } else {
+                break;
+            }
+        }
+        
+        return result;
+    }
+    
+    int sumTree(TreeNode* root, map<int, int>& cntMap) {
+        if(NULL == root) return 0;
+        int ls = sumTree(root->left, cntMap);
+        int rs = sumTree(root->right, cntMap);
+        int sum = ls + rs + root->val;
+        cntMap[sum]++;
+        return sum;
+    }
+};
