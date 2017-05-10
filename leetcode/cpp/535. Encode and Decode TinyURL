@@ -1,18 +1,23 @@
 class Solution {
 public:
-    unordered_map<string, string> urlMap;
+    unordered_map<string, string> url2code;
+    unordered_map<string, string> code2url;
     
     // Encodes a URL to a shortened URL.
     string encode(string longUrl) {
-        string shortUrl = longUrl;
-        urlMap[shortUrl] = longUrl;
-        return shortUrl;
+        if(url2code.find(longUrl) == url2code.end()) {
+            string shortUrl = longUrl;
+            url2code[longUrl] = shortUrl;
+            code2url[shortUrl] = longUrl;
+        }
+
+        return url2code[longUrl];
     }
 
     // Decodes a shortened URL to its original URL.
     string decode(string shortUrl) {
-        if(urlMap.find(shortUrl) != urlMap.end()) {
-            return urlMap[shortUrl];
+        if(code2url.find(shortUrl) != code2url.end()) {
+            return code2url[shortUrl];
         }
         
         return ""; 
