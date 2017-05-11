@@ -1,0 +1,26 @@
+class Solution {
+public:
+/**
+ * 思路: 
+ * o(nlogN)
+ * 1.按索引大小排序
+ * 2.逆序，从索引1开始, 判断
+ * 2-1 如果当前索引数<可能的索引, 则继续判断下一个可能的索引
+ * 2-1 如果当前索引数>=可能的索引, 则判断前一个索引数是否和当前索引数相同, 若不同，则保存为备选值，否则跳出判断， 继续判断下一个可能的索引
+ */ 
+    int hIndex(vector<int>& citations) {
+        int n = citations.size();
+        int hx = -1;
+        sort(citations.begin(), citations.end()); //o(nlogN)
+        
+        for(int i=n; i>=1; i--) {
+            if(citations[n-i] < i) continue;
+            if(i == n) return n;
+            if(citations[n-i-1] > i) continue;
+            hx = i;
+        }
+        
+        if(-1 == hx) hx = 0;
+        return hx;
+    }
+};
