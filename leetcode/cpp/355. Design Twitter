@@ -1,0 +1,106 @@
+struct Feed {
+    int id;
+    long seq;
+};
+
+struct lessor {
+    bool operator()(const Feed& l, const Feed& r) {
+        return l.seq > r.seq;
+    }  
+};
+
+class Twitter {
+/**
+ * 考虑插入和删除的效率, 故使用二叉树, 二叉树则只需要用map, 查找和修改的复杂度为o(logN)
+ * map按照帖子id, 从大到小排序
+ */ 
+public:
+    long seq;
+    map<int, map<int, int>> fansList;
+    map<int, map<int, int>> starList;
+    map<int, vector<Feed>> privateFeeds;
+    map<int, map<Feed, int, lessor>> recentFeeds; // keytype = Feed
+    
+    /** Initialize your data structure here. */
+    Twitter() {
+        seq = 0;
+    }
+    
+    /** Compose a new tweet. */
+    void postTweet(int userId, int tweetId) {
+        Feed feed;
+        feed.seq = seq++;
+        feed.id = tweetId;
+        
+        //自己发的帖子
+        privateFeeds[userId].push_back(feed);
+        
+        //先放到自己最近的帖子列表里
+        recentFeeds[userId].insert(pair<Feed, int>(feed, userId));
+        
+        //向每一个粉丝的最近消息列表中, 插入feedId
+        for(auto& it : fansList[userId]) {
+            int fansId = it.first;
+            recentFeeds[fansId].insert(pair<Feed,int>(feed, userId));
+        }
+    }
+    
+    /** Retrieve the 10 most recent tweet ids in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user herself. Tweets must be ordered from most recent to least recent. */
+    vector<int> getNewsFeed(int userId) {
+        vector<int> result;
+        int count = 0;
+        for(auto& it : recentFeeds[userId]) {
+            if(count == 10) break;
+            result.push_back(it.first.id);
+            count++;
+        }
+        
+        return result;
+    }
+    
+    /** Follower follows a followee. If the operation is invalid, it should be a no-op. */
+    void follow(int followerId, int followeeId) {
+        if(followerId == followeeId) return;
+        
+        //明星列表
+        starList[followerId].insert(pair<int,int>(followeeId, 1));
+
+        //粉丝列表        
+        fansList[followeeId].insert(pair<int, int>(followerId, 1));
+        
+        //用户最近帖子列表需新增明星的帖子
+        for(Feed feed : privateFeeds[followeeId]) {
+            recentFeeds[followerId].insert(pair<Feed, int>(feed, followeeId));
+        }
+    }
+    
+    /** Follower unfollows a followee. If the operation is invalid, it should be a no-op. */
+    void unfollow(int followerId, int followeeId) {
+        if(followerId == followeeId) return;
+        
+        //关注过这个明星才删除
+        if(1 == starList[followerId][followeeId]) {
+            //明星列表中删除明星
+            starList[followerId].erase(followeeId);
+            
+            //用户最近帖子列表中删除该明星的帖子
+            for(auto& it : recentFeeds[followerId]) {
+                if(it.second == followeeId) {
+                    recentFeeds[followerId].erase(it.first);
+                }
+            }
+            
+            //粉丝列表中删除粉丝
+            fansList[followeeId].erase(followerId);
+        }
+    }
+};
+
+/**
+ * Your Twitter object will be instantiated and called as such:
+ * Twitter obj = new Twitter();
+ * obj.postTweet(userId,tweetId);
+ * vector<int> param_2 = obj.getNewsFeed(userId);
+ * obj.follow(followerId,followeeId);
+ * obj.unfollow(followerId,followeeId);
+ */
