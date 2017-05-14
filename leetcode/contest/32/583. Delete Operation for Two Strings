@@ -1,0 +1,36 @@
+class Solution {
+public:
+/**
+ * 两个串相遇后, 有三种可能
+ * 
+ * 首字母相同 - 计算i+1, j+1
+ * 首字母不同 - 计算i+1, j 和 i, j+1
+ */ 
+    int minDistance(string word1, string word2) {
+        int lenA = word1.length();
+        int lenB = word2.length();
+        int maxLen = lenA > lenB ? lenA : lenB;
+        vector<vector<int>> dp(maxLen, vector<int>(maxLen, -1));
+        return getAns(word1, word2, 0, 0, dp);
+    }
+    
+    int getAns(string word1, string word2, int i, int j, vector<vector<int>>& dp) {
+        if(i == word1.length()) return word2.length() - j;
+        if(j == word2.length()) return word1.length() - i;
+        if(-1 != dp[i][j]) return dp[i][j];
+        
+        int min = 0;
+        if(word1[i] == word2[j]) {
+            min = getAns(word1, word2, i+1, j+1, dp);
+        } else {
+            min = 1 + getMin(getAns(word1, word2, i+1, j, dp), getAns(word1, word2, i, j+1, dp));
+        }
+
+        dp[i][j] = min;
+        return min;
+    }
+    
+    int getMin(int a, int b) {
+        return a > b ? b : a;
+    }
+};
