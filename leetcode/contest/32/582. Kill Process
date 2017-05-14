@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> result;
+    vector<int> killProcess(vector<int>& pid, vector<int>& ppid, int kill) {
+        map<int,vector<int>> pm;
+        for(int i=0; i<ppid.size(); i++) {
+            pm[ppid[i]].push_back(pid[i]);
+        }
+        
+        result.push_back(kill);
+        dfs(pm, kill);
+        return result;
+    }
+    
+    void dfs(map<int,vector<int>>& pm, int kill) {
+        vector<int> tmp = pm[kill];
+        if(tmp.empty()) return;
+        
+        for(int i=0; i<tmp.size(); i++) {
+            result.push_back(tmp[i]);
+            dfs(pm, tmp[i]);
+        }
+    }
+    
+};
