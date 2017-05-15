@@ -1,0 +1,105 @@
+/**
+ * Definition for a point.
+ * struct Point {
+ *     int x;
+ *     int y;
+ *     Point() : x(0), y(0) {}
+ *     Point(int a, int b) : x(a), y(b) {}
+ * };
+ */
+
+int sx = 0;
+int sy = 0;
+
+bool myLess(Point a, Point b) {
+    int x1 = a.x - sx;
+    int y1 = a.y - sy;
+    int x2 = b.x - sx;
+    int y2 = b.y - sy;
+    
+    int val = y1*x2 - x1*y2;
+    if(0 == val) {
+        if(x1 == x2) return y1 < y2;
+        return x1 < x2;
+    }
+    
+    return val < 0;
+}
+
+class Solution {
+public:
+/**
+ * 思路: 
+ * 0.取y坐标最小的点, 从最左边开始, 同一条线上的也需要输出到answer中.
+ * 1.按角度大小排序
+ * 2.依次取点
+ */ 
+    vector<Point> outerTrees(vector<Point>& points) {
+        vector<Point> ans;
+        
+        //边界处理
+        if(points.size() <= 3) return points;
+        
+        //找到最小的点
+        Point pt = findLowestPoint(points);
+        
+        sx = pt.x;
+        sy = pt.y;
+        
+        //排序
+        sort(points.begin(), points.end(), myLess);
+        //return points;
+        
+        
+        //算法
+        stack<Point> sp;
+        sp.push(pt);
+        
+        int i = 1;
+        while(i+1 < points.size()) {
+            Point top = sp.top();
+            int val = compute(top, points[i], points[i+1]);
+            if(val >= 0) {
+                sp.push(points[i]);
+            } else {
+                if(i+1 == points.size() - 1) {
+                    Point tmp;
+                    sp.push(tmp);
+                }
+            }
+            
+            i++;
+        }
+        
+        while(sp.size() > 0) {
+            ans.push_back(sp.top());
+            sp.pop();
+        }
+        
+        return ans;
+    }
+    
+    // >= 0 表示在左边, 符合条件.
+    int compute(Point p, Point q, Point r) {
+        int x1 = q.x - p.x;
+        int y1 = q.y - p.y;
+        int x2 = r.x - p.x;
+        int y2 = r.y - p.y;
+        return x1*y2 - x2*y1;
+    }
+    
+    Point findLowestPoint(vector<Point>& points) {
+        Point pt;
+        for(int i=0; i<points.size(); i++) {
+            if(i == 0) { 
+                pt = points[i];
+            } else {
+                if(points[i].y < pt.y || (points[i].y == pt.y && points[i].x < pt.x)) {
+                    pt = points[i];
+                } 
+            }
+        }
+        
+        return pt;
+    }
+};
