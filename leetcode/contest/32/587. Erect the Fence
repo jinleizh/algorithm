@@ -7,99 +7,96 @@
  *     Point(int a, int b) : x(a), y(b) {}
  * };
  */
-
-int sx = 0;
-int sy = 0;
-
-bool myLess(Point a, Point b) {
-    int x1 = a.x - sx;
-    int y1 = a.y - sy;
-    int x2 = b.x - sx;
-    int y2 = b.y - sy;
-    
-    int val = y1*x2 - x1*y2;
-    if(0 == val) {
-        if(x1 == x2) return y1 < y2;
-        return x1 < x2;
-    }
-    
-    return val < 0;
+ 
+bool operator < (const Point& p, const Point& q) {
+    return p.x < q.x || (p.x == q.x && p.y < q.y);
 }
-
+ 
 class Solution {
 public:
 /**
+ * 凸包算法
+ * 方法一: o(mH) 扫描法, 找每一个点对应的最小弧度边
  * 思路: 
- * 0.取y坐标最小的点, 从最左边开始, 同一条线上的也需要输出到answer中.
- * 1.按角度大小排序
- * 2.依次取点
+ * 1.找到一个凸包点, 比如,从最靠左的点里取最靠下的, 肯定是凸包点 
+ * 2.若凸包点是s, 则next点可以是 !s
+ * 3.从当前凸包点到next 引申出一条线, 遇到位于先右侧的点, 则表示需要更新next. 这里使用叉积计算. x1y2 - x2y1 > 0   x1,y1是右侧点.
+ * 4.因为需要处理共线, 我们知道共线上的点，中间的点相比共线点的最后一个点符合两个性质 a.距离更近 b.已经被访问过
+ * 
+ * a.距离更近好理解
+ * b.已经被访问过, 这个是为了处理, 当处理到共线中间点的时候, 在其两侧都有共线点, 此时叉积是0, 而距离更近的点可能是已经访问过的点.
+ * 
+ * 所以, 共线的下一个点的选取条件是  flag[i] == 0 && distance(s, i, next) <=0, 即 未访问过的点里, 最近的那个.
+ * 而如果不想处理共线点, 只需要取最远的点即可, 也不需要保存 是否已访问过, 因为最远的点就一个.  
+ * 注意共线的处理 dist <= 0, 一定要有=0
  */ 
     vector<Point> outerTrees(vector<Point>& points) {
-        vector<Point> ans;
-        
-        //边界处理
+        vector<Point> result;
         if(points.size() <= 3) return points;
         
-        //找到最小的点
-        Point pt = findLowestPoint(points);
+        //标记数组
+        int flag[points.size()] = {0};
         
-        sx = pt.x;
-        sy = pt.y;
+        int start = findStart(points);
+        int s = start;
+        int next = !s;
+        result.push_back(points[s]);
+        flag[s] = 1;
+        int cnt = 0;
         
-        //排序
-        sort(points.begin(), points.end(), myLess);
-        //return points;
-        
-        
-        //算法
-        stack<Point> sp;
-        sp.push(pt);
-        
-        int i = 1;
-        while(i+1 < points.size()) {
-            Point top = sp.top();
-            int val = compute(top, points[i], points[i+1]);
-            if(val >= 0) {
-                sp.push(points[i]);
-            } else {
-                if(i+1 == points.size() - 1) {
-                    Point tmp;
-                    sp.push(tmp);
+        while(true) {
+            for(int i=0; i<points.size(); i++) {
+                if(i == s) continue;
+                int ret = cross(points[s], points[i], points[next]);
+                if(ret > 0) {
+                    next = i;
+                } else if(ret == 0) {
+                    int dis = distance(points[s], points[i], points[next]);
+                    //处理共线问题, 选距离最近且未被访问过的点
+                    if(0 == flag[i] && dis <= 0) next = i;
+                    
+                    //不处理共线
+                    //if(dis > 0) next = i;
                 }
             }
             
-            i++;
+            if(next == start) break;
+            s = next;
+            next = !s;
+            result.push_back(points[s]);
+            flag[s] = 1; 
+            cnt++;
         }
         
-        while(sp.size() > 0) {
-            ans.push_back(sp.top());
-            sp.pop();
-        }
-        
-        return ans;
+        return result;
     }
     
-    // >= 0 表示在左边, 符合条件.
-    int compute(Point p, Point q, Point r) {
-        int x1 = q.x - p.x;
-        int y1 = q.y - p.y;
-        int x2 = r.x - p.x;
-        int y2 = r.y - p.y;
+    //>0 表示在右边, 逆时针
+    //<0 表示在左边
+    int cross(Point o, Point p, Point q) {
+        int x1 = p.x - o.x;
+        int y1 = p.y - o.y;
+        int x2 = q.x - o.x;
+        int y2 = q.y - o.y;
         return x1*y2 - x2*y1;
     }
     
-    Point findLowestPoint(vector<Point>& points) {
-        Point pt;
-        for(int i=0; i<points.size(); i++) {
-            if(i == 0) { 
-                pt = points[i];
-            } else {
-                if(points[i].y < pt.y || (points[i].y == pt.y && points[i].x < pt.x)) {
-                    pt = points[i];
-                } 
-            }
+    //选择最左的点
+    int findStart(vector<Point>& points) {
+        int s=0, x1, y1, x2, y2;
+        for(int i=1; i<points.size(); i++) {
+            x1 = points[s].x;
+            y1 = points[s].y;
+            x2 = points[i].x;
+            y2 = points[i].y;
+            
+            if(x1 > x2 || (x1 == x2 && y1 > y2)) s = i;
         }
         
-        return pt;
+        return s;
+    }
+    
+    int distance(Point o, Point p, Point q) {
+        return (p.x - o.x)*(p.x - o.x) + (p.y - o.y)*(p.y - o.y) - ((q.x-o.x)*(q.x - o.x) + (q.y-o.y)*(q.y - o.y));
     }
 };
