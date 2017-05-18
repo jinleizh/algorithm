@@ -100,3 +100,96 @@ public:
         return (p.x - o.x)*(p.x - o.x) + (p.y - o.y)*(p.y - o.y) - ((q.x-o.x)*(q.x - o.x) + (q.y-o.y)*(q.y - o.y));
     }
 };
+
+
+/**
+ * Definition for a point.
+ * struct Point {
+ *     int x;
+ *     int y;
+ *     Point() : x(0), y(0) {}
+ *     Point(int a, int b) : x(a), y(b) {}
+ * };
+ */
+class Solution {
+/**
+ * 思路: 注意处理好共线的问题
+ * 1.next-- 每次next需要取未确认为凸包的点
+ * 2.如果找不到next, 表示全部都为凸包点, 返回
+ * 3.共线时, 取未确认为凸包，并且较近的点
+ */
+public:
+    vector<Point> outerTrees(vector<Point>& points) {
+        int n = points.size();
+        if(n <=3) return points;
+        
+        int flag[n] = {0};
+        int start = findStart(points);
+        vector<Point> result;
+        int s = start;
+        result.push_back(points[s]);
+        flag[s] = 1;
+        
+        //找到第一个可用的点
+        int next = 0;
+        for(int i=0; i<n; i++) {
+            if(flag[i] == 0) {
+                next = i;
+                break;
+            }
+        }
+        
+        int cnt = 0;
+        while(cnt < n) {
+            bool find = false;
+            for(int i=0; i<n; i++) {
+                if(i == s) continue;//防止陷入死循环
+                int ret = cross(points[s], points[i], points[next]);
+                if(ret > 0 || (ret == 0 && flag[i] == 0 && near(points[s], points[i], points[next]))) {
+                    next = i;
+                }         
+            }
+            
+            if(next == start) break;
+            s = next;
+            result.push_back(points[s]);
+            flag[s] = 1;
+            for(int i=0; i<n; i++) {
+                if(flag[i] == 0) {
+                    next = i;
+                    find = true;
+                    break;
+                }
+            }
+            
+            if(!find) break;
+            cnt++;
+        }
+        
+        return result;
+    }
+    
+    //从op --> oq, >0表示在外侧
+    int cross(Point o, Point p, Point q) {
+        return (p.x - o.x)*(q.y - o.y) - (q.x - o.x)*(p.y - o.y);
+    }
+    
+    //true 表示 距离p比q更近或相等
+    bool near(Point o, Point p, Point q) {
+        return (pow((p.x - o.x),2) + pow((p.y-o.y), 2)) <= (pow((q.x-o.x), 2) + pow((q.y-o.y), 2));
+    }
+    
+    int findStart(vector<Point>& points) {
+        int idx = 0;
+        for(int i=1; i<points.size(); i++) {
+            if(cmp(points[i], points[idx])) idx = i;
+        }
+        
+        return idx;
+    }
+    
+    bool cmp(Point a, Point b) {
+        return a.x < b.x || (a.x == b.x && a.y < b.y);
+    }
+};
+
