@@ -193,3 +193,95 @@ public:
     }
 };
 
+/**
+ * Definition for a point.
+ * struct Point {
+ *     int x;
+ *     int y;
+ *     Point() : x(0), y(0) {}
+ *     Point(int a, int b) : x(a), y(b) {}
+ * };
+ */
+
+Point start;
+
+//>0 表示在右边, 逆时针
+//<0 表示在左边
+int cross(Point o, Point p, Point q) {
+    int x1 = p.x - o.x;
+    int y1 = p.y - o.y;
+    int x2 = q.x - o.x;
+    int y2 = q.y - o.y;
+    return x1*y2 - x2*y1;
+}
+
+int distance(Point o, Point p, Point q) {
+    return (p.x - o.x)*(p.x - o.x) + (p.y - o.y)*(p.y - o.y) - ((q.x-o.x)*(q.x - o.x) + (q.y-o.y)*(q.y - o.y));
+}
+
+bool operator < (Point p, Point q) {
+    //叉积求大小, 大于0, 则p弧度更小, =0 则共线，取距离起点更近的.
+    int ret = cross(start, p, q) > 0;
+    return ret > 0 || (ret == 0 && distance(start, p, q) < 0);
+}
+
+//选择最左的点
+int findStart(vector<Point>& points) {
+    int s=0, x1, y1, x2, y2;
+    for(int i=1; i<points.size(); i++) {
+        x1 = points[s].x;
+        y1 = points[s].y;
+        x2 = points[i].x;
+        y2 = points[i].y;
+        
+        if(x1 > x2 || (x1 == x2 && y1 > y2)) s = i;
+    }
+    
+    return s;
+}
+
+class Solution {
+public:
+/**
+ * 凸包算法
+ * 方法二: 扫描法, 利用栈stack, o(nlonN)
+ */ 
+    vector<Point> outerTrees(vector<Point>& points) {
+        vector<Point> result;
+        int n = points.size();
+        if(n <= 3) return points;
+        
+        //按弧度排好序, 利用叉积
+        int s = findStart(points);
+        start = points[s];
+        sort(points.begin(), points.end());
+        Point next = points[1];
+        
+        stack<Point> sp;
+        sp.push(start);
+        
+        int i = 2;
+        while(i < n) {
+            start = sp.top();
+            
+            while(cross(start, points[i], next) > 0) {
+                next = start;
+                sp.pop();
+                start = sp.top();
+            }
+            
+            sp.push(next);
+            next = points[i];
+            i++;
+        }
+        
+        //最后一个点需要push进栈, 因为从起点按弧度排序后, 可以确认弧度最小和弧度最大的边是凸边
+        sp.push(points[n-1]);
+        
+        while(!sp.empty()) {
+            result.push_back(sp.top());
+            sp.pop();
+        }
+        return result;
+    }
+};
