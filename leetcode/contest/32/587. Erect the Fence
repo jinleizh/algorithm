@@ -219,10 +219,12 @@ int distance(Point o, Point p, Point q) {
     return (p.x - o.x)*(p.x - o.x) + (p.y - o.y)*(p.y - o.y) - ((q.x-o.x)*(q.x - o.x) + (q.y-o.y)*(q.y - o.y));
 }
 
+//这里是从左侧，最下面开始, 所以应该按顺时针, 扫描.  先选上方的点，因为要考虑与起点在同一条线的情况
+//如果是选做下边, 做左侧开始, 应该按逆时针, 先选右侧的点
 bool operator < (Point p, Point q) {
-    //叉积求大小, 大于0, 则p弧度更小, =0 则共线，取距离起点更近的.
-    int ret = cross(start, p, q) > 0;
-    return ret > 0 || (ret == 0 && distance(start, p, q) < 0);
+    //叉积求大小, 小于0, 则p弧度更小, =0 则共线，取距离起点更近的.
+    int ret = cross(start, p, q);
+    return ret < 0 || (ret == 0 && distance(start, p, q) < 0);
 }
 
 //选择最左的点
@@ -244,7 +246,7 @@ class Solution {
 public:
 /**
  * 凸包算法
- * 方法二: 扫描法, 利用栈stack, o(nlonN)
+ * 方法二: 扫描法, 利用栈stack, o(nlogN)， 需要注意，对于最后一条边上共线点的处理.
  */ 
     vector<Point> outerTrees(vector<Point>& points) {
         vector<Point> result;
@@ -253,6 +255,7 @@ public:
         
         //按弧度排好序, 利用叉积
         int s = findStart(points);
+        Point begin = points[s];
         start = points[s];
         sort(points.begin(), points.end());
         Point next = points[1];
@@ -264,7 +267,7 @@ public:
         while(i < n) {
             start = sp.top();
             
-            while(cross(start, points[i], next) > 0) {
+            while(cross(start, points[i], next) < 0) {
                 next = start;
                 sp.pop();
                 start = sp.top();
@@ -276,7 +279,18 @@ public:
         }
         
         //最后一个点需要push进栈, 因为从起点按弧度排序后, 可以确认弧度最小和弧度最大的边是凸边
-        sp.push(points[n-1]);
+        //补充下最后一条边上的共线点
+        int j = n - 1;
+        while(j >= 0) {
+            if(0 == cross(begin, points[j], points[n-1])) {
+                sp.push(points[j]);
+            } else {
+                break;
+            }
+            
+            j--;
+        }
+        
         
         while(!sp.empty()) {
             result.push_back(sp.top());
