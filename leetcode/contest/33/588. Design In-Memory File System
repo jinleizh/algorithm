@@ -1,0 +1,132 @@
+struct FileNode {
+    string dirName;
+    string fileName;
+    string content;
+
+    FileNode(string dir, string name, string txt) {
+        dirName = dir;
+        fileName = name;
+        content = txt;
+    }
+};
+
+struct DirNode {
+    string dirName;
+    vector<string> dirs;//名称map
+    vector<string> files;//名称map
+    
+    DirNode(string name) {
+        dirName = name;
+    }
+};
+
+class FileSystem {
+/**
+ * 目录树结构
+ * 
+ */
+private: 
+    DirNode* root;
+    map<string, FileNode*> fileMap;
+    map<string, DirNode*> dirMap;
+
+public:
+    FileSystem() {
+        root = new DirNode("/");      
+        dirMap["/"] = root;
+    }
+    
+    vector<string> ls(string path) {
+        vector<string> result;
+
+        if(fileMap.count(path)) {
+            FileNode* fn = fileMap[path];
+            result.push_back(fn->fileName);
+            return result;
+        }
+        
+        if(dirMap.count(path)) {
+            DirNode* dn = dirMap[path];
+            result.insert(result.end(), dn->dirs.begin(), dn->dirs.end());
+            result.insert(result.end(), dn->files.begin(), dn->files.end());
+            sort(result.begin(), result.end());
+            return result;
+        }
+        
+        return result;
+    }
+    
+    void mkdir(string path) {
+        string curDir = "";
+        while(!path.empty()) {
+            int pos = path.find_first_of("/", 1);
+            if(pos != string::npos) {
+                curDir += path.substr(0, pos);
+                path = path.substr(pos);
+            } else {
+                curDir += path;
+                path = "";
+            }
+            
+            //创建每一个不存在的目录
+            if(!dirMap.count(curDir)) {
+                int pos = curDir.find_last_of("/");
+                string curDirName = curDir.substr(pos+1);
+                dirMap[curDir] = new DirNode(curDirName);
+                
+                //更新父目录
+                string parentDir = curDir.substr(0, pos);
+                if(parentDir == "") parentDir = "/";
+                
+                /*
+                pos = parentDir.find_last_of("/");
+                if(pos != 0) {
+                    dirName = parentDir.substr(pos+1);
+                } else {
+                    dirName = "/";
+                }
+                */
+                
+                dirMap[parentDir]->dirs.push_back(curDirName);
+            }
+        }
+    }
+    
+    void addContentToFile(string filePath, string content) {
+        if(fileMap.count(filePath)) {
+            FileNode *fn = fileMap[filePath];
+            fn->content.append(content);
+        } else {
+            int pos = filePath.find_last_of("/");
+            string dirName = filePath.substr(0, pos);
+            if(dirName == "") dirName = "/";
+            
+            string fileName = filePath.substr(pos+1);
+            FileNode *fn = new FileNode(dirName, fileName, content);
+            fileMap[filePath] = fn;
+            
+            if(!dirMap.count(dirName)) {
+                mkdir(dirName);
+            }
+            
+            dirMap[dirName]->files.push_back(fileName);
+        }
+    }
+    
+    string readContentFromFile(string filePath) {
+        if(fileMap.count(filePath)) {
+            return fileMap[filePath]->content; 
+        }
+        
+        return "";
+    }
+};
+
+/**
+ * Your FileSystem object will be instantiated and called as such:
+ * FileSystem obj = new FileSystem();
+ * vector<string> param_1 = obj.ls(path);
+ * obj.mkdir(path);
+ * obj.addContentToFile(filePath,content);
+ * string param_4 = obj.readContentFromFile(filePath);
+ */
