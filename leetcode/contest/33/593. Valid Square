@@ -1,0 +1,63 @@
+class Solution {
+public:
+    bool validSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
+        int la = distance(p1, p2);
+        int lb = distance(p1, p3);
+        int lc = distance(p1, p4);
+        
+        if(la >= lb && la >= lc && lb == lc) {
+            return la == lb + lc && isValid(p1,p3,p2,p4);
+        }
+        
+        if(lb >= la && lb >= lc && la == lc) {
+            return lb == la + lc && isValid(p1,p2,p3,p4);
+        }
+        
+        if(lc >= la && lc >= lb && la == lb) {
+            return lc == la + lb && isValid(p1,p2,p4,p3);
+        }
+        
+        return false;
+    }
+    
+    int distance(vector<int>& a, vector<int>& b) {
+        return pow((b[0]-a[0]), 2) + pow((b[1]-a[1]), 2);
+    }
+    
+    int max(int a, int b, int c) {
+        int tmp = a > b ? a : b;
+        return c > tmp ? c : tmp;
+    }
+    
+    int cross(vector<int>& a, vector<int>& b, vector<int>& c) {
+        int x1 = b[0] - a[0];
+        int y1 = b[1] - a[1];
+        int x2 = c[0] - a[0];
+        int y2 = c[1] - a[1];
+        
+        return x1*y2 - x2*y1;
+    }
+    
+    int cross(vector<int>& a, vector<int>& b) {
+        return a[0]*b[1] - a[1]*b[0];
+    }
+    
+    bool isValid(vector<int>& a, vector<int>& b, vector<int>& c, vector<int>& d) {
+        vector<int> row1(2,0);
+        vector<int> row2(2,0);
+        vector<int> col1(2,0);
+        vector<int> col2(2,0);
+        
+        row1[0] = b[0]-a[0];
+        row1[1] = b[1]-a[1];
+        row2[0] = c[0]-d[0];
+        row2[1] = c[1]-d[1];
+        
+        col1[0] = a[0]-d[0];
+        col1[1] = a[1]-d[1];
+        col2[0] = b[0]-c[0];
+        col2[1] = b[1]-c[1];
+        
+        return cross(a, b, d) != 0 && cross(row1, row2) == 0 && cross(col1, col2) == 0;
+    }
+};
