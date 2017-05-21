@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int findLHS(vector<int>& a) {
+        int n = a.size();
+        int max = 0;
+        int countA = 0;
+        bool findA = false;
+        int countB = 0;
+        bool findB = false;
+        for(int i=0; i<n; i++) {
+            countA = 0;
+            findA = false;
+            countB = 0;
+            findB = false;
+            for(int j=i; j<n; j++) {
+                if(a[i] == a[j] || a[j] == a[i] + 1) {
+                    countA++;
+                    if(a[j] == a[i] + 1) findA = true;
+                }
+                
+                if(a[i] == a[j] || a[j] == a[i] - 1) {
+                    countB++;
+                    if(a[j] == a[i] - 1) findB = true;
+                }
+            }
+            
+            if(findA == true) {
+                max = max < countA ? countA : max;
+            }
+            
+            if(findB == true) {
+                max = max < countB ? countB : max;
+            }
+        }
+        
+        return max;
+    }
+};
