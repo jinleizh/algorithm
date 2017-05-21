@@ -114,3 +114,49 @@ public:
         return ret;   
     }
 };
+
+
+class Solution {
+public:
+    string fractionAddition(string str) {
+        long a = 0;
+        long b = 1;
+        string s = "";
+        
+        while(!str.empty()) {
+            int pos = str.find_first_of("-+", 1);
+            if(pos != string::npos) {
+                s = str.substr(0, pos);
+                str = str.substr(pos);
+            } else {
+                s = str;
+                str = "";
+            } 
+            
+            //按/分割字符串s
+            int split = s.find_first_of('/');
+            long c = stol(s.substr(0, split));
+            long d = stol(s.substr(split+1));
+            add(a, b, c, d);
+        }
+        
+        //abs 防止符号变位
+        int g = gcd(abs(a), abs(b));
+        a = a / g;
+        b = b / g;
+        
+        return to_string(a) + "/" + to_string(b);
+    }
+    
+    void add(long& a, long& b, long c, long d) {
+        int up = a * d + c * b;
+        int bo = b * d;
+        a = up;
+        b = bo;
+    }
+    
+    long gcd(long a, long b) {
+        if(a % b == 0) return b;
+        return gcd(b, a % b);
+    }
+};
