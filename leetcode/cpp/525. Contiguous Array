@@ -1,0 +1,43 @@
+class Solution {
+public:
+/**
+ * 1.利用数组下标的有序性
+ * 2.只需要保存, 每个sun值对应的最大值和最小值下标, 相减即为后悬值之一
+ * 3.同时要处理下 sum为0的情况, 
+ * 2和3 取大者
+ */ 
+    int findMaxLength(vector<int>& nums) {
+        int n = nums.size();
+        map<int, vector<int>> vm;
+        int sum = 0;
+        for(int i=0; i<n; i++) {
+            if(0 == nums[i]) nums[i] = -1;
+            sum += nums[i];
+            nums[i] = sum;
+            
+            if(0 == vm.count(sum)) {
+                vm[sum].push_back(i); //最小下标
+                vm[sum].push_back(i); //最大下标
+            } else {
+                vm[sum][1] = i;
+            }
+        }
+        
+        int ans = 0, tmp = 0;
+        for(auto it : vm) {
+            if(it.first != 0) {
+                tmp = it.second[1] - it.second[0];
+                if(tmp > ans) ans = tmp;
+            }
+        }
+        
+        //处理sum为0的值
+        for(auto pos : vm[0]) {
+            if(ans < pos + 1) {
+                ans = pos + 1;
+            }
+        }
+        
+        return ans;
+    }
+};
