@@ -1,0 +1,61 @@
+class Solution {
+public:
+/**
+ * 思路: 模拟除法运算
+ * 1) l = a / b  r = a % b  if(r < b) input(.)  r *=10 d = r/b c = r % b if(c == r) input((x))
+ * 2) 需要使用map来记录下被除数
+ */ 
+    typedef pair<int, int> pii;
+    string fractionToDecimal(int numerator, int denominator) {
+        map<long, int> op;
+        vector<int> dr;
+        int idx = 0;
+        long a = numerator;
+        long b = denominator;
+        if(0 == b || 0 == a) return "0";
+        
+        bool minus = false;
+        if(a > 0 ^ b > 0) {
+            minus = true;
+        }
+        
+        a = abs(a);
+        b = abs(b);
+        
+        //return to_string(b);
+        
+        long l = a / b;
+        long r = a % b;
+        string result = minus ? "-" : "";
+        if(r == 0) return result.append(to_string(l));
+        result += to_string(l) + ".";
+        while(r != 0) {
+            a = r * 10;
+            if(op.find(r) != op.end()) {
+                int pos = op[r];
+                
+                for(int i=0; i<pos; i++) {
+                    result.append(to_string(dr[i]));
+                }
+                
+                result.append("(");
+                for(int i=pos; i<dr.size(); i++) {
+                    result.append(to_string(dr[i]));
+                }
+                result.append(")");
+                return result;
+            }
+            
+            op.insert(pii(r, idx++));
+            l = a / b;
+            dr.push_back(l);
+            r = a % b;
+        }
+        
+        for(int i=0; i<dr.size(); i++) {
+            result.append(to_string(dr[i]));    
+        }
+        
+        return result;
+    }
+};
