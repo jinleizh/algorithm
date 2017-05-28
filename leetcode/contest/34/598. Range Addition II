@@ -1,0 +1,20 @@
+class Solution {
+/**
+ * 思路: 区域覆盖, 只对当前最小区域进行叠加
+ * 当前最小区域
+ * 较大区域 则 最小区域不变
+ * 较小区域，则 更新最小区域
+ * i和j均取最小即可
+ */ 
+public:
+    int maxCount(int m, int n, vector<vector<int>>& ops) {
+        int x = m, y = n;
+        for(int i=0; i<ops.size(); i++) {
+            vector<int> tmp = ops[i];
+            if(x > tmp[0]) x = tmp[0];
+            if(y > tmp[1]) y = tmp[1];
+        }
+        
+        return x * y;
+    }
+};
