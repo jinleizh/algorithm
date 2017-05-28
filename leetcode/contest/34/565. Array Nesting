@@ -1,0 +1,33 @@
+class Solution {
+/**
+ * 思路: 并查集思想,归类,求出类别中最长的串
+ * 
+ */ 
+public:
+    int arrayNesting(vector<int>& nums) {
+        vector<int> flag(nums.size(), 0);
+        int maxLen = 0;
+        for(int i=0; i<nums.size(); i++) {
+            if(flag[i] == 0) {
+                flag[i] = 1;
+                int len = traverse(nums, flag, i);
+                if(maxLen < len) maxLen = len;
+            }
+        }
+        
+        return maxLen;
+    }
+    
+    int traverse(vector<int>& nums, vector<int>& flag, int k) {
+        int start = nums[k];
+        int count = 1;
+        k = nums[k];
+        while(nums[k] != start) {
+            flag[k] = 1;
+            count++;
+            k = nums[k];
+        }
+        
+        return count;
+    }
+};
