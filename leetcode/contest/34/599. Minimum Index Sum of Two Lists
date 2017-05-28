@@ -1,0 +1,31 @@
+class Solution {
+public:
+/**
+ * 思路: map统计
+ */ 
+    vector<string> findRestaurant(vector<string>& list1, vector<string>& list2) {
+        map<string, int> mapA;
+        map<string, int> mapB;
+        map<int, vector<string>> mapR;
+        
+        for(int i=0; i<list1.size(); i++) {
+            mapA[list1[i]] = i;
+        }
+        
+        for(int j=0; j<list2.size(); j++) {
+            mapB[list2[j]] = j;
+        }
+        
+        for(auto it : mapA) {
+            int l = it.second;
+            if(mapB.count(it.first)) {
+                int r = mapB[it.first];
+                mapR[l+r].push_back(it.first);
+            }
+        }
+        
+        for(auto it : mapR) {
+            return it.second;
+        }
+    }
+};
