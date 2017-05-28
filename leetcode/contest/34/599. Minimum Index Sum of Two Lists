@@ -29,3 +29,38 @@ public:
         }
     }
 };
+
+class Solution {
+public:
+/**
+ * 思路: map统计, 优化空间复杂度
+ */ 
+    vector<string> findRestaurant(vector<string>& list1, vector<string>& list2) {
+        map<string, int> mapA;
+        vector<string> result;
+        int best = INT_MAX;
+        
+        for(int i=0; i<list1.size(); i++) {
+            mapA[list1[i]] = i;
+        }
+        
+        for(int j=0; j<list2.size(); j++) {
+            string str = list2[j];
+            if(mapA.count(str)) {
+                int i = mapA[str];
+                if(i + j == best) {
+                    result.push_back(str);
+                } else if(i + j < best) {
+                    vector<string> v;
+                    result.swap(v);
+                    result.push_back(str);
+                    best = i + j;
+                }
+                
+                //result.push_back("+" + str + "+" + to_string(best) + "+");
+            }
+        }
+        
+        return result;
+    }
+};
