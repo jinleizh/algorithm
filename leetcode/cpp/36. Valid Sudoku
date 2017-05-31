@@ -57,3 +57,37 @@ public:
         return true;
     }
 };
+
+
+class Solution {
+public:
+    typedef vector<map<char, int>> vmc;
+    typedef map<char, int> mc;
+    typedef pair<char, int> pci;
+    typedef vector<vector<map<char, int>>> vvmc;
+    
+    bool isValidSudoku(vector<vector<char>>& board) {
+        vmc row;
+        vmc col;
+        vvmc grid;
+        
+        int rn = board.size();
+        int cn = board[0].size();
+        
+        row.resize(rn, mc());
+        col.resize(cn, mc());
+        grid.resize(rn/3, vector<map<char, int>>(cn/3, mc()));
+        
+        for(int i=0; i<rn; i++) {
+            for(int j=0; j<cn; j++) {
+                char c = board[i][j];
+                if(c != '.') {
+                    if(row[i].count(c) || col[j].count(c) || grid[i/3][j/3].count(c)) return false;
+                    row[i][c] = col[j][c] = grid[i/3][j/3][c] = 1;
+                }
+            }
+        }
+        
+        return true;
+    }
+};
