@@ -30,3 +30,70 @@ public:
         return true;
     }
 };
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ /**
+  * 思路: 空间复杂度o(n) 时间负责度o(1)
+  * 思路: 1.根据快慢指针找到中间节点 2.反转中间指针之后的节点 3.遍历比较
+  * 快指针，慢指针,  初始化指针位置, while(1) {
+  * 判断fast是否为NULL， 为NULL，则当前slow为mid, 若fast不为NULL，则判断fast->next是否为NULL，如果为NULL，则当前slow再前进一步,即为mid,
+  * 否则, fast=fast->next->next， slow=slow->next}
+  *
+  */ 
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        //单元素或空链表
+        if(NULL == head || NULL == head->next) return true;
+        
+        //找到中间指针mid
+        ListNode *mid = NULL, *fast = head, *slow = head;
+        slow = slow->next;
+        fast = fast->next->next;
+        
+        //快指针判断是否为NULL
+        //若为NULL, mid取slow的下一个位置
+        //若fast->next
+        while(1) {
+            if(fast == NULL) {
+                mid = slow;
+                break;
+            }
+            
+            fast = fast->next;
+            if(fast == NULL) {
+                mid = slow->next;
+                break;
+            }
+            
+            fast = fast->next;
+            slow = slow->next;
+        }
+        
+        //反转中间链表开始的节点
+        ListNode* pre = NULL;
+        ListNode* cur = NULL;
+        while(mid) {
+            cur = mid;
+            mid = mid->next;
+            cur->next = pre;
+            pre = cur;
+        }
+        
+        while(cur) {
+            //if(cur->val == 2) return false;
+            if(cur->val != head->val) return false;
+            head = head->next;
+            cur = cur->next;
+        }
+        
+        return true;
+    }
+};
