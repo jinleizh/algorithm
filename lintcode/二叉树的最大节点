@@ -1,0 +1,21 @@
+class Solution {
+public:
+    /**
+     * @param root the root of binary tree
+     * @return the max node
+     */
+    TreeNode* maxNode(TreeNode* root) {
+        // Write your code here
+        if (NULL == root) return NULL;
+        TreeNode* lMax = maxNode(root->left);
+        TreeNode* rMax = maxNode(root->right);
+        TreeNode* max = root;
+        if (lMax != NULL && lMax->val > max->val) {
+            max = lMax;
+        }
+        if (rMax != NULL && rMax->val > max->val) {
+            max = rMax;
+        }
+        return max;
+    }
+};
