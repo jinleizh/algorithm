@@ -1,0 +1,94 @@
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return void
+     */
+    void sortIntegers(vector<int>& a) {
+        // Write your code here
+        int n = a.size();
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < n-i; j++) {
+                if (a[j] > a[j+1]) {
+                    int tmp = a[j];
+                    a[j] = a[j+1];
+                    a[j+1] = tmp;
+                }
+            }
+        }
+    }
+};
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return void
+     */
+    void sortIntegers(vector<int>& a) {
+        // Write your code here
+        bool finish = true;
+        int n = a.size();
+        for (int i = 1; i <= n; i++) {
+            finish = true;
+            for (int j = 0; j < n-i; j++) {
+                if (a[j] > a[j+1]) {
+                    int tmp = a[j];
+                    a[j] = a[j+1];
+                    a[j+1] = tmp;
+                    finish = false;
+                }
+            }
+            
+            if(finish) return;
+        }
+    }
+};
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return void
+     */
+    void sortIntegers(vector<int>& a) {
+        // Write your code here
+        int n = a.size();
+        for (int i = 0; i < n; i++) {
+            int pos = -1;
+            int num = a[i];
+            for (int j = i - 1; j >= 0; j--) {
+                if (a[j] < a[i]) {
+                   pos = j;
+                   break;
+                }
+            }
+            // 从pos+1 到 i-1 移动数据
+            for (int k = i - 1; k >= pos + 1; k--) {
+                a[k+1] = a[k];
+            }
+            a[pos + 1] = num;
+        }
+    }
+};
+
+class Solution {
+public:
+    /**
+     * @param A an integer array
+     * @return void
+     */
+    void sortIntegers(vector<int>& a) {
+        // Write your code here
+        int n = a.size();
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (a[i] > a[j]) {
+                    int tmp = a[j];
+                    a[j] = a[i];
+                    a[i] = tmp;
+                }
+            }
+        }
+    }
+};
