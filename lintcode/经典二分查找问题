@@ -1,0 +1,19 @@
+class Solution {
+public:
+    /**
+     * @param A an integer array sorted in ascending order
+     * @param target an integer
+     * @return an integer
+     */
+    int findPosition(vector<int>& A, int target) {
+        // Write your code here
+        return bs(A, 0, A.size() - 1, target);
+    }
+    int bs(vector<int>& A, int l, int r, int k) {
+        if(l > r) return -1;
+        int mid = (l + r) / 2;
+        if (A[mid] == k) return mid;
+        if (A[mid] < k) return bs(A, mid + 1, r, k);
+        return bs(A, l, mid - 1, k);
+    }
+};
