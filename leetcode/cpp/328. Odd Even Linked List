@@ -37,3 +37,36 @@ public:
         return head;
     }
 };
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+/**
+ * 思路: 依次去除奇数位置的指针, 放在奇数链尾部.
+ * 奇数链尾指针
+ * 指向奇数位置的指针
+ */ 
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if(NULL == head) return head;
+        ListNode* odd = head;
+        ListNode* even = head->next;
+        ListNode* evenHead = even;
+        
+        while(even != NULL && even->next != NULL) {
+            odd->next = odd->next->next;
+            even->next = even->next->next;
+            odd = odd->next;
+            even = even->next;
+        }
+        odd->next = evenHead;
+        
+        return head;
+    }
+};
