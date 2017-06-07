@@ -1,0 +1,39 @@
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root: The root of binary tree.
+     * @return: True if this Binary tree is Balanced, or false.
+     */
+    bool isBalanced(TreeNode *root) {
+        if (NULL == root) return true;
+        
+        // write your code here
+        if (isBalanced(root->left) && isBalanced(root->right)) {
+            int lh = height(root->left);
+            int rh = height(root->right);
+            if (abs(lh - rh) <= 1) return true;
+        }
+        
+        return false;
+    }
+    
+    int height(TreeNode* root) {
+        if (NULL == root) return 0;
+        int lh = height(root->left);
+        int rh = height(root->right);
+        int max = lh > rh ? lh : rh;
+        return max + 1;
+    }
+};
