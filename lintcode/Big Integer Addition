@@ -1,0 +1,52 @@
+class Solution {
+public:
+    /**
+     * @param num1 a non-negative integers
+     * @param num2 a non-negative integers
+     * @return return sum of num1 and num2
+     */
+    string addStrings(string& num1, string& num2) {
+        // Write your code here
+        string result = "";
+        int l = num1.length() - 1;
+        int r = num2.length() - 1;
+        int carry = 0;
+        int sum = 0;
+        char c = 0;
+        while (l >= 0 && r >= 0) {
+            sum = carry + num1[l--] - '0' + num2[r--] - '0';
+            c = sum % 10 + '0';
+            carry = sum / 10;
+            result.append(1, c);
+        }
+        
+        while(l >= 0) {
+            if(0 == carry) {
+                result.append(1, num1[l--]);
+            } else {
+                sum = carry + num1[l--] - '0';
+                c = sum % 10 + '0';
+                carry = sum / 10;
+                result.append(1, c);
+            }
+        }
+        
+        while(r >= 0) {
+            if(0 == carry) {
+                result.append(1, num2[r--]);
+            } else {
+                sum = carry + num2[r--] - '0';
+                c = sum % 10 + '0';
+                carry = sum / 10;
+                result.append(1, c);
+            }
+        }
+        
+        if(carry) {
+            result.append(1, carry + '0');
+        }
+        
+        reverse(result.begin(), result.end());
+        return result;
+    }
+};
