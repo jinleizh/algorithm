@@ -15,9 +15,10 @@ public:
         if(k <= 1 || NULL == head) return head;
         ListNode *slow = head;
         ListNode *fast = head;
-        ListNode *nh = NULL;
-        ListNode *lastKt = NULL;
-        while(1) {
+        ListNode *newHead = NULL;
+        ListNode *lastTail = NULL;
+        ListNode *tail = NULL;
+        while(NULL != slow) {
             int cnt = 0;
             while(fast) {
                 cnt++;
@@ -26,11 +27,11 @@ public:
             }
             
             if(cnt < k) {
-                if(NULL == nh) return head;
-                return nh;
+                if(NULL == newHead) return head;
+                return newHead;
             }
             
-            ListNode *lastKh = slow;
+            ListNode *tail = slow;
             ListNode *prev = fast;
             while(slow != fast) {
                 ListNode* tmp = slow;
@@ -39,14 +40,15 @@ public:
                 prev = tmp;
             }
          
-            if(NULL == nh) {
-                nh = prev;
-                lastKt = lastKh;
+            if(NULL == newHead) {
+                newHead = prev;
             } else {
-                lastKt->next = prev;
+                lastTail->next = prev;
             }
+            
+            lastTail = tail;
         }
         
-        return nh;
+        return newHead;
     }
 };
