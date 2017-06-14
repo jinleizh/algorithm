@@ -96,3 +96,71 @@ public:
         return l2;
     }
 };
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ /**
+  * 思路: 多路归并, 利用K大小的最小堆, 依次出堆
+  */
+  
+struct isLess {
+    bool operator()(ListNode* l, ListNode* r) {
+        return l->val > r->val;
+    }  
+};
+
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        //1.构造K大小的小顶堆, 初始元素为各个链表的表头
+        int k = lists.size();
+        if(0 == k) return NULL;
+        if(1 == k) return lists[0];
+
+        vector<ListNode*> heap;
+        for(int i=0; i<k; i++) {
+            if(NULL != lists[i]) {
+                heap.push_back(lists[i]);
+            }
+        }
+
+        make_heap(heap.begin(), heap.end(), isLess());
+
+        ListNode* newHead = NULL;
+        ListNode* cur = NULL;
+        ListNode* curTop = NULL;
+        ListNode* next = NULL;
+
+        ListNode* output;
+        while(heap.size()>0) {
+            curTop = heap.front();
+            next = curTop->next;
+            curTop->next = NULL;
+
+            if(NULL == newHead) {
+                newHead = curTop;
+                cur = newHead;
+            } else {
+                cur->next = curTop;
+                cur = cur->next;
+            }
+
+            pop_heap(heap.begin(), heap.end(), isLess());
+            heap.pop_back();
+
+            if(NULL != next) {
+                heap.push_back(next);
+                push_heap(heap.begin(), heap.end(), isLess());
+            }
+
+        }
+
+        return newHead;
+    }
+};
