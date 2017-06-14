@@ -89,3 +89,44 @@ public:
         return preheader->next;
     }
 };
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+/**
+ * 思路: 快慢指针,原地逆序
+ */ 
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if(k <= 1 || NULL == head) return head;
+        ListNode* prevHead = new ListNode(-1);
+        prevHead->next = head;
+        int len = 1;
+        while(head = head->next) {
+            len++;
+        }
+    
+        ListNode *prev = prevHead, *cur, *nex; 
+        
+        while(len >= k) {
+            cur = prev->next;
+            nex = cur->next;
+            for(int i=1; i<k; i++) {
+                cur->next = nex->next;
+                nex->next = prev->next;
+                prev->next = nex;
+                nex = cur->next;
+            }
+            prev = cur;
+            len -= k;
+        }
+        
+        return prevHead->next;
+    }
+};
