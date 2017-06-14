@@ -10,9 +10,11 @@
   * 思路: 多路归并, 利用K大小的最小堆, 依次出堆
   */
   
-bool isLess(ListNode* l, ListNode* r) {
-    return l->val < r->val;
-}
+struct isLess {
+    bool operator()(ListNode* l, ListNode* r) {
+        return l->val > r->val;
+    }  
+};
 
 class Solution {
 public:
@@ -20,7 +22,8 @@ public:
         //1.构造K大小的小顶堆, 初始元素为各个链表的表头
         int k = lists.size();
         if(0 == k) return NULL;
-        
+        if(1 == k) return lists[0];
+
         vector<ListNode*> heap;
         for(int i=0; i<k; i++) {
             if(NULL != lists[i]) {
@@ -28,19 +31,15 @@ public:
             }
         }
         
-        make_heap(heap.begin(), heap.end(), isLess);
+        priority_queue<ListNode*, vector<ListNode*>, isLess> queue(heap.begin(), heap.end());
         
-        ListNode* newHead = NULL;
-        ListNode* cur = NULL;
-        ListNode* curTop = NULL;
-        ListNode* next = NULL;
-        
-        ListNode* output;
-        int count = 0;
-        while(heap.size() > 0) {
-            count++;
-            curTop = heap.front();
-            next = curTop->next;
+        ListNode *newHead = NULL;
+        ListNode *cur = NULL;
+        ListNode *curTop = NULL;
+        ListNode *nextP = NULL;
+        while(!queue.empty()) {
+            curTop = queue.top();
+            nextP = curTop->next;
             curTop->next = NULL;
             
             if(NULL == newHead) {
@@ -50,22 +49,11 @@ public:
                 cur->next = curTop;
                 cur = cur->next;
             }
-
-            //出堆
-            pop_heap(heap.begin(), heap.end());
-            heap.pop_back();
-            if(3 == count) {
-                //return heap.front();
-            }
             
-            //入堆
-            if(NULL != next) {
-                heap.push_back(next);
-                make_heap(heap.begin(), heap.end());
-            }
+            queue.pop();
             
-            if(3 == count) {
-                //return heap.front();
+            if(NULL != nextP) {
+                queue.push(nextP);
             }
         }
         
