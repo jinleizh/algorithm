@@ -1,0 +1,50 @@
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root the root of binary tree
+     * @param target an integer
+     * @return all valid paths
+     */
+    vector<vector<int>> result;
+    vector<int> data;
+    vector<vector<int>> binaryTreePathSum(TreeNode *root, int target) {
+        // Write your code here
+        if(NULL == root) {
+            vector<vector<int>> p;
+            return p;
+        }
+        find(data, root, target);
+        //binaryTreePathSum(root->left, target);
+        //binaryTreePathSum(root->right, target);
+        return result;
+    }
+    
+    void find(vector<int>& data, TreeNode *root, int target) {
+        if(NULL == root) return;
+        
+        data.push_back(root->val);
+        
+        if(target == root->val && NULL == root->left && NULL == root->right) {
+            vector<int> tmp(data);
+            result.push_back(tmp);
+        }
+        
+        find(data, root->left, target - root->val);
+        
+        find(data, root->right, target - root->val);
+        
+        data.pop_back();
+    }
+};
