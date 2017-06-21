@@ -1,0 +1,46 @@
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root the root of the binary tree
+     * @return all root-to-leaf paths
+     */
+    vector<string> result;
+    vector<int> vd;
+    vector<string> binaryTreePaths(TreeNode* root) {
+        // Write your code
+        find(root);
+        return result;
+    }
+    
+    void find(TreeNode* root) {
+        if(NULL == root) return;
+        
+        vd.push_back(root->val);
+        if(NULL == root->left && NULL == root->right) {
+            string tmp;
+            tmp += to_string(vd[0]);
+            for(int i=1; i<vd.size(); i++) {
+                tmp = tmp + "->" + to_string(vd[i]);
+            }
+            result.push_back(tmp);
+            vd.pop_back();
+            return;
+        }
+        
+        find(root->left);
+        find(root->right);
+        vd.pop_back();
+    }
+};
