@@ -9,20 +9,51 @@
 class Solution {
 public:
     void reorderList(ListNode* head) {
-        ListNode *cur = head;
-        while(NULL != cur && NULL != cur->next && NULL != cur->next->next) {
-            ListNode *prev = cur;
-            ListNode *next = cur;
-            
-            while(NULL != next->next) {
-                prev = next;
-                next = next->next;
+        if (NULL == head || NULL == head->next || NULL == head->next->next) return;
+        
+        //find mid pos
+        ListNode *tmp = head;
+        int count = 0;
+        while (NULL != tmp) {
+            ++count;
+            tmp = tmp->next;
+        }
+        
+        int pos = (count + 1) / 2;
+        
+        tmp = head;
+        int idx = 0;
+        ListNode *rh = NULL;
+        while (NULL != tmp) {
+            ++idx;
+            if(idx == pos) {
+                rh = tmp->next;
+                tmp->next = NULL;
+                break;
             }
             
-            prev->next = next->next;
-            next->next = cur->next;
-            cur->next = next;
-            cur = next->next;
+            tmp = tmp->next;
+        }
+        
+        //reverse rh
+        ListNode *prev = NULL;
+        ListNode *cur = NULL;
+        while(NULL != rh) {
+            cur = rh;
+            rh = rh->next;
+            cur->next = prev;
+            prev = cur;
+        }
+        
+        //merge list
+        tmp = head;
+        while(NULL != cur) {
+           ListNode *nextTmp = tmp->next;
+           ListNode *nextCur = cur->next;
+           cur->next = nextTmp;
+           tmp->next = cur;
+           cur = nextCur;
+           tmp = nextTmp;
         }
     }
 };
