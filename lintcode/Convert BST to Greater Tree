@@ -1,0 +1,30 @@
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param root the root of binary tree
+     * @return the new root
+     */
+    int sum = 0;
+    TreeNode* convertBST(TreeNode* root) {
+        // Write your code here
+        // 右根左遍历
+        if(NULL == root) return NULL;
+        convertBST(root->right);
+        sum += root->val;
+        root->val = sum;
+        convertBST(root->left);
+        return root;
+    }
+};
