@@ -1,0 +1,39 @@
+/**
+ * Definition of TreeNode:
+ * class TreeNode {
+ * public:
+ *     int val;
+ *     TreeNode *left, *right;
+ *     TreeNode(int val) {
+ *         this->val = val;
+ *         this->left = this->right = NULL;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * @param A: A sorted (increasing order) array
+     * @return: A tree node
+     */
+    TreeNode *sortedArrayToBST(vector<int> &A) {
+        // write your code here
+        int size = A.size();
+        if(1 > size) return NULL;
+        return travel(A, 0, size-1);
+    }
+    
+    TreeNode *travel(vector<int> &A, int start, int end) {
+        if(start > end) return NULL;
+        int mid = (start + end) / 2;
+        TreeNode *node = new TreeNode(A[mid]);
+        if(NULL != node) {
+            node->left = travel(A, start, mid-1);
+            node->right = travel(A, mid+1, end);
+        }
+        
+        return node;
+    }
+};
+
+
