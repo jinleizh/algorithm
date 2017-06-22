@@ -1,0 +1,37 @@
+class Solution {
+public:
+    /**
+     * @param A: An integer array.
+     * @param B: An integer array.
+     * @return: Cosine similarity.
+     */
+    double cosineSimilarity(vector<int> A, vector<int> B) {
+        // write your code here
+        double y = sqrtSum(A, B);
+        if (0.000001 > y) return 2.0000;
+        long x = sum(A, B);
+        return x / y;
+    }
+    
+    long sum(vector<int> A, vector<int> B) {
+        int n = A.size();
+        long result = 0;
+        for (int i = 0; i < n; i++) {
+            result += A[i] * B[i];
+        }
+        
+        return result;
+    }
+    
+    double sqrtSum(vector<int> A, vector<int> B) {
+        int n = A.size();
+        long sumA = 0;
+        long sumB = 0;
+        for (int i = 0; i < n; i++) {
+            sumA += pow(A[i], 2);
+            sumB += pow(B[i], 2);
+        }
+        
+        return sqrt(sumA) * sqrt(sumB);
+    }
+};
