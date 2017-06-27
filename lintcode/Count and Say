@@ -1,0 +1,39 @@
+class Solution {
+public:
+    /**
+     * @param n the nth
+     * @return the nth sequence
+     */
+    string countAndSay(int n) {
+        // Write your code here
+        if (1 == n) return "1";
+        int k = 2;
+        string tmp = "1";
+        char prevChar = 0;
+        string result = "";
+        int count = 0;
+        while (k <= n) {
+            result = "";
+            prevChar = 0;
+            count = 0;
+            for (char c : tmp) {
+                if (c == prevChar) {
+                    ++count;
+                } else {
+                    if (0 != prevChar && count > 0) {
+                        result += to_string(count);
+                        result.append(1, prevChar);
+                    }
+                    prevChar = c;
+                    count = 1;
+                }
+            }
+            // 最后的元素
+            result += to_string(count);
+            result.append(1, prevChar);
+            tmp = result;
+            k++;
+        }
+        return tmp;
+    }
+};
