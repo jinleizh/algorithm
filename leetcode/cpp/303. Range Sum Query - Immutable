@@ -20,3 +20,28 @@ public:
  * NumArray obj = new NumArray(nums);
  * int param_1 = obj.sumRange(i,j);
  */
+
+
+class NumArray {
+public:
+    NumArray(vector<int> nums) {
+        int sum = 0;
+        dv.push_back(sum);
+        for(int i = 0; i < nums.size(); i++) {
+            sum += nums[i];
+            dv.push_back(sum);
+        }
+    }
+    
+    int sumRange(int i, int j) {
+        return dv[j+1] - dv[i];
+    }
+private:
+    vector<int> dv;
+};
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray obj = new NumArray(nums);
+ * int param_1 = obj.sumRange(i,j);
+ */
