@@ -1,0 +1,25 @@
+class Solution {
+public:
+    //d[n] = max{d[n-1], a[n] + d[n-2]};
+    //d[0] = 0
+    //d[1] = a[0]
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if (0 == n) return 0;
+        if (1 == n) return nums[0];
+        int fir = nums[1] > nums[0] ? nums[1] : nums[0];
+        int sec = nums[0];
+        int i = 3;
+        int t1 = 0;
+        int t2 = 0;
+        while(i <= n) {
+            t1 = fir;
+            t2 = sec;
+            sec = fir;
+            fir = t1 > t2 + nums[i-1] ? t1 : t2 + nums[i-1];
+            i++;
+        }
+        
+        return fir;
+    }
+};
