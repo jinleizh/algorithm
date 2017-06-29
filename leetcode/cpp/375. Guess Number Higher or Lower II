@@ -1,0 +1,26 @@
+ 
+class Solution {
+// min {k + max{dp(1, k-1), dp(k+1, n)}}
+// dp + memory
+public:
+    int getMoneyAmount(int n) {
+        vector<vector<int>> data(n+1, vector<int>(n+1, -1));
+        return dp(1, n, data);
+    }
+    
+    int dp(int start, int end, vector<vector<int>>& data) {
+        if (start >= end) return 0;
+        if(-1 != data[start][end]) return data[start][end];
+        
+        int min = INT_MAX;
+        for(int k = start; k <= end; k++) {
+            int cost = k + std::max(dp(start, k-1, data), dp(k+1, end, data));
+            if(min > cost) {
+                min = cost;
+            }
+        }
+        
+        data[start][end] = min;
+        return min;
+    }
+};
