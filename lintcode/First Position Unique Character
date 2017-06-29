@@ -1,0 +1,22 @@
+class Solution {
+public:
+    /**
+     * @param s a string
+     * @return it's index
+     */
+    int firstUniqChar(string& s) {
+        // Write your code here
+        map<char, int> cntMap;
+        for (char c : s) {
+            cntMap[c]++;
+        }
+        
+        int idx = 0;
+        for (char c : s) {
+            if (1 == cntMap[c]) return idx;
+            ++idx;
+        }
+        
+        return -1;
+    }
+};
