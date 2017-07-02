@@ -1,0 +1,21 @@
+class Solution {
+/**
+ * 全错位排列公式: Tn = (n-1)Tn-2 + (n-1)Tn-1 
+ */ 
+public:
+    int findDerangement(int n) {
+        int mod = 1e9 + 7;
+        vector<long> dp;
+        dp.push_back(0);
+        dp.push_back(0);
+        dp.push_back(1);
+        int i = 3;
+        while(i <= n) {
+            int ret = ((i-1) * ((dp[i-1] + dp[i-2]) % mod )) % mod;
+            dp.push_back(ret);
+            i++;
+        }
+        
+        return dp[n];
+    }
+};
