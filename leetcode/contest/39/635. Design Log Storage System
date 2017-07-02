@@ -58,3 +58,106 @@ public:
  * obj.put(id,timestamp);
  * vector<int> param_2 = obj.retrieve(s,e,gra);
  */
+ 
+ 
+ 
+ class LogSystem {
+public:
+    map<string, vector<int>> yearMap;
+    map<string, vector<int>> monthMap;
+    map<string, vector<int>> dayMap;
+    map<string, vector<int>> hourMap;
+    map<string, vector<int>> minMap;
+    map<string, vector<int>> secMap;
+    
+    LogSystem() {
+        
+    }
+    
+    void put(int id, string timestamp) {
+        yearMap[timestamp.substr(0, 4)].push_back(id);
+        monthMap[timestamp.substr(0, 7)].push_back(id);
+        dayMap[timestamp.substr(0, 10)].push_back(id);
+        hourMap[timestamp.substr(0, 13)].push_back(id);
+        minMap[timestamp.substr(0, 16)].push_back(id);
+        secMap[timestamp].push_back(id);
+    }
+    
+    vector<int> retrieve(string s, string e, string gra) {
+        vector<int> result;
+        if(gra == "Year") {
+            string sY = s.substr(0, 4);
+            string eY = e.substr(0, 4);
+            for(auto& k : yearMap) {
+                if(k.first >= sY && k.first <= eY) {
+                    string tmp = k.first;
+                    result.insert(result.end(), yearMap[tmp].begin(), yearMap[tmp].end());
+                }
+            }
+        }
+        
+        if(gra == "Month") {
+            string sm = s.substr(0, 7);
+            string em = e.substr(0, 7);
+            for(auto& k : monthMap) {
+                if(k.first >= sm && k.first <= em) {
+                    string tmp = k.first;
+                    result.insert(result.end(), monthMap[tmp].begin(), monthMap[tmp].end());
+                }
+            }
+        }
+        
+        if(gra == "Day") {
+                string sd = s.substr(0, 10);
+                string ed = e.substr(0, 10);
+                for(auto& k : dayMap) {
+                    if(k.first >= sd && k.first <= ed) {
+                        string tmp = k.first;
+                        result.insert(result.end(), dayMap[tmp].begin(), dayMap[tmp].end());
+                    }
+                }
+        }
+        
+        if (gra == "Hour") {
+                string sh = s.substr(0, 13);
+                string eh = e.substr(0, 13);
+                for(auto& k : hourMap) {
+                    if(k.first >= sh && k.first <= eh) {
+                        string tmp = k.first;
+                        result.insert(result.end(), hourMap[tmp].begin(), hourMap[tmp].end());
+                    }
+                }
+        }
+        
+        if (gra == "Minute") {
+                string sM = s.substr(0, 16);
+                string eM = e.substr(0, 16);
+                for(auto& k : minMap) {
+                    if(k.first >= sM && k.first <= eM) {
+                        string tmp = k.first;
+                        result.insert(result.end(), minMap[tmp].begin(), minMap[tmp].end());
+                    }
+                }
+        }
+         
+        if (gra == "Second") {
+                string ss = s;
+                string es = e;
+                for(auto& k : secMap) {
+                    if(k.first >= ss && k.first <= es) {
+                        string tmp = k.first;
+                        result.insert(result.end(), secMap[tmp].begin(), secMap[tmp].end()); 
+                    }
+                }
+        }
+        
+        return result;
+    }
+};
+
+/**
+ * Your LogSystem object will be instantiated and called as such:
+ * LogSystem obj = new LogSystem();
+ * obj.put(id,timestamp);
+ * vector<int> param_2 = obj.retrieve(s,e,gra);
+ */
