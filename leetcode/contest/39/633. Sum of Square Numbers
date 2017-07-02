@@ -1,0 +1,23 @@
+class Solution {
+public:
+    bool judgeSquareSum(int c) {
+        map<int, int> dm;
+        long i = 0;
+        while(i*i <= c) {
+            dm[i*i] = 1;
+            ++i;
+        }
+        
+        for(auto& k : dm) {
+            if(k.first <= c) {
+                if(dm.count(c - k.first) > 0) {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
+    }
+};
