@@ -1,1 +1,154 @@
-11111
+class Solution {
+public:
+    bool judgeSquareSum(int c) {
+        map<int, int> d;
+        int n = (int)sqrt(INT_MAX);
+        for(int i=0; i<=n; i++) {
+            d[i*i] = 1;
+        }
+        
+        for(auto& x : d) {
+            if(c >= x.first) {
+                if(d.count(c - x.first) > 0) return true;
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
+    }
+};
+
+class LogSystem {
+public:
+    map<string, vector<int>> yearMap;
+    map<string, vector<int>> monthMap;
+    map<string, vector<int>> dayMap;
+    map<string, vector<int>> hourMap;
+    map<string, vector<int>> minMap;
+    map<string, vector<int>> secMap;
+    
+    LogSystem() {
+        
+    }
+    
+    void put(int id, string timestamp) {
+        string tmp = timestamp;
+        
+        int pos = tmp.find(':');
+        yearMap[timestamp.substr(0, pos)].push_back(id);
+        
+        pos = tmp.find(':', pos+1);
+        monthMap[timestamp.substr(0, pos)].push_back(id);
+        
+        pos = tmp.find(':', pos+1);
+        dayMap[timestamp.substr(0, pos)].push_back(id);
+        
+        pos = tmp.find(':', pos+1);
+        hourMap[timestamp.substr(0, pos)].push_back(id);
+        
+        pos = tmp.find(':', pos+1);
+        minMap[timestamp.substr(0, pos)].push_back(id);
+        
+        secMap[timestamp].push_back(id);
+    }
+    
+    vector<int> retrieve(string s, string e, string gra) {
+        //y 0
+        //m 5
+        //d 8
+        //h 11
+        //m 14
+        transform(gra.begin(), gra.end(), gra.begin(), ::tolower);
+        if(gra == "year") {
+                int pos = s.find(':');
+                string sY = s.substr(0, pos);
+                string eY = e.substr(0, pos);
+                vector<int> result(yearMap[sY]);
+                for(auto& k : yearMap) {
+                    if(k.first > sY && k.first <= eY) {
+                        eY = k.first;
+                        result.insert(result.end(), yearMap[eY].begin(), yearMap[eY].end());
+                    }
+                }
+                return result;
+        }
+        
+        if(gra == "month") {
+                int pos = s.find(':', 5);
+                string sm = s.substr(0, pos);
+                string em = e.substr(0, pos);
+                vector<int> result(monthMap[sm]);
+                for(auto& k : monthMap) {
+                    if(k.first > sm && k.first <= em) {
+                        em = k.first;
+                        result.insert(result.end(), monthMap[em].begin(), monthMap[em].end());
+                    }
+                }
+                
+                return result;
+        }
+        
+        if(gra == "day") {
+                int pos = s.find(':', 8);
+                string sd = s.substr(0, pos);
+                string ed = e.substr(0, pos);
+                vector<int> result(dayMap[sd]);
+                for(auto& k : dayMap) {
+                    if(k.first > sd && k.first <= ed) {
+                        ed = k.first;
+                        result.insert(result.end(), dayMap[ed].begin(), dayMap[ed].end());
+                    }
+                }
+                return result;
+        }
+        
+        if (gra == "hour") {
+                int pos = s.find(':', 11);
+                string sh = s.substr(0, pos);
+                string eh = e.substr(0, pos);
+                vector<int> result(hourMap[sh]);
+                for(auto& k : hourMap) {
+                    if(k.first > sh && k.first <= eh) {
+                        eh = k.first;
+                        result.insert(result.end(), hourMap[eh].begin(), hourMap[eh].end());
+                    }
+                }
+                return result;
+        }
+        
+        if (gra == "minute") {
+                int pos = s.find(':', 14);
+                string sM = s.substr(0, pos);
+                string eM = e.substr(0, pos);
+                vector<int> result(minMap[sM]);
+                for(auto& k : minMap) {
+                    if(k.first > sM && k.first <= eM) {
+                        eM = k.first;
+                        result.insert(result.end(), minMap[eM].begin(), minMap[eM].end());
+                    }
+                }
+                return result;
+        }
+         
+        if (gra == "second") {
+                vector<int> result(secMap[s]);
+                for(auto& k : secMap) {
+                    if(k.first > s && k.first <= e) {
+                        e = k.first;
+                        result.insert(result.end(), secMap[e].begin(), secMap[e].end()); 
+                    }
+                }
+                return result;
+        }
+        
+        return vector<int>();
+    }
+};
+
+/**
+ * Your LogSystem object will be instantiated and called as such:
+ * LogSystem obj = new LogSystem();
+ * obj.put(id,timestamp);
+ * vector<int> param_2 = obj.retrieve(s,e,gra);
+ */
