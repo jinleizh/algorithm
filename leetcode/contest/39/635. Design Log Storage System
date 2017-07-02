@@ -1,0 +1,60 @@
+class LogSystem {
+public:
+    map<string, int> logs;
+    LogSystem() {
+        
+    }
+    
+    void put(int id, string timestamp) {
+        logs[timestamp] = id;
+    }
+    
+    vector<int> retrieve(string s, string e, string gra) {
+        vector<int> result;
+        string start, end;
+        if(gra == "Year") {
+            start = s.substr(0, 4) + ":00:00:00:00:00";
+            end = e.substr(0,4) + ":99:99:99:99:99";
+        }
+        
+        if(gra == "Month") {
+            start = s.substr(0,7) + ":00:00:00:00";
+            end = e.substr(0,7) + ":99:99:99:99";
+        }
+        
+        if(gra == "Day") {
+            start = s.substr(0,10) + ":00:00:00";
+            end = e.substr(0,10) + ":99:99:99";
+        }
+        
+        if(gra == "Hour") {
+            start = s.substr(0,13) + ":00:00";
+            end = e.substr(0,13) + ":99:99";
+        }
+        
+        if(gra == "Minute") {
+            start = s.substr(0,16) + ":00";
+            end = e.substr(0,16) + ":99";
+        }
+        
+        if(gra == "Second") {
+            start = s;
+            end = e;
+        }
+        
+        for(auto& k : logs) {
+            if(k.first >= start && k.first <= end) {
+                result.push_back(k.second);
+            }
+        }
+        
+        return result;
+    }
+};
+
+/**
+ * Your LogSystem object will be instantiated and called as such:
+ * LogSystem obj = new LogSystem();
+ * obj.put(id,timestamp);
+ * vector<int> param_2 = obj.retrieve(s,e,gra);
+ */
