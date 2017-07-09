@@ -1,0 +1,178 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<double> averageOfLevels(TreeNode* root) {
+        vector<TreeNode*> first;
+        vector<double> result;
+        
+        if(NULL == root) return result;
+        first.push_back(root);
+        while(!first.empty()) {
+            double sum = 0;
+            int count = 0;
+            vector<TreeNode*> second;
+            for(TreeNode* t : first) {
+                count += 1;
+                sum += t->val;
+                
+                if(t->left) {
+                    second.push_back(t->left);
+                }
+                
+                if(t->right) {
+                    second.push_back(t->right);
+                }
+            }
+            
+            first = second;
+            result.push_back(sum / count);
+        }
+        
+        return result;
+    }
+};
+
+struct Equation {
+    int a; //x的系数
+    int b; //数值部分
+};
+
+class Solution {
+public:
+    string solveEquation(string equation) {
+        int pos = equation.find('=');
+        string left = equation.substr(0, pos);
+        string right = equation.substr(pos+1);
+        
+        Equation l = compute(left);
+        Equation r = compute(right);
+        Equation s;
+        s.a = l.a - r.a;
+        s.b = r.b - l.b;
+        if(s.a == 0) {
+            if(s.b == 0) return "Infinite solutions";
+            if(s.b != 0) return "No solution";
+        }
+        
+        int ans = s.b / s.a;
+        return "x=" + to_string(ans);
+    }
+    
+    Equation compute(string s) {
+        string tmp = "";
+        int minus = 1;
+        Equation result;
+        result.a = 0;
+        result.b = 0;
+        for(int i = 0; i < s.length(); i++) {
+            if(s[i] != '-' && s[i] != '+') {
+                tmp.append(1, s[i]);
+            } else {
+                if(tmp != "") {
+                    int pos = tmp.find('x');
+                    if(string::npos == pos) {
+                        int val = std::stoi(tmp);
+                        result.b += minus * val;
+                    } else {
+                        if(pos > 0) {
+                            string ts = tmp.substr(0, pos);
+                            int val = std::stoi(ts);
+                            result.a += minus * val;
+                        } else {
+                            result.a += minus;
+                        }
+                    }
+                    
+                    minus = 1;
+                    tmp = "";
+                }
+                
+                if(s[i] == '-') {
+                    minus = -1;
+                }
+            }
+        }
+        
+        if(!tmp.empty()) {
+            int pos = tmp.find('x');
+            if(string::npos == pos) {
+                int val = std::stoi(tmp);
+                result.b += minus * val;
+            } else {
+                if(pos > 0) {
+                    string ts = tmp.substr(0, pos);
+                    int val = std::stoi(ts);
+                    result.a += minus * val;
+                } else {
+                    result.a += minus;
+                }
+            } 
+        }
+        
+        return result;
+    }
+};
+
+class Solution {
+public:
+    //以*结尾的方案数目
+    //a*=1*9 *=1*9
+    //dp[l] = dp[l-1]*9 + dp[l-2]*dp[1]*9
+    //
+    int numDecodings(string s) {
+        int n = s.length();
+        if(0 == n) return 0;
+        
+        int mod = 1e9 + 7;
+        long dp[n+1];
+        memset(dp, 0, sizeof(dp));
+        dp[0] = 1;
+        if('*' == s[0]) {
+            dp[1] = 9;
+        } else {
+            dp[1] = 1;
+        }
+        
+        for(int i=2; i<=n; i++) {
+            if(s[i-1] == '*') {
+                dp[i] += dp[i-1] * 9;
+            } else {
+                dp[i] += dp[i-1];
+            }
+            
+            dp[i] %= mod;
+            
+            if(s[i-2] == '1') {
+                if(s[i-1] != '*') {
+                    dp[i] += dp[i-2];
+                } else {
+                    dp[i] += dp[i-2] * 9;
+                }
+            }
+            
+            dp[i] %= mod;
+            
+            if(s[i-2] == '2') {
+                if(s[i-1] != '*') {
+                    if(s[i-1] <= '6') {
+                        dp[i] += dp[i-2];
+                    }
+                } else {
+                    dp[i] += dp[i-2] * 6;
+                }
+            }
+            
+            dp[i] %= mod;
+        }
+        
+        return dp[n] % mod;
+    }
+};
