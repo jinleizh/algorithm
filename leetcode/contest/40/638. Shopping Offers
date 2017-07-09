@@ -1,0 +1,40 @@
+class Solution {
+public:
+    /**
+    * 枚举所有可能
+    * 不使用offer/使用offer
+    * 使用offer有很多种组合方式, 递归计算
+    */
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) {
+        int result = INT_MAX;
+        bool isValid = true;
+        for(int i=0; i<special.size(); i++) {
+            isValid = true;
+            for(int j=0; j<needs.size(); j++) {
+                needs[j] -= special[i][j];
+                if(isValid && needs[j] < 0) {
+                    isValid = false;  
+                }
+            }
+            
+            if(isValid) {
+                result = getMin(result, shoppingOffers(price, special, needs) + special[i][price.size()]);
+            }
+            
+            for(int j=0; j<needs.size(); j++) {
+                needs[j] += special[i][j];
+            }
+        }
+        
+        int noSpecial = 0;
+        for(int i=0; i<needs.size(); i++) {
+            noSpecial += price[i] * needs[i];
+        }
+        
+        return getMin(result, noSpecial);
+    }
+    
+    int getMin(int a, int b) {
+        return a < b ? a : b;
+    }
+};
