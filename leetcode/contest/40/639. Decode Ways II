@@ -1,0 +1,59 @@
+class Solution {
+public:
+    //以*结尾的方案数目
+    //a*=1*9 *=1*9
+    //dp[l] = dp[l-1]*9 + dp[l-2]*dp[1]*9
+    //
+    int numDecodings(string s) {
+        int n = s.length();
+        if(0 == n) return 0;
+        
+        int mod = 1e9 + 7;
+        long dp[n+1];
+        memset(dp, 0, sizeof(dp));
+        dp[0] = 1;
+        if('*' == s[0]) {
+            dp[1] = 9;
+        } else if('0' == s[0]) {
+            dp[1] = 0;
+        } else {
+            dp[1] = 1;
+        }
+        
+        for(int i=2; i<=n; i++) {
+            if(s[i-1] == '*') {
+                dp[i] += dp[i-1] * 9;
+            } else {
+                if(s[i-1] != '0') {
+                    dp[i] += dp[i-1];       
+                }
+            }
+            
+            dp[i] %= mod;
+            
+            if(s[i-2] == '1' || s[i-2] == '*') {
+                if(s[i-1] != '*') {
+                    dp[i] += dp[i-2];
+                } else {
+                    dp[i] += dp[i-2] * 9;
+                }
+            }
+            
+            dp[i] %= mod;
+            
+            if(s[i-2] == '2' || s[i-2] == '*') {
+                if(s[i-1] != '*') {
+                    if(s[i-1] <= '6') {
+                        dp[i] += dp[i-2];
+                    }
+                } else {
+                    dp[i] += dp[i-2] * 6;
+                }
+            }
+            
+            dp[i] %= mod;
+        }
+        
+        return dp[n] % mod;
+    }
+};
