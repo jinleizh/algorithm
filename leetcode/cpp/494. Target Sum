@@ -69,3 +69,37 @@ public:
         return dp[n][sum + S];
     }
 };
+
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int S) {
+        int sum = 0;
+		for(int k : nums) {
+			sum += k;
+		}
+		
+        if(sum < S) return 0;
+		int n = nums.size();
+		int dp[2][2*sum + 1];
+		memset(dp, 0, sizeof(dp));
+		
+		dp[0][sum] = 1;
+		for(int i = 1; i<=n; i++) {
+			for(int j=0; j<=2*sum; j++) {
+                if(j+nums[i-1] <= 2*sum) {
+				    dp[i%2][j+nums[i-1]] += dp[(i-1)%2][j];
+                }
+                
+                if(j-nums[i-1] >= 0) {
+				    dp[i%2][j-nums[i-1]] += dp[(i-1)%2][j];
+                }
+			}
+            
+            for(int k=0; k<=2*sum; k++) {
+                dp[(i-1)%2][k] = 0;
+            }
+		}
+		
+		return dp[n%2][sum + S];
+    }
+};
