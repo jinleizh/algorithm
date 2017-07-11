@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        string l = s;
+        string r = reverse(s);
+        int n = s.length();
+        int dp[n+1][n+1];
+        memset(dp, 0, sizeof(dp));
+        for(int i=1; i<=n; i++) {
+            for(int j=1; j<=n; j++) {
+                if(l[i-1] == r[j-1]) {
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                } else {
+                    dp[i][j] = max(dp[i][j-1], dp[i-1][j]);
+                }
+            }
+        }
+        
+        return dp[n][n];
+    }
+    
+    string reverse(string s) {
+        int j = s.length() - 1;
+        int i = 0;
+        char tmp;
+        while(i < j) {
+            tmp = s[i];
+            s[i] = s[j];
+            s[j] = tmp;
+            i++;
+            j--;
+        }
+        
+        return s;
+    }
+};
