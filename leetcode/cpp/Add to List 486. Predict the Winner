@@ -1,0 +1,23 @@
+//dp[m][n] 表示起点m终点n的序列,先选后, 最终加减的结果.
+//A当作+ B当作- 判断最后结果是否>=0
+//dp[i][j] 表示A先开始, 可能取得的结果
+class Solution {
+public:
+    bool PredictTheWinner(vector<int>& nums) {
+		int n = nums.size();
+		vector<vector<int>> dp(n, vector<int>(n, INT_MIN));
+		return helper(nums, dp, 0, n-1) >= 0;
+    }
+	
+	int helper(vector<int>& nums, vector<vector<int>>& dp, int s, int e) {
+		if(dp[s][e] == INT_MIN) {
+			if(s == e) {
+				dp[s][e] = nums[e];
+			} else {
+				dp[s][e] = max(nums[s] - helper(nums, dp, s+1, e),   nums[e] - helper(nums, dp, s, e-1));
+			}
+		}
+		
+		return dp[s][e];
+	}
+};
