@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        if(m < 0 || n < 0 || strs.size() == 0) return 0;
+        
+        int idx = 0;
+        int len = strs.size();
+        int maxN = 0;
+        for(string s : strs) {
+            int one = n;
+            int zero = m;
+            for(char c : s) {
+                if(c == '1') one--;
+                if(c == '0') zero--;
+            }
+            
+            if(one < 0 || zero < 0) {
+                idx++;
+                continue;
+            }
+            
+            //swap
+            string tmp = strs[idx];
+            strs[idx] = strs[len-1];
+            strs[len-1] = tmp;
+            
+            strs.pop_back();
+            maxN = max(maxN, findMaxForm(strs, zero, one) + 1);
+            strs.push_back(s);
+            
+            //swap
+            tmp = strs[idx];
+            strs[idx] = strs[len-1];
+            strs[len-1] = tmp;
+            
+            idx++;
+        }
+        
+        return maxN;
+    }
+};
