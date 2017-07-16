@@ -1,0 +1,33 @@
+class Solution {
+public:
+    vector<int> exclusiveTime(int n, vector<string>& logs) {
+        int prevTime = 0;
+        stack<int> st;
+        vector<int> result(n, 0);
+        for(string log : logs) {
+            int pos = log.find(':');
+            int pid = stoi(log.substr(0, pos));
+            log = log.substr(pos + 1);
+            pos = log.find(':');
+            string cmd = log.substr(0, pos);
+            int unit = stoi(log.substr(pos + 1));
+            
+            if(cmd == "start") {
+                if(!st.empty()) {
+                    int id = st.top();
+                    result[id] += unit - prevTime;
+                }
+                
+                st.push(pid);
+                prevTime = unit;
+            } else {
+                int id = st.top();
+                st.pop();
+                result[id] += unit - prevTime + 1;
+                prevTime = unit + 1;
+            }
+        }
+        
+        return result;
+    }
+};
