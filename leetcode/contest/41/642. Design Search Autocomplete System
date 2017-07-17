@@ -1,0 +1,129 @@
+struct Node {
+    bool flag;
+    char c;
+    int hot;
+    Node son[27];
+    
+    Node() {
+        hot = 0;
+        flag = false;
+        c = 0;
+        memset(son, 27, 0);
+    }
+    
+    ~Node() {
+    }
+};
+
+struct Elem {
+    string s;
+    int hot;
+    
+    Elem(string s, int hot) {
+        s = s;
+        hot = hot;
+    }
+    
+    bool operator < (const Node& node) {
+        return hot > node.hot || (hot == node.hot && s < node.s);
+    }
+};
+
+class AutocompleteSystem {
+public:
+    Node *root;
+    string record;
+    
+    AutocompleteSystem(vector<string> sentences, vector<int> times) {
+        root = new Node();
+        initTree(root, sentences, times);
+        record = "";
+    }
+    
+    vector<string> input(char c) {
+        if(c == '#') {
+            insert(root, record, 1);
+            record = "";
+            return vector<string>();
+        } else {
+            record += c;
+            return search(root, record);
+        }
+    }
+    
+    void initTree(Node root, vector<string> vs, vector<int> vt) {
+        for(int k=0; k<vs.size(); k++) {
+            insert(root, vs[k], vt[k]);
+        }
+    }
+    
+    void insert(Node root, string s, int hot) {
+        Node tmp = root;
+        int idx = 0;
+        for(int i=0; i<s.length(); i++) {
+            if(s[i] == ' ') {
+                idx = 26;
+            } else {
+                idx = s[i] - 'a';
+            }
+            
+            tmp = tmp.son[idx];
+            tmp.c = s[i];
+        }
+        
+        tmp.flag = true;
+        tmp.hot += hot;
+    }
+    
+    vector<string> search(Node root, string s) {
+        vector<Elem> result;
+        Node tmp = root;
+        int idx = 0;
+        for(int i=0; i<s.length(); i++) {
+            if(s[i] == ' ') {
+                idx = 26;
+            } else {
+                idx = s[i] - 'a';
+            }
+            
+            tmp = tmp.son[idx];
+            if(tmp.c == 0) return vector<string>();
+        }
+        
+        dfs(tmp, result, s);
+        sort(result.begin(), result.end());
+        int l = 0;
+        vector<string> ret;
+        for(Elem e : result) {
+            l++;
+            if(l<=3) {
+                ret.push_back(e.s);
+            } else {
+                break;
+            }
+        }
+        
+        return ret;
+    }
+    
+    void dfs(Node tmp, vector<Elem>& result, string s) {
+        if(tmp.flag == true) {
+            Elem e = new Elem(s. tmp.hot);
+            result.push_back(e);
+        }
+        
+        for(int i=0; i<27; i++) {
+            tmp = tmp.son[i];
+            if(tmp.c != 0) {
+                string next = s + tmp.c;
+                dfs(tmp, result, next);
+            }
+        }
+    } 
+};
+
+/**
+ * Your AutocompleteSystem object will be instantiated and called as such:
+ * AutocompleteSystem obj = new AutocompleteSystem(sentences, times);
+ * vector<string> param_1 = obj.input(c);
+ */
