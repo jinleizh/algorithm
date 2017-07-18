@@ -2,13 +2,13 @@ struct Node {
     bool flag;
     char c;
     int hot;
-    Node son[27];
+    Node* son[27];
     
     Node() {
         hot = 0;
         flag = false;
         c = 0;
-        memset(son, 27, 0);
+        memset(son, NULL, sizeof(son));
     }
     
     ~Node() {
@@ -20,11 +20,11 @@ struct Elem {
     int hot;
     
     Elem(string s, int hot) {
-        s = s;
-        hot = hot;
+        this->s = s;
+        this->hot = hot;
     }
     
-    bool operator < (const Node& node) {
+    bool operator < (const Elem& node) {
         return hot > node.hot || (hot == node.hot && s < node.s);
     }
 };
@@ -33,6 +33,7 @@ class AutocompleteSystem {
 public:
     Node *root;
     string record;
+    //vector<string> ret;
     
     AutocompleteSystem(vector<string> sentences, vector<int> times) {
         root = new Node();
@@ -51,14 +52,14 @@ public:
         }
     }
     
-    void initTree(Node root, vector<string> vs, vector<int> vt) {
+    void initTree(Node* root, vector<string> vs, vector<int> vt) {
         for(int k=0; k<vs.size(); k++) {
             insert(root, vs[k], vt[k]);
         }
     }
     
-    void insert(Node root, string s, int hot) {
-        Node tmp = root;
+    void insert(Node* root, string s, int hot) {
+        Node* tmp = root;
         int idx = 0;
         for(int i=0; i<s.length(); i++) {
             if(s[i] == ' ') {
@@ -67,17 +68,23 @@ public:
                 idx = s[i] - 'a';
             }
             
-            tmp = tmp.son[idx];
-            tmp.c = s[i];
+            if(NULL == (tmp->son)[idx]) {
+                (tmp->son)[idx] = new Node();                
+            }
+
+            tmp = (tmp->son)[idx];
+            tmp->c = s[i];
         }
         
-        tmp.flag = true;
-        tmp.hot += hot;
+        tmp->flag = true;
+        tmp->hot += hot;
+        //ret.push_back(s);
     }
     
-    vector<string> search(Node root, string s) {
+    vector<string> search(Node* root, string s) {
         vector<Elem> result;
-        Node tmp = root;
+        vector<string> ret;
+        Node* tmp = root;
         int idx = 0;
         for(int i=0; i<s.length(); i++) {
             if(s[i] == ' ') {
@@ -85,15 +92,18 @@ public:
             } else {
                 idx = s[i] - 'a';
             }
-            
-            tmp = tmp.son[idx];
-            if(tmp.c == 0) return vector<string>();
+          
+            tmp = (tmp->son)[idx];
+            if(tmp == NULL) {     
+                return vector<string>();
+            }
         }
         
+        //ret.push_back("search");
+        //ret.push_back(s);
         dfs(tmp, result, s);
         sort(result.begin(), result.end());
         int l = 0;
-        vector<string> ret;
         for(Elem e : result) {
             l++;
             if(l<=3) {
@@ -103,20 +113,24 @@ public:
             }
         }
         
+        //ret.push_back("test");
         return ret;
     }
     
-    void dfs(Node tmp, vector<Elem>& result, string s) {
-        if(tmp.flag == true) {
-            Elem e = new Elem(s. tmp.hot);
+    void dfs(Node* tmp, vector<Elem>& result, string s) {
+        if(tmp->flag == true) {
+            //ret.push_back(s);
+            Elem e(s, tmp->hot);
             result.push_back(e);
+            //ret.push_back("==>");
+            //ret.push_back(e.s);
         }
         
         for(int i=0; i<27; i++) {
-            tmp = tmp.son[i];
-            if(tmp.c != 0) {
-                string next = s + tmp.c;
-                dfs(tmp, result, next);
+            Node* next = (tmp->son)[i];
+            if(next != NULL) {
+                string str = s + next->c;
+                dfs(next, result, str);
             }
         }
     } 
