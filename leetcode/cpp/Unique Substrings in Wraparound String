@@ -1,0 +1,31 @@
+class Solution {
+/*
+1.以字母a,b...,y,z结尾的连续子串, 等于该子串的长度.
+abcd 以a结尾 1, b结尾, 长度2, c结尾，长度3，d结尾长度4
+2.判断长度的方法，后项减前项为1 或者-25，则长度+1，否则长度回归到1
+3.更新各字符能取到的最大长度,例如 abcfxyzabc   第一个c是3，第二个c是6， 6中包含了abc. 故取6即可.
+4.累加各字母的最大长度
+*/
+public:
+    int findSubstringInWraproundString(string p) {
+        vector<int> v(26, 0);
+        int maxLength = 0;
+        for(int i=0; i<p.length(); i++) {
+            if(i > 0 && (p[i] - p[i-1] == 1 || p[i] - p[i-1] == -25)) {
+                maxLength++;
+            } else {
+                maxLength = 1;
+            }
+        
+            int idx = p[i] - 'a';
+            v[idx] = max(v[idx], maxLength);
+        }
+            
+        int ret = 0;
+        for(auto& n : v) {
+            ret += n;
+        }
+        
+        return ret;
+    }
+};
