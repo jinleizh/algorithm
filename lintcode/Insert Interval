@@ -1,0 +1,52 @@
+/**
+ * Definition of Interval:
+ * class Interval {
+ * public:
+ *     int start, end;
+ *     Interval(int start, int end) {
+ *         this->start = start;
+ *         this->end = end;
+ *     }
+ * }
+ */
+class Solution {
+public:
+    /**
+     * Insert newInterval into intervals.
+     * @param intervals: Sorted interval list.
+     * @param newInterval: new interval.
+     * @return: A new interval list.
+     */
+    vector<Interval> insert(vector<Interval> &intervals, Interval newInterval) {
+        // write your code here
+        int n = intervals.size();
+        Interval b = newInterval;
+        vector<Interval> result;
+        if(0 == n) {
+            result.push_back(b);
+            return result;
+        }
+        
+        for(int i=0; i<n; i++) {
+            Interval a = intervals[i];
+            if(b.end < a.start) {
+                result.push_back(b);
+                for(int j=i; j<n; j++) {
+                    result.push_back(intervals[j]);
+                }
+                return result;
+            } else if(a.end < b.start) {
+                result.push_back(a);
+                if(i == n-1) result.push_back(b);
+            } else {
+                int left = min(a.start, b.start);
+                int right = max(a.end, b.end);
+                b.start = left;
+                b.end = right;
+                if(i == n-1) result.push_back(b);
+            }
+        }
+        
+        return result;
+    }
+};
