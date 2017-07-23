@@ -1,0 +1,40 @@
+class Solution {
+public:
+    int countSubstrings(string s) {
+        unordered_map<string, int> mp;
+        int n = s.length();
+        int count = 0;
+        for(int i=0; i<n; i++) {
+            for(int j=i; j<n; j++) {
+                string t = s.substr(i, j-i+1);
+                if(mp.count(t) > 0) {
+                    count++;
+                    continue;
+                }
+                
+                string tmp = deal(t);
+                if(tmp == t) {
+                    mp[t] = 1;
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+    
+    string deal(string s) {
+        int n = s.length();
+        int i=0;
+        int j=n-1;
+        while(i < j) {
+            int tmp = s[i];
+            s[i] = s[j];
+            s[j] = tmp;
+            i++;
+            j--;
+        }
+        
+        return s;
+    }
+};
