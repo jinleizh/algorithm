@@ -1,0 +1,94 @@
+struct Trie {
+    int flag;
+    char c;
+    Trie* t[26];
+    
+    Trie() {
+        this->flag = false;
+        this->c = 0;
+        memset(t, NULL, sizeof(t));
+    }
+};
+
+class Solution {
+public:
+    string replaceWords(vector<string>& dict, string sentence) {
+        map<string, string> mp; //存储可以替换的.
+        Trie root;
+        for(string s : dict) {
+            insertTree(&root, s);
+        }
+        
+        vector<string> vs = splitStr(sentence);
+        
+        for(string s : vs) {
+            if(mp.count(s) > 0) continue;
+            string ret = search(&root, s);
+            mp[s] = ret;
+        }
+        
+        string ans = "";
+        for(string s : vs) {
+            ans += " ";
+            if(mp[s].length() > 0) {
+                ans += mp[s];
+            } else {
+                ans += s;
+            }
+        }
+        
+        return ans.substr(1);
+    }
+    
+    void insertTree(Trie* root, string s) {
+        if(root == NULL) return;
+        if(s.length() == 0) return;
+        
+        Trie* tmp = root;
+        for(char c : s) {
+            int idx = c - 'a';
+            if(tmp->t[idx] == NULL) {
+                Trie* tree = new Trie();
+                tree->c = c;
+                tmp->t[idx] = tree;
+            }
+            
+            tmp = tmp->t[idx];
+        }
+        
+        tmp->flag = true;
+    }
+    
+    vector<string> splitStr(string s) {
+        vector<string> result;
+        int pos = s.find(' ');
+        while(pos != string::npos) {
+            result.push_back(s.substr(0, pos));   
+            s = s.substr(pos+1);
+            pos = s.find(' ');
+        }
+        
+        result.push_back(s);
+        return result;
+    }
+    
+    string search(Trie* root, string s) {
+        if(root == NULL) return "";
+        Trie* tmp = root;
+        string ans = "";
+        for(char c : s) {
+            int idx = c - 'a';
+            if(tmp->t[idx] == NULL) {
+                return "";
+            }
+            
+            tmp = tmp->t[idx];
+            ans += c;
+            if(tmp->flag == true) {
+                return ans;
+            }
+        }
+        
+        return ans;
+    }
+};
