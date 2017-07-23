@@ -1,0 +1,47 @@
+struct Task {
+    int start;
+    int end;
+    
+    bool operator <(const Task& t) {
+        return this->start < t.start || (this->start == t.start && this->end < t.end);
+    }
+    
+    Task(int a, int b) {
+        this->start = a;
+        this->end = b;
+    }
+};
+
+class Solution {
+public:
+    int findLongestChain(vector<vector<int>>& pairs) {
+        vector<Task> vt;
+        for(vector<int> v : pairs) {
+            Task t(v[0], v[1]);
+            vt.push_back(t);
+        }
+        
+        sort(vt.begin(), vt.end());
+        int result = 0;
+        Task prev(0, 0);
+        for(int i=0; i<vt.size(); i++) {
+            if(i == 0) {
+                result = 1;
+                prev = vt[0];
+            } else {
+                if(vt[i].start > prev.end) {
+                    result++;
+                    prev = vt[i];
+                } else if(vt[i].start == prev.end) {
+                    //do nothing
+                } else {
+                    if(vt[i].end < prev.end) {
+                        prev = vt[i];
+                    }
+                }
+            }
+        }
+        
+        return result;
+    }
+};
