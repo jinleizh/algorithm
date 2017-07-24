@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(0 == amount) return 0;
+        if(0 == coins.size()) return -1;
+        
+        unordered_map<int, int> dp;
+        int ans = count(dp, coins, amount);
+        if(ans == 99999999) return -1;
+        return ans;
+    }
+    
+    int count(unordered_map<int, int>& dp, vector<int>& coins, int amount) {
+        if(dp.count(amount) > 0) return dp[amount];
+        
+        int ans = 99999999;
+        for(int g : coins) {
+            if(amount == g) {
+                ans = 1;
+                break;
+            } else if(amount > g) {
+                ans = min(count(dp, coins, amount - g) + 1, ans);
+            }
+        }
+        
+        dp[amount] = ans;
+        return ans;
+    }
+};
