@@ -47,3 +47,35 @@ public:
         return false;
     }
 };
+
+
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        unordered_map<string, int> mp;
+        string prefix = "";
+        return helper(prefix, mp, s, t);
+    }
+    
+    bool helper(string prefix, unordered_map<string, int>& mp, string s, string t) {
+        if(s.empty()) return true;
+        char ch = s[0];
+        prefix += ch;
+        if(mp.count(prefix) > 0) {
+            int i = mp[prefix];
+            if(i < 0) return false;
+            return helper(prefix, mp, s.substr(prefix.length()), t.substr(i+1));
+        }
+        
+        for(int i=0; i<t.length(); i++) {
+            if(t[i] == ch) {
+                mp[prefix] = i;
+                bool result = helper(prefix, mp, s.substr(1), t.substr(i+1));
+                return result;
+            }
+        }
+        
+        mp[prefix] = -1;//表示不匹配
+        return false;
+    }
+};
