@@ -1,0 +1,49 @@
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        return helper(s, t);
+    }
+    
+    bool helper(string s, string t) {
+        if(s.empty()) return true;
+        
+        char ch = s[0];
+        for(int i=0; i<t.length(); i++) {
+            if(t[i] == ch) {
+                return helper(s.substr(1), t.substr(i+1));
+            }
+        }
+        
+        return false;
+    }
+};
+
+
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        unordered_map<string, int> mp;
+        string prefix = "";
+        return helper(prefix, mp, s, t);
+    }
+    
+    bool helper(string prefix, unordered_map<string, int>& mp, string s, string t) {
+        if(s.empty()) return true;
+        char ch = s[0];
+        prefix += ch;
+        if(mp.count(prefix) > 0) {
+            int i = mp[prefix];
+            return helper(prefix, mp, s.substr(prefix.length()), t.substr(i+1));
+        }
+        
+        for(int i=0; i<t.length(); i++) {
+            if(t[i] == ch) {
+                mp[prefix] = i;
+                bool result = helper(prefix, mp, s.substr(1), t.substr(i+1));
+                return result;
+            }
+        }
+        
+        return false;
+    }
+};
