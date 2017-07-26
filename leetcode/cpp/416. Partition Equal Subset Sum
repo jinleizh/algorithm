@@ -1,0 +1,22 @@
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = 0;
+        for(int d : nums) {
+            sum += d;
+        }
+        
+        if(sum % 2 == 1) return false;
+        
+        int n = nums.size();
+        return helper(nums, 0, n-1, sum / 2);
+    }
+    
+    bool helper(vector<int>& nums, int start, int end, int sum) {
+        if(sum == 0) return true;
+        if(sum < 0) return false;
+        if(start > end) return false;
+        
+        return helper(nums, start+1, end, sum-nums[start]) || helper(nums, start+1, end, sum);
+    }
+};
