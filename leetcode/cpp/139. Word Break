@@ -1,0 +1,30 @@
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_map<string, int> mp;
+        for(string s : wordDict) {
+            mp[s] = 1;
+        }
+        
+        unordered_map<string, bool> bp;
+        return helper(mp, s, bp);
+    }
+    
+    bool helper(unordered_map<string, int>& mp, string s, unordered_map<string, bool>& bp) {
+        if(bp.count(s) > 0) return bp[s];
+        
+        string prefix = "";
+        for(int i=0; i<s.length(); i++) {
+            prefix += s[i];
+            if(mp.count(prefix) > 0) {
+                bp[prefix] = true;
+                string remain = s.substr(i+1);
+                if(i== s.length()-1 || mp.count(remain)) return true;
+                if(helper(mp, remain, bp)) return true;        
+                bp[remain] = false;
+            }
+        }
+        
+        return false;
+    }
+};
