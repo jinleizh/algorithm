@@ -1,0 +1,22 @@
+class Solution {
+//dp[n]=dp[n-nums[1]] + dp[n-nums[2]] + ... dp[n-nums[k]]  1,2...k 属于nums
+//以m开头, 和为n的解个数.
+//result = dp[1][n] + dp[2][n] + .... + dp[k][n]
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        vector<int> result(target+1, 0);
+        result[0] = 1;
+        int i=1;
+        while(i <= target) {
+            for(int v : nums) {
+                if(v <= i) {
+                    result[i] += result[i-v];
+                }
+            }
+            
+            i++;
+        }
+        
+        return result[target];
+    }
+};
