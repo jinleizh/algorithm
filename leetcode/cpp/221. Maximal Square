@@ -1,5 +1,6 @@
 class Solution {
 public:
+    //dp[i][j] = min(dp[i-1][j-1], dp[i][j-1], dp[i-1][j]) + 1
     int maximalSquare(vector<vector<char>>& matrix) {
         int ans = 0;
         int row = matrix.size();
@@ -24,34 +25,11 @@ public:
         
         for(int i=1; i<row; i++) {
             for(int j=1; j<col; j++) {
-                char c = matrix[i-1][j-1];
-                bool find = true;
                 if(matrix[i][j] == '1') {
-                    if(c == '1') {
-                        int l = cm[i-1][j-1];
-                        for(int k=j-1; k>=j-l; k--) {
-                            if(matrix[i][k] == '0') {
-                                find = false;
-                                break;
-                            }
-                        }
-
-                        if(find) {
-                            for(int k=i-1; k>=i-l; k--) {
-                                if(matrix[k][j] == '0') {
-                                    find = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if(find) {
-                            cm[i][j] = l+1;
-                            ans = max(ans, l+1);
-                        }
-                    } else {
-                        cm[i][j] = 1;
-                    }
+                    int tmp = min(cm[i-1][j-1], cm[i][j-1]);
+                    tmp = min(tmp, cm[i-1][j]);
+                    cm[i][j] = tmp + 1;
+                    ans = max(ans, cm[i][j]);
                 }
             }
         }
