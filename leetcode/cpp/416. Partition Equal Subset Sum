@@ -20,3 +20,46 @@ public:
         return helper(nums, start+1, end, sum-nums[start]) || helper(nums, start+1, end, sum);
     }
 };
+
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = 0;
+        for(int d : nums) {
+            sum += d;
+        }
+        
+        if(sum % 2 == 1) return false;
+        
+        int target = sum/2;
+        vector<int> dp(10001, 0);
+        dp[0] = 1;
+        for(int v : nums) {
+            for(int k=target; k>=v; k--) {
+                dp[k] += dp[k - v];
+            }
+        }
+        
+        return dp[target];
+    }
+};
+
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = 0;
+        for(int d : nums) {
+            sum += d;
+        }
+        
+        if(sum % 2 == 1) return false;
+        
+        int target = sum / 2;
+        bitset<10001> bits(1);
+        for(int v : nums) {
+            bits |= bits << v;
+        }
+        
+        return bits[target];
+    }
+};
