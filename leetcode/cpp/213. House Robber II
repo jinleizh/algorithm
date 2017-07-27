@@ -1,0 +1,72 @@
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int ans = 0;
+        int n = nums.size();
+        if(n < 4) {
+            for(int t : nums) {
+                ans = max(ans, t);
+            }
+            return ans;
+        }
+        
+        for(int i=0; i<nums.size(); i++) {
+            ans = max(ans, nums[i] + getMaxMoney(nums, (i+2)%n, (i-2+n)%n));
+        }
+        
+        return ans;
+    }
+    
+    int getMaxMoney(vector<int>& nums, int s, int e) {
+        int n = nums.size();
+        if(s > e) {
+            e += n;
+        }
+        vector<int> dp(e-s+1, 0);
+        dp[0] = nums[s];
+        for(int i=s+1; i<=e; i++) {
+            if(i >= s+2) {
+                dp[i-s] = max(nums[i%n] + dp[i-2-s],  dp[i-1-s]);
+            } else {
+                dp[i-s] = max(nums[i%n], dp[i-1-s]);
+            }
+        }
+        
+        return dp[e-s]; 
+    }
+};
+
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int ans = 0;
+        int n = nums.size();
+        if(n < 4) {
+            for(int t : nums) {
+                ans = max(ans, t);
+            }
+            return ans;
+        }
+        
+        ans = max(getMaxMoney(nums, 1, n-1), nums[0] + getMaxMoney(nums, 2, n-2));
+        return ans;
+    }
+    
+    int getMaxMoney(vector<int>& nums, int s, int e) {
+        int n = nums.size();
+        if(s > e) {
+            e += n;
+        }
+        vector<int> dp(e-s+1, 0);
+        dp[0] = nums[s];
+        for(int i=s+1; i<=e; i++) {
+            if(i >= s+2) {
+                dp[i-s] = max(nums[i%n] + dp[i-2-s],  dp[i-1-s]);
+            } else {
+                dp[i-s] = max(nums[i%n], dp[i-1-s]);
+            }
+        }
+        
+        return dp[e-s]; 
+    }
+};
