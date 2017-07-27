@@ -1,0 +1,61 @@
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int ans = 0;
+        int row = matrix.size();
+        if(row == 0) return 0;
+        int col = matrix[0].size();
+        if(col == 0) return 0;
+        
+        vector<vector<int>> cm(row, vector<int>(col, 0));
+        for(int i=0; i<row; i++) {
+            if(matrix[i][0] == '1') {
+                cm[i][0] = 1;
+                ans = 1;
+            }
+        }
+        
+        for(int i=0; i<col; i++) {
+            if(matrix[0][i] == '1') {
+                cm[0][i] = 1;
+                ans = 1;
+            }
+        }
+        
+        for(int i=1; i<row; i++) {
+            for(int j=1; j<col; j++) {
+                char c = matrix[i-1][j-1];
+                bool find = true;
+                if(matrix[i][j] == '1') {
+                    if(c == '1') {
+                        int l = cm[i-1][j-1];
+                        for(int k=j-1; k>=j-l; k--) {
+                            if(matrix[i][k] == '0') {
+                                find = false;
+                                break;
+                            }
+                        }
+
+                        if(find) {
+                            for(int k=i-1; k>=i-l; k--) {
+                                if(matrix[k][j] == '0') {
+                                    find = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(find) {
+                            cm[i][j] = l+1;
+                            ans = max(ans, l+1);
+                        }
+                    } else {
+                        cm[i][j] = 1;
+                    }
+                }
+            }
+        }
+
+        return ans * ans;
+    }
+};
