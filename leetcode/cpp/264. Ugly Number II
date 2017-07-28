@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        if(n <= 0) return 0;
+        if(n == 1) return 1;
+        int a = 0, b = 0, c = 0;
+        vector<int> k(n, 0);
+        k[0] = 1;
+        for(int i=1; i<n; i++) {
+            k[i] = min(min(k[a]*2, k[b]*3), k[c]*5);
+            if(k[i] == 2*k[a]) a++;
+            if(k[i] == 3*k[b]) b++;
+            if(k[i] == 5*k[c]) c++;
+        }
+        
+        return k[n-1];
+    }
+};
