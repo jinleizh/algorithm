@@ -1,0 +1,38 @@
+class Solution {
+/*
+* 这里使用了队列,简化了问题
+* 所以数据结构的选取上要注意, 这里因为涉及到循环比较, 所以使用循环队列是明智的选择,
+* 循环比较的方法: 把之前获胜的, +n送回到队尾, 继续后续比较, 直到有一个队列为空为止.
+*/
+
+public:
+    string predictPartyVictory(string senate) {
+        unordered_map<char, queue<int>> mp;
+        for(int i=0; i<senate.length(); i++) {
+            mp[senate[i]].push(i);    
+        }
+        
+        int n = senate.length();
+        queue<int> q1 = mp['R'];
+        queue<int> q2 = mp['D'];
+        while(!q1.empty() && !q2.empty()) {
+            int l = q1.front();
+            int r = q2.front();
+            q1.pop();
+            q2.pop();
+            if(l < r) {
+                q1.push(l + n);
+            } else {
+                q2.push(r + n);
+            }
+        }
+        
+        if(q1.size() > q2.size()) return out('R');
+        return out('D');
+    }
+    
+    string out(char c) {
+        if(c == 'R') return "Radiant";
+        return "Dire";
+    }
+};
