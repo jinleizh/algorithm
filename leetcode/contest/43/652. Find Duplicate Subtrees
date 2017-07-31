@@ -39,3 +39,44 @@ public:
     }
     
 };
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+//tuple表示一棵子树, {根节点,}左子树编号,右子树编号}
+//如果子树编号重复了, 表示有两颗完全相同的子树.
+class Solution {
+public:
+    map<tuple<int,int,int>, int> dp;
+    map<int, int> cnt;
+    vector<TreeNode*> ans;
+    int idx;
+    vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+        idx = 1;
+        dp.clear();
+        cnt.clear();
+        dfs(root);
+        return ans;
+    }
+    
+    int dfs(TreeNode* root) {
+        if(NULL == root) return 0;
+        tuple<int, int, int> t = {root->val, dfs(root->left), dfs(root->right)};
+        if(dp.count(t) == 0) {
+            dp[t] = idx++;//分配一个子树编号
+        }
+        
+        if(++cnt[dp[t]] == 2) {
+            ans.push_back(root);
+        }
+        
+        return dp[t];
+    }
+};
