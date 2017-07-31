@@ -1,0 +1,49 @@
+class Solution {
+//模拟方法--时间复杂度o(2^n)
+//完全用递归, 则是o(n!), 这里通过hashmap缓存了中间结果, 去除了重复，使复杂度将为2^n
+//模拟方法--将问题拆分为子问题.依次求每个子问题的解，缓存重复的部分.
+public:
+    unordered_map<int, bool> mp;
+    bool canIWin(int max, int desiredTotal) {  
+        int sum = (1+max)*max / 2;
+        if(desiredTotal > sum) return false;
+        if(desiredTotal <=1) return true;
+        
+        vector<bool> used(max, false);
+        return helper(desiredTotal, used);
+    }
+    
+    bool helper(int total, vector<bool>& used) {
+        if(total <= 0) return false;
+        int key = format(used);
+        if(mp.count(key) > 0) {
+            return mp[key];
+        }       
+
+        for(int i=0; i<used.size(); i++) {
+            if(!used[i]) {
+                used[i] = true;
+                if(!helper(total-i-1, used)) {
+                    mp[key] = true;
+                    used[i] = false;
+                    return true;
+                }
+                
+                used[i] = false;
+            }
+        }
+
+        mp[key] = false;
+        return false;
+    }
+    
+    int format(vector<bool> flag) {
+        int ans = 0;
+        for(bool b : flag) {
+            ans <<= 1;
+            ans |= b;
+        }
+        
+        return ans;
+    }
+};
