@@ -1,0 +1,26 @@
+class Solution {
+//求n的最大约数, 然后对约数翻倍.
+//如何证明它是最优?
+//取max即为结果
+public:
+    int minSteps(int n) {
+        vector<int> dp(n+1, 0);
+        dp[1] = 0;
+        for(int i=2; i<=n; i++) {
+            dp[i] = minStep(i, dp); 
+        }
+        
+        return dp[n];
+    }
+    
+    int minStep(int n, vector<int>& dp) {
+        int ans = n;
+        for(int k=2; k<=n/2; k++) {
+            if(n % k == 0) {
+                ans = min(ans, dp[k] + n/k);
+            }
+        }
+        
+        return ans;
+    }
+};
