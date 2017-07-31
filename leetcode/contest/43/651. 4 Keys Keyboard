@@ -1,0 +1,35 @@
+class Solution {
+//N>6时,最优的解释以ctrl a c v结尾的.
+//枚举所有可能的点. 从某一点开始, ctrl a c v,之后一直v
+//证明: 假设有最优解, 位于K点处, 则从K点开始, 之后都是v, K点之前的, 则是子问题K的最优解
+//子问题K的最优解, 同样在1-k个点中, 存在某一点kk, kk点之后的都是v, kk点之前的有变成了KK子问题的最优解
+//总之, 最优解中一定存在一个点K,(ctrl a), 是最后一步ctrl a, c.
+    
+//而本题的解决思路,即为假设最后一步ctrl a,c 出现在 b=1,...,N-3步的位置.
+public:
+    int maxA(int N) {
+        /*
+        if(N <= 6) return N;
+        int ans = 0;
+        for(int b=N-3; b>=1; b--) {
+            ans = max(ans, maxA(b)*(N-b-1));
+        }
+        */
+        
+        if(N<=6) return N;
+        
+        vector<int> dp(N+1, 0);
+        
+        for(int i=1; i<7; i++) {
+            dp[i] = i;
+        }
+        
+        for(int i=7; i<=N; i++) {
+            for(int j=i-2; j>=2; j--) {
+                dp[i] = max(dp[i], dp[j-1]*(i-j));
+            }
+        }
+        
+        return dp[N];
+    }
+};
