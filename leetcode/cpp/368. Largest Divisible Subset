@@ -1,0 +1,39 @@
+class Solution {
+//思想:1.排序 2.以i结尾的序列,最长是多少 3.prev数组记录前继节点
+//
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n = nums.size();
+        if(n <= 1) return nums;
+        
+        vector<int> count(n, 1);
+        vector<int> prev(n, -1);
+        int max = 0;
+        int idx = 0;
+        sort(nums.begin(), nums.end());
+        for(int i=1; i<n; i++) {
+            for(int j=i-1; j>=0; j--) {
+                if(nums[i] % nums[j] == 0) {
+                    if(count[i] < 1 + count[j]) {
+                        count[i] = 1 + count[j];
+                        prev[i] = j;
+                    }
+                }
+            }
+            
+            if(count[i] > max) {
+                max = count[i];
+                idx = i;
+            }
+        }
+                         
+        vector<int> result;
+        result.push_back(nums[idx]);
+        while(prev[idx] != -1) {
+            idx = prev[idx];
+            result.push_back(nums[idx]);
+        }
+                         
+        return result;
+    }
+};
