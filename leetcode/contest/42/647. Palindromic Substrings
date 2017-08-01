@@ -38,3 +38,20 @@ public:
         return s;
     }
 };
+
+class Solution {
+//思想: 从中间扩展, 不需要额外空间, 复杂度o(n^2)
+//假设i是中间节点,比较i-j和i+j是否相等,相等则count+1
+//假设i和i+1是中间节点,比较i-j和i+1+j是否相等,相等则count+1
+public:
+    int countSubstrings(string s) {
+        int n = s.length();
+        int count = 0;
+        for(int i=0; i<n; i++) {
+            for(int j=0; i-j>=0 && i+j<n && s[i-j] == s[i+j]; j++) count++;
+            for(int j=0; i-j>=0 && i+1+j<n && s[i-j] == s[i+1+j]; j++) count++;
+        }
+        
+        return count;
+    }
+};
