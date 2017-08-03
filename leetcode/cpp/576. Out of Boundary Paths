@@ -1,0 +1,92 @@
+class Solution {
+//思路:动态规划
+public:
+    int findPaths(int m, int n, int N, int i, int j) {
+        int dp[N+1][m][n] = {0};
+        memset(dp, 0, sizeof(dp));
+        int mod = 1e9 + 7;
+        int dx[4] = {0, 0, -1, 1};
+        int dy[4] = {-1, 1, 0, 0};
+        for(int k=1; k<=N; k++) {
+            for(int x=0; x<m; x++) {
+                for(int y=0; y<n; y++) {
+                    for(int p=0; p<4; p++) {
+                        int tx = x + dx[p];
+                        int ty = y + dy[p];
+                        if(tx < 0 || tx >= m || ty < 0 || ty >= n) {
+                            dp[k][x][y] = (dp[k][x][y] + 1) % mod;
+                        } else {
+                            dp[k][x][y] = (dp[k][x][y] + dp[k-1][tx][ty]) % mod;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return dp[N][i][j];
+    }
+};
+class Solution {
+//思路:dfs
+public:
+    int dp[51][50][50];
+    int findPaths(int m, int n, int N, int i, int j) {
+        memset(dp, -1, sizeof(dp));
+        
+        for(int i=0; i<m; i++) {
+            for(int j=0; j<n; j++) {
+                dp[0][i][j] = 0;
+            }
+        }
+        
+        return dfs(m, n, N, i, j);
+    }
+    
+    int dfs(int m, int n, int N, int i, int j) {
+        int mod = 1e9 + 7;
+        if(i < 0 || i >= m || j < 0 || j >= n) return 1;
+        if(dp[N][i][j] != -1) return dp[N][i][j];
+        
+        int dx[4] = {0, 0, -1, 1};
+        int dy[4] = {1, -1, 0, 0};
+        int ans = 0;
+        for(int k = 0; k < 4; k++) {
+            ans = (ans + dfs(m, n, N-1, i+dx[k], j+dy[k])) % mod;
+        }
+        
+        dp[N][i][j] = ans;
+        return ans;
+    }
+};
+class Solution {
+//思路:dfs
+public:
+    int dp[51][50][50];
+    int findPaths(int m, int n, int N, int i, int j) {
+        memset(dp, -1, sizeof(dp));
+        
+        for(int i=0; i<m; i++) {
+            for(int j=0; j<n; j++) {
+                dp[0][i][j] = 0;
+            }
+        }
+        
+        return dfs(m, n, N, i, j);
+    }
+    
+    int dfs(int m, int n, int N, int i, int j) {
+        int mod = 1e9 + 7;
+        if(i < 0 || i >= m || j < 0 || j >= n) return 1;
+        if(dp[N][i][j] != -1) return dp[N][i][j];
+        
+        int dx[4] = {0, 0, -1, 1};
+        int dy[4] = {1, -1, 0, 0};
+        int ans = 0;
+        for(int k = 0; k < 4; k++) {
+            ans = (ans + dfs(m, n, N-1, i+dx[k], j+dy[k])) % mod;
+        }
+        
+        dp[N][i][j] = ans;
+        return ans;
+    }
+};
