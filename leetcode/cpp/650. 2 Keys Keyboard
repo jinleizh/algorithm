@@ -1,0 +1,24 @@
+class Solution {
+//思路:
+//数N,最终是通过paste形成的, (此题只能通过paste的方式到达N)则N必须是paste数目的整数倍
+//故此题变成了N的所有约数里, 步骤最少的.
+//由此，可得公式 dp[N] = min(N/k + dp[k])
+//可知, k越小, N/k越大, dp[k]越小.  K越大, N/K越小, dp[k]越大
+//故这里需要枚举出所有可能.
+public:
+    int minSteps(int n) {
+        vector<int> dp(n+1, 0);
+		for(int i=2; i<=n; i++) {
+			int ans = INT_MAX;
+			for(int j=1; j<=i/2; j++) {
+				if(i % j == 0) {
+					ans = min(ans, i / j + dp[j]);
+				}
+			}
+			
+			dp[i] = ans;
+		}
+		
+		return dp[n]; 
+    }
+};
