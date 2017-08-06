@@ -1,0 +1,24 @@
+class Solution {
+public:
+    unordered_map<int, int> mp;
+    bool findTarget(TreeNode* root, int k) {
+        travel(root);
+        for(auto& it : mp) {
+            int t = it.first;
+            mp[t]--;
+            int s = k - t;
+            if(mp.find(s) != mp.end() && mp[s] >= 1) return true;
+            mp[t]++;
+        }
+        
+        return false;
+    }
+    
+    void travel(TreeNode* root) {
+        if(root == NULL) return;
+        mp[root->val]++;
+        
+        travel(root->left);
+        travel(root->right);
+    }
+};
