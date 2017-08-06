@@ -1,0 +1,34 @@
+class Solution {
+public:
+    vector<int> cheapestJump(vector<int>& A, int B) {
+        int n = A.size();
+        vector<long> dp(n, INT_MAX);
+        vector<int> path(n, -1);
+        vector<int> ans;
+        if(0 == n) return ans;
+        if(1 == n) return A;
+        
+        dp[n-1] = 0;
+        
+        for(int i=n-2; i>=0; i--) {
+            if(A[i] == -1) continue;
+            for(int j=1; j<=B && i+j<n; j++) {
+                if(A[i+j] == -1) continue;
+                if(dp[i] > dp[i+j] + A[i]) {
+                    dp[i] = dp[i+j] + A[i];
+                    path[i] = i + j;
+                }
+            }
+        }
+        
+        if(path[0] == -1) return ans;
+        ans.push_back(1);
+        int idx = 0;
+        while(idx != n-1) {
+            ans.push_back(path[idx] + 1);
+            idx = path[idx];
+        }
+        
+        return ans;
+    }
+};
