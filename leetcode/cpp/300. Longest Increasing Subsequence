@@ -20,3 +20,34 @@ public:
         return ans;
     }
 };
+
+class Solution {
+//思路:以第i个元素结尾的最长递增子序列为dp[i]
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        if(0 == n) return 0;
+        
+        vector<int> dp;
+        dp.push_back(nums[0]);
+        int length = 0;
+        for(int i=1; i<n; i++) {
+            if(nums[i] < dp[0]) {
+                dp[0] = nums[i];
+            }
+            else if(nums[i] > dp[length]) {
+                length++;
+                dp.push_back(nums[i]);
+            }
+            else {
+                for(int j=1; j<=length; j++) {
+                    if(nums[i] > dp[j-1] && nums[i] < dp[j]) {
+                        dp[j] = nums[i];
+                    }
+                }
+            }
+        }
+        
+        return length+1;
+    }
+};
