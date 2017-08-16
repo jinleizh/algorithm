@@ -1,0 +1,41 @@
+class Solution {
+public:
+    bool isPossible(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> flag(n, 0);
+        return helper(nums, flag);
+    }
+    
+    bool helper(vector<int>& nums, vector<int> flag) {
+        bool finish = true;
+        for(int t : flag) {
+            if(t == 0) {
+                finish = false;
+                break;
+            }
+        }
+        if(finish) return true;
+        
+        int cnt = 1;
+        int n = nums.size();
+        int i = 0;
+        while(flag[i]) {
+            i++;
+        }
+        
+        int s = nums[i];
+            for(int j=i+1; j<n; j++) {
+                if(flag[j]) continue;
+                if(nums[j] == s + 1) {
+                    cnt++;
+                    s = nums[j];
+                    flag[j] = 1;
+                    if(cnt >= 3) {
+                        if(helper(nums, flag)) return true;
+                    }
+                }
+            }
+        
+        return false;
+    }
+};
