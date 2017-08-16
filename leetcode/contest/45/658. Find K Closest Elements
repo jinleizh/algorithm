@@ -1,0 +1,21 @@
+int x = 0;
+bool cmp(const int& a, const int& b) {
+    if(abs(a-x) < abs(b-x)) return true;
+    if(abs(a-x) == abs(b-x) && a < b) return true;
+    return false;
+}
+
+class Solution {
+public:
+    vector<int> findClosestElements(vector<int>& arr, int k, int t) {
+        x = t;
+        sort(arr.begin(), arr.end(), cmp);
+        vector<int> result;
+        for(int i=0; i<k; i++) {
+            result.push_back(arr[i]);
+        }
+        
+        sort(result.begin(), result.end());
+        return result;
+    }
+};
