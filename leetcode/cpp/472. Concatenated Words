@@ -1,0 +1,40 @@
+bool cmp(const string& l, const string& r) {
+    return l.length() < r.length();
+}
+
+class Solution {
+public:
+    vector<string> ans;
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        sort(words.begin(), words.end(), cmp);
+        unordered_map<string, bool> mp;
+        for(string s : words) {
+            mp[s] = true;
+        }
+        helper(words, mp);
+        return ans;
+    }
+    
+    void helper(vector<string>& words, unordered_map<string, bool>& mp) {
+        int n = words.size();
+        for(int i=1; i<n; i++) {
+            bool ret = check(words[i], mp);
+            if(ret) {
+                ans.push_back(words[i]);
+            }
+        }
+    }
+    
+    bool check(string& word, unordered_map<string, bool>& mp) {
+        for(int j = 1; j < word.length(); j++) {
+            string tmp = word.substr(0, j);
+            if(mp.find(tmp) != mp.end()) {
+                tmp = word.substr(j);
+                bool ret = check(tmp, mp);
+                if(ret) return true;
+            }
+        }
+        
+        return false;
+    }
+};
