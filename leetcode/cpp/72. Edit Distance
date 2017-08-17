@@ -26,3 +26,36 @@ public:
             return dp[lenA][lenB];
         }
 };
+
+class Solution {
+//优化思路: 可以使用一维数组
+public:
+        int minDistance(string word1, string word2) {
+            int lenA = word1.length();
+            int lenB = word2.length();
+            //vector<vector<int>> dp(lenA + 1, vector<int>(lenB + 1, 0));
+            vector<int> dp(lenA + 1, 0); //dp[i][j]
+
+            //j == 0
+            for(int i = 1; i <= lenA; i++) {
+                dp[i] = i;
+            }
+
+            for(int j = 1; j <= lenB; j++) {
+                int prev = dp[0];
+                dp[0] = j;
+                for(int i = 1; i <= lenA; i++) {
+                    int tmp = dp[i];
+                    if(word1[i-1] == word2[j-1]) {
+                        dp[i] = prev;
+                    } else {
+                        dp[i] = min(prev + 1, min(dp[i-1] + 1, dp[i] + 1));
+                    }
+                    
+                    prev = tmp;
+                }
+            }
+
+            return dp[lenA];
+        }
+};
