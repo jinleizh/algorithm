@@ -1,0 +1,29 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    map<int, bool> mp;
+    int cnt = 0;
+    bool checkEqualTree(TreeNode* root) {
+        int sum = helper(root);
+        if(abs(sum) % 2 == 1) return false;
+        if(cnt < 2) return false;
+        if(mp.find(sum / 2) != mp.end()) return true;
+        return false;
+    }
+    
+    int helper(TreeNode* root) {
+        if(root == NULL) return 0;
+        cnt++;
+        int result = root->val + helper(root->left) + helper(root->right);
+        mp[result] = true;
+        return result;
+    }
+};
