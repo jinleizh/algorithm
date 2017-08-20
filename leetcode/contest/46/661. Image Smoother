@@ -1,0 +1,27 @@
+//遍历o n^2
+class Solution {
+public:
+    vector<vector<int>> imageSmoother(vector<vector<int>>& M) {
+        vector<vector<int>> dp(M.size(), vector<int>(M[0].size(), 0));
+        int dx[8] = {-1,-1,-1,0,0,1,1,1};
+        int dy[8] = {-1,0,1,-1,1,-1,0,1};
+        
+        for(int r=0; r<M.size(); r++) {
+            for(int c=0; c<M[0].size(); c++) {
+                int cnt = 1;
+                int sum = M[r][c];
+                for(int k=0; k<8; k++) {
+                    int tx = r + dx[k];
+                    int ty = c + dy[k];
+                    if(tx >= 0 && tx < M.size() && ty >= 0 && ty < M[0].size()) {
+                        cnt++;
+                        sum += M[tx][ty];
+                    }
+                }
+                dp[r][c] = sum / cnt;
+            }
+        }
+        
+        return dp;
+    }
+};
