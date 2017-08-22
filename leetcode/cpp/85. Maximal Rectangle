@@ -1,0 +1,80 @@
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        return getMaxArea(matrix);
+    }
+    
+    int constructST(vector<int>& hi, vector<int>& st, int idx, int l, int r) {
+        if(l > r) return -1;
+        if(l == r) {
+            st[idx] = l;
+            return st[idx];
+        }
+
+        int mid = l + (r - l) / 2;
+        int pos = getMin(hi, constructST(hi, st, 2 * idx + 1, l, mid), constructST(hi, st, 2 * idx + 2, mid + 1, r));
+        st[idx] = pos;
+        return st[idx];
+    }
+
+    //返回索引下标
+    int getMin(vector<int>& hi, int i, int j) {
+        if(i == -1) return j;
+        if(j == -1) return i;
+        return hi[i] < hi[j] ? i : j;
+    }
+
+    //范围查找,返回下标
+    int find(vector<int>& hi, vector<int>& st, int s, int e, int fs, int fe, int pos) {
+        if(s > fe || e < fs || s > e || fs > fe) return -1;
+        if(fs <= s && fe >= e) {
+            return st[pos];
+        }
+
+        int mid = s + (e - s) / 2;
+        int ans = getMin(hi, find(hi, st, s, mid, fs, fe, 2 * pos + 1), find(hi, st, mid + 1, e, fs, fe, 2 * pos + 2));
+        return ans;
+    }
+
+    int getStSize(int n) {
+        int level = ceil(log(n) / log(2)) + 1;
+        return pow(2, level) - 1;
+    }
+
+    int getMaxArea(vector<vector<char>>& matrix) {
+        int ans = 0;
+        
+        int r = matrix.size();
+        if(0 == r) return 0;
+
+        int c = matrix[0].size();
+        if(0 == c) return 0;
+
+        vector<int> hi(c, 0);
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++) {
+                if(matrix[i][j] == '1') {
+                    hi[j]++;
+                } else {
+                    hi[j] = 0;
+                }
+            }
+
+            vector<int> st(getStSize(c), -1);
+            constructST(hi, st, 0, 0, c - 1);
+            ans = max(ans, getArea(hi, st, 0, c - 1));
+        }
+
+        return ans;
+    }
+
+    int getArea(vector<int>& hi, vector<int>& st, int l, int r) {
+        if(l > r) return 0;
+        int n = hi.size();
+        int pos = find(hi, st, 0, n - 1, l, r, 0);
+        int ans = 0;
+        ans = max(getArea(hi, st, l, pos - 1), getArea(hi, st, pos + 1, r));
+        ans = max(ans, hi[pos] * (r - l + 1));
+        return ans;
+    }
+};
