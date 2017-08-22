@@ -18,19 +18,23 @@ public:
     void helper(vector<string>& words, unordered_map<string, bool>& mp) {
         int n = words.size();
         for(int i=1; i<n; i++) {
-            bool ret = check(words[i], mp);
+            bool ret = check(words[i], mp, true);
             if(ret) {
                 ans.push_back(words[i]);
             }
         }
     }
     
-    bool check(string& word, unordered_map<string, bool>& mp) {
+    bool check(string word, unordered_map<string, bool>& mp, bool first) {
+        if(!first) {
+            if(mp.find(word) != mp.end()) return true;
+        }
+
         for(int j = 1; j < word.length(); j++) {
             string tmp = word.substr(0, j);
             if(mp.find(tmp) != mp.end()) {
                 tmp = word.substr(j);
-                bool ret = check(tmp, mp);
+                bool ret = check(tmp, mp, false);
                 if(ret) return true;
             }
         }
