@@ -1,0 +1,55 @@
+class Solution {
+public:
+    int pathSum(vector<int>& nums) {
+        vector<int> arr(15, 0);
+        map<int, int> mp;
+        int a, b, c, start;
+        for(int t : nums) {
+            c = t % 10;
+            b = t / 10 % 10;
+            a = t / 100 % 10;
+            start = pow(2, a - 1) - 2;
+            arr[start + b] = c;
+            mp[start + b] = 1;
+        }
+        
+        int ans = 0;
+        
+        vector<int> sum = helper(arr, 0, mp);
+        
+        for(int s : sum) {
+            ans += s;
+        }
+        
+        return ans;
+    }
+    
+    vector<int> helper(vector<int>& arr, int pos, map<int, int>& mp) {
+        vector<int> ans;
+        if(0 == mp[pos]) return ans;
+        
+        vector<int> lAns, rAns;
+        if(mp[2 * pos + 1]) {
+            lAns = helper(arr, 2 * pos + 1, mp);
+        }
+        
+        if(mp[2 * pos + 2]) {
+            rAns = helper(arr, 2 * pos + 2, mp);
+        }
+        
+        int cur = arr[pos];
+        for(int t : lAns) {
+            ans.push_back(cur + t);
+        }
+        
+        for(int t : rAns) {
+            ans.push_back(cur + t);
+        }
+        
+        if(ans.empty()) {
+            ans.push_back(cur);
+        }
+        
+        return ans;
+    }
+};
