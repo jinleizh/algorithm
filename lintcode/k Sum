@@ -50,3 +50,56 @@ public:
         return ans;
     }
 };
+
+／／对空间做了优化
+／／dp[i][k][t] 表示以i开头的串，k步可达t的种类
+／／dp[i][k][t] = sun(dp[i2][k-1][t - A[i]]) i2=i+1 ... n-1
+// ans = sum(dp[i][k][t]) i=0..n-1
+// 观察k 和 k-1 ，发现空间复杂度可以优化， 此处需要注意遍历的顺序
+／／需注意每求新的dp[i][k][t]是，个数需清0，利用上一步的结果重新算
+class Solution {
+public:
+    /*
+     * @param A: An integer array
+     * @param k: A positive integer (k <= length(A))
+     * @param target: An integer
+     * @return: An integer
+     */
+    int kSum(vector<int> A, int k, int target) {
+        int n = A.size();
+        int dp[n][target+1];
+        memset(dp, 0, sizeof(dp));
+        sort(A.begin(), A.end());
+        
+        //ans = sum(dp[i][k][target]) i=0..n-1
+        //dp[i][k][target]=sum(dp[i2][k-1][target-A[i]]) i2=i+1..n-1 target > A[i]
+        //get dp
+        
+        for(int j = 1; j <= k; j++) {
+            for(int i = 0; i < n; i++) {
+                for(int t = target; t >= 1; t--) {
+                    if(j == 1) {
+                        if(A[i] == t) {
+                            dp[i][t] = 1;
+                        }
+                    } else {
+                        dp[i][t] = 0;
+                        for(int p = i + 1; p < n; p++) {
+                            if(t > A[i]) {
+                                dp[i][t] += dp[p][t - A[i]];
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            ans += dp[i][target];
+        }
+        return ans;
+    }
+};
