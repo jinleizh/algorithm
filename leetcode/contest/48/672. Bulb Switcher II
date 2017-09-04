@@ -1,0 +1,46 @@
+class Solution {
+public:
+    map<vector<int>, int> mp;
+    map<vector<int>, map<int, bool>> fp;
+    int flipLights(int n, int m) {
+        if(0 == m) return 1;
+
+        vector<int> key(8, 0);
+        for(int i = 0; i < 8; i++) {
+            key[i] = 0x80 >> i;
+        }
+
+        vector<int> v(n / 8, 0xFF);
+        if(0 != n % 8) {
+            int tmp = 0xFF << (8 - n % 8);
+            v.push_back(tmp);
+        }
+
+        //k,2k,2k+1,3k+1
+        op(1, 0, v, key, n, m);
+        op(2, 1, v, key, n, m);
+        op(2, 0, v, key, n, m);
+        op(3, 0, v, key, n, m);
+
+        return mp.size();
+    }
+
+    void op(int dis, int start, vector<int>& input, vector<int>& key, int n, int m) {
+        if(m < 1) return;
+        if(fp[input][m]) return;//已经计算过, 则无需继续
+
+        vector<int> v(input);
+        for(int i = start; i < n; i += dis) {
+            v[i / 8] ^= key[i % 8];
+        }
+
+        if(1 == m) mp[v] = true;
+
+        op(1, 0, v, key, n, m - 1);
+        op(2, 1, v, key, n, m - 1);
+        op(2, 0, v, key, n, m - 1);
+        op(3, 0, v, key, n, m - 1);
+
+        fp[v][m-1] = true;
+    }
+};
