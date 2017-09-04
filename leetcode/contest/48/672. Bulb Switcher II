@@ -44,3 +44,41 @@ public:
         fp[v][m-1] = true;
     }
 };
+
+
+class Solution {
+public:
+    int flipLights(int n, int m) {
+        set<vector<bool>> ans;
+        for(int k = 0; k < 16; k++) {
+            int cnt = 0;
+            vector<bool> cur(n, false);
+            for(int i = 0; i < 4; i++) {
+                if(k & (1 << i)) ++cnt;
+            }
+            
+            if(m < cnt) continue;
+            if(cnt % 2 != m % 2) continue;
+            
+            if(k & 1) {
+                for(int i = 0; i < n; i++) cur[i] = !cur[i];
+            }
+            
+            if(k & 2) {
+                for(int i = 1; i < n; i += 2) cur[i] = !cur[i];
+            }
+            
+            if(k & 4) {
+                for(int i = 0; i < n; i += 2) cur[i] = !cur[i];
+            }
+            
+            if(k & 8) {
+                for(int i = 0; i < n; i += 3) cur[i] = !cur[i];
+            }
+            
+            ans.insert(cur);
+            
+        }
+        return ans.size();
+    }   
+};
