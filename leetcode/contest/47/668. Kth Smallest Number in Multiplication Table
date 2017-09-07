@@ -1,3 +1,11 @@
+/*
+* 若A > B, 则 A得到的count值, 一定比B大. 若B 和 A 得到的count值相同, 说明A是不存在于乘法表中的.
+* 所以, 这里当cnt >= k时, high = mid; 
+* 因为当前求得的mid 未必存在于乘法表中，还需要继续再找, 看有没有count值和当前k相同的
+* 如果mid确实存在于乘法表中，则不可能找到和mid计算出的count值相同的
+* 如果mid不存在于乘法表中，则需要继续往前找，重复上面的操作
+*
+*/
 class Solution {
 public:
     int findKthNumber(int m, int n, int k) {
