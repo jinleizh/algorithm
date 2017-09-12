@@ -1,0 +1,28 @@
+class Solution {
+//dp[i][j] - 从i到j需要多少turn
+//ans=dp[0][len-1]
+//dp[i][j] = min(1 + dp[i+1][j], dp[i][k-1] + dp[k+1][j])
+public:
+    int strangePrinter(string s) {
+        int n = s.length();
+        int dp[100][100] = {-1};
+        memset(dp, -1, sizeof(dp));
+        
+        return dfs(s, dp, 0, n - 1);
+    }
+    
+    int dfs(string s, int dp[100][100], int l, int r) {
+        if(l > r) return 0;
+        if(dp[l][r] != -1) return dp[l][r];
+        dp[l][r] = 1 + dfs(s, dp, l + 1, r);
+        int ans = dp[l][r];
+        for(int i = l + 1; i <= r; i++) {
+            if(s[i] == s[l]) {
+                ans = min(ans, dfs(s, dp, l, i - 1) + dfs(s, dp, i + 1, r));
+            }
+        }
+        
+        dp[l][r] = ans;
+        return ans;
+    }
+};
