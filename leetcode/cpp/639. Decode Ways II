@@ -1,0 +1,95 @@
+class Solution {
+public:
+    //求和 = 第一个为单独串 + 前两个为单独串
+    unordered_map<string, int> dp;
+    unordered_map<string, int> ck;
+    int mod = 1e9 + 7;
+    int numDecodings(string s) {
+        return count(s);
+    }
+    
+    int count(string s) {
+        if(s.empty()) return 0;
+        if(dp.find(s) != dp.end()) return dp[s];
+        
+        if(s.length() == 1) {
+            if(s[0] == '0') return 0;
+            if(s[0] == '*') return 9;
+            return 1;
+        }
+        
+        if(s.length() == 2) {
+            if(s[0] == '0') return 0;
+            if(s[0] == '1') {
+                if(s[1] == '0') return 1;
+                if(s[1] == '*') return 18;
+                return 2;
+            }
+            if(s[0] == '2') {
+                if(s[1] == '*') return 15;
+                if(s[1] == '0') return 1;
+                if(s[1] <= '6') return 2;
+                return 1;
+            }
+            
+            if(s[0] == '*') {
+                if(s[1] == '0') return 2;
+                if(s[1] == '*') return 18 + 15 + 63;
+                if(s[1] <= '6') return 9 + 2;
+                return 10;
+            }
+            
+            if(s[1] == '0') return 0;
+            if(s[1] == '*') return 9;
+            return 1;
+        }
+        
+        int lc = check(s.substr(0, 1));
+        long rc = count(s.substr(1));
+        long ans = lc * rc;
+        lc = check(s.substr(0, 2));
+        rc = count(s.substr(2));
+        ans = (ans +  lc * rc) % mod;
+        dp[s] = ans;
+        return ans;
+    }
+    
+    int check(string s) {
+        if(s.empty()) return 0;
+        if(ck.find(s) != ck.end()) return ck[s];
+        if(1 == s.length()) {
+            ck[s] = count(s);
+            return ck[s];
+        } else {
+            if(s[0] == '0') return 0;
+            if(s[0] == '1') {
+                if(s[1] == '*') {
+                    ck[s] = 9;
+                    return 9;
+                } else {
+                    ck[s] = 1;
+                    return 1;
+                }
+            }
+            
+            if(s[0] == '2') {
+                if(s[1] == '*') { ck[s] = 6; return 6;}
+                if(s[1] > '6') { ck[s] = 0; return 0; }
+                ck[s] = 1;
+                return 1;
+            }
+            
+            if(s[0] == '*') {
+                if(s[1] == '0') { ck[s] = 2; return 2;}
+                if(s[1] == '*') { ck[s] = 15; return 15;}
+                if(s[1] <= '6') { ck[s] = 2; return 2;}
+                ck[s] = 1;
+                return 1;
+            }
+            
+            ck[s] = 0;
+            return 0;
+        }
+    }
+    
+};
