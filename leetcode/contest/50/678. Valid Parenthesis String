@@ -1,0 +1,81 @@
+class Solution {
+public:
+    unordered_map<char, int> cm;
+    bool checkValidString(string s) {
+        int n = s.length();
+        if(0 == n) return true;
+        for(char c : s) {
+            cm[c]++;
+        }
+        
+        if(cm['('] > n / 2 || cm[')'] > n / 2) return false;
+        if(cm['*'] == n) return true;
+        stack<char> st;
+        return dfs(s, st);
+    }
+    
+    bool dfs(string s, stack<char> st) {
+        int n = s.length();
+        if(0 == n) {
+            if(st.empty()) return true;
+            return false;
+        }
+        
+        for(int i = 0; i < n; i++) {
+            if(s[i] == '(') {
+                st.push('(');
+            } else if(s[i] == ')') {
+                if(st.empty()) return false;
+                st.pop();
+            } else {
+                //( first
+                st.push('(');
+                bool ret = dfs(s.substr(i+1), st);
+                if(ret) return true;
+                st.pop();
+                
+                //empty
+                ret = dfs(s.substr(i+1), st);
+                if(ret) return true;
+                
+                //) second
+                if(st.empty()) return false;
+                st.pop();
+                ret = dfs(s.substr(i+1), st);
+                st.push('(');
+                return ret;
+            }
+        }
+        
+        if(st.empty()) return true;
+        return false;
+    }
+};
+
+
+class Solution {
+public:
+    bool checkValidString(string s) {
+        int n = s.length();
+        if(0 == n) return true;
+        vector<set<int>> vs(n + 1, set<int>());
+        vs[0].insert(0);
+        
+        for(int i = 0; i < n; i++) {
+            for(int x : vs[i]) {
+                if(s[i] == '(') vs[i + 1].insert(x + 1);
+                if(s[i] == '*') {
+                    vs[i + 1].insert(x + 1);
+                    vs[i + 1].insert(x);
+                }
+                
+                if(x > 0) {
+                    if(s[i] == ')') vs[i + 1].insert(x - 1);
+                    if(s[i] == '*') vs[i + 1].insert(x - 1);
+                }
+            }
+        }
+        
+        return vs[n].find(0) != vs[n].end();
+    }
+};
