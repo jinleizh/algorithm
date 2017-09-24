@@ -1,0 +1,113 @@
+lass Solution {
+public:
+    string nextClosestTime(string time) {
+        int pos = time.find(":");
+        string hour = time.substr(0, pos);
+        string min = time.substr(pos + 1);
+        
+        //return hour + min;
+        int h = stoi(hour);
+        int m = stoi(min);
+        
+        int cur = h * 60 + m;
+        
+        vector<int> v;
+        for(char c : time) {
+            if(c != ':') {
+                v.push_back(c - '0');
+            }
+        }
+        
+        vector<int> ans;
+        int minDiff = INT_MAX;
+        
+        int a = 0, b = 0, c = 0, d = 0, nH = 0, nM = 0;
+        for(int i = 0; i < 4; i++) {
+            if(v[i] > 2) continue;
+            a = v[i];
+            for(int j = 0; j < 4; j++) {
+                b = v[j];
+                nH = 10 * a + b;
+                if(nH > 23) continue;
+                for(int k = 0; k < 4; k++) {
+                    if(v[k] > 5) continue;
+                    c = v[k];
+                    for(int p = 0; p < 4; p++) {
+                        d = v[p];
+                        nM = c * 10 + d;
+                        if(nM > 59) continue;
+                        int diff = nH * 60 + nM - cur;
+                        if(diff == 0) continue;
+                        
+                        if(diff < 0) {
+                            diff = diff + 24 * 60;
+                        }
+                        
+                        if(diff < minDiff) {
+                            minDiff = diff;
+                            //return to_string(nH) + to_string(nM);
+                            ans.clear();
+                            ans.push_back(a);
+                            ans.push_back(b);
+                            ans.push_back(c);
+                            ans.push_back(d);
+                        }
+                    }
+                }
+            }
+        }
+        
+        string result;
+        if(ans.empty()) return time;
+        int cnt = 0;
+        for(int d : ans) {
+            result += to_string(d);
+            cnt++;
+            if(cnt == 2) {
+                result += ":";
+            }
+        }
+        return result;
+    }
+};
+
+
+class Solution {
+public:
+    string ans;
+    bool b[128];
+    string nextClosestTime(string time) {
+        memset(b, 0, sizeof(b));
+        for(char c : time) {
+            b[c] = 1;
+        }
+        
+        string hour = time.substr(0, 2);
+        string min = time.substr(3, 2);
+        int h = stoi(hour);
+        int m = stoi(min);
+        while(!find(h, m));
+        return ans;
+    }
+    
+    bool find(int& hour, int& min) {
+        min = min + 1;
+        if(min == 60) {
+            min = 0;
+            hour = hour + 1;
+            if(hour == 24) {
+                hour = 0;
+            }
+        }
+        
+        char ch[5] = {0};
+        sprintf(ch, "%02d:%02d", hour, min);
+        for(char c : ch) {
+            if(c == ':') continue;
+            if(b[c] == 0) return false;
+        }
+        
+        ans = string(ch);
+        return true;
+    }
+};
