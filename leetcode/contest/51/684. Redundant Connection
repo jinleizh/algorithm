@@ -1,1 +1,23 @@
 
+int p[3000];
+
+class Solution {
+public:
+    vector<int> findRedundantConnection(vector<vector<int> >& edges) {
+      int i,j,k,n,x,y,tmp;
+      vector<int> ans;
+      n=edges.size();
+      for (i=0;i<3000;i++)
+        p[i]=i;
+      for (i=0;i<n;i++)
+      {
+        x=edges[i][0];
+        y=edges[i][1];
+        if (p[x]==p[y]) return edges[i];
+        tmp=p[y];
+        for (j=0;j<3000;j++)
+          if (p[j]==tmp) p[j]=p[x];
+      }
+      return ans;
+    }
+};
