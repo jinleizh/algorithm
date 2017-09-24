@@ -1,0 +1,46 @@
+class Solution {
+public:
+    int calPoints(vector<string>& ops) {
+        vector<int> vec;
+        int n = ops.size();
+        if(0 == n) return 0;
+        
+        int pos = 0;    
+        for(string s: ops) {
+            if(s != "+" && s != "D" && s != "C") {
+                int val = stoi(s);
+                vec.push_back(val);
+                pos++;
+            } else {
+                if(s == "+") {
+                    int l = 0, r = 0;
+                    if(pos - 1 >= 0) l = vec[pos - 1];
+                    if(pos - 2 >= 0) r = vec[pos - 2];
+                    vec.push_back(l + r);
+                    pos++;
+                }
+                
+                if(s == "D") {
+                    int l = 0;
+                    if(pos - 1 >= 0) l = vec[pos - 1];
+                    vec.push_back(2 * l);
+                    pos++;
+                }
+                
+                if(s == "C") {
+                    if(pos >= 1) {
+                        vec.pop_back();
+                        pos--;
+                    }
+                }
+            }
+        }
+        
+        int ans = 0;
+        for(int c : vec) {
+            ans += c;
+        }
+        
+        return ans;
+    }
+};
