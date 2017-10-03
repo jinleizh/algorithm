@@ -1,0 +1,52 @@
+/**
+* 使用两个数组，分别记录以0开头的，包含非连续1的个数，记录以1开头的，包含非连续1的个数
+* l[k] = l[k-1] + r[k-1]; //以0开头,长度为k的个数=以0开头的，长度为k-1的个数 + 以1开头的，长度为k-1的个数
+* r[k] = l[k-1]; //以1开头，长度为k的个数=以0开头的，长度为k-1的个数。
+* ans = l[n] + r[n]
+*/
+class Solution {
+public:
+    int findIntegers(int num) {
+        vector<int> l(33, 0);
+        vector<int> r(33, 0);
+        
+        l[1] = 1;
+        r[1] = 1;
+        for(int i = 2; i <= 32; i++) {
+            l[i] = l[i - 1] + r[i - 1];
+            r[i] = l[i - 1];
+        }
+        
+        vector<int> bits(33, 0);
+        int base = 1;
+        for(int i=1; i<=32; i++) {
+            bits[i] = ((num & base) > 0) ? 1 : 0;
+            if(i != 32) {
+                base <<= 1;
+            }
+        }
+        
+        //return bits[2];
+        
+        int ans = 0;
+        int start = 0;
+        for(int i = 32; i >= 1; i--) {
+            if(bits[i] == 1) {
+                start = i;
+                ans = l[i] + r[i];
+                break;
+            }
+        }
+        
+        //return start;
+           
+        for(int i=start-1; i>=1; i--) {
+            if(1 == bits[i+1] && 1 == bits[i]) break;
+            if(0 == bits[i+1] && 0 == bits[i]) {
+                ans -= r[i];
+            }
+        }
+        
+        return ans;
+    }
+};
