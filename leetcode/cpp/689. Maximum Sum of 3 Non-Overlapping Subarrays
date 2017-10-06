@@ -1,0 +1,59 @@
+class Solution {
+/**
+* 思路：使用滑动的方式，计算出 dp[i] 表示第i个数开头的，子数组和.
+*/
+public:
+    vector<int> ans;
+    vector<int> maxSumOfThreeSubarrays(vector<int>& nums, int k) {
+        int n = nums.size();
+        //1.计算从0开始到n-3k最大的sum和
+        //2.计算从n-1开始到n-2k+1最大的sum和
+        //0...k-1 k...2k-1  n-3k n-2k-1 n-k-k n-k-1 n-k ... n-1
+        vector<int> l(n, 0);
+        vector<int> r(n, 0);
+        vector<int> sum(n+1, 0);
+        for(int i=1; i<=n; i++) {
+            sum[i] = nums[i-1] + sum[i-1];
+        }
+        
+        int max = INT_MIN;
+        for(int i=0; i<=n-k; i++) {
+            int tmp = sum[i+k] - sum[i];
+            if(tmp > max) {
+                max = tmp;
+                l[i] = i;
+            } else {
+                l[i] = l[i-1];
+            }
+        }
+        
+        max = INT_MIN;
+        for(int i=n-k; i>=0; i--) {
+            int tmp = sum[i+k] - sum[i];
+            if(tmp > max) {
+                max = tmp;
+                r[i] = i;
+            } else {
+                r[i] = r[i+1];
+            }
+        }
+        
+        max = INT_MIN;
+        for(int i=k; i<=n-2*k; i++) {
+            int lpos = l[i-k];
+            int rpos = r[i+k];
+            int lsum = sum[lpos+k] - sum[lpos];
+            int rsum = sum[rpos+k] - sum[rpos];
+            int msum = sum[i+k] - sum[i];
+            if(lsum + rsum + msum > max) {
+                ans.clear();
+                ans.push_back(lpos);
+                ans.push_back(i);
+                ans.push_back(rpos);
+                max = lsum + rsum + msum;
+            }
+        }
+        
+        return ans;
+    }
+};
