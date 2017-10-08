@@ -29,3 +29,19 @@ public:
         return true;
     }
 };
+
+class Solution {
+public:
+    bool hasAlternatingBits(int n) {
+        int last = n & 1;
+        n >>= 1;
+        while(n) {
+            int k = n & 1;
+            if(k == last) return false;
+            last = k;
+            n >>= 1;
+        }
+        
+        return true;
+    }
+};
