@@ -1,0 +1,95 @@
+struct Node {
+    int x;
+    int y;
+    Node(int a, int b) {
+        this->x = a;
+        this->y = b;
+    }
+};
+
+class Solution {
+public:
+    unordered_map<int, vector<vector<Node>>> mp;
+    int dx[4] = {0, 0, 1, -1};
+    int dy[4] = {1, -1, 0, 0};
+    int numDistinctIslands(vector<vector<int>>& grid) {
+        int r = grid.size();
+        if(r == 0) return 0;
+        
+        int c = grid[0].size();
+        if(c == 0) return 0;
+        
+        for(int i=0; i<r; i++) {
+            for(int j=0; j<c; j++) {
+                vector<Node> result;
+                int cnt = dfs(grid, i, j, r, c, result);
+                if(0 == cnt) continue;
+                
+                if(mp.find(cnt) == mp.end()) {
+                    vector<vector<Node>> nodes;
+                    nodes.push_back(result);
+                    mp[cnt] = nodes;
+                } else {
+                    check(result, mp[cnt]);
+                }
+            }
+        }
+        
+        //return mp[2].size();
+        return count();
+    }
+    
+    int count() {
+        int ans = 0;
+        for(auto it : mp) {
+            ans += it.second.size();
+        }
+        
+        return ans;
+    }
+    
+    int dfs(vector<vector<int>>& grid, int i, int j, int r, int c, vector<Node>& result) {
+        if(i < 0 || i >= r || j < 0 || j >= c) return 0;
+        if(grid[i][j] == 0) return 0;
+        int ans = 1;
+        Node root(i, j);
+        result.push_back(root);
+        grid[i][j] = 0;
+        
+        for(int d=0; d<4; d++) {
+            int x = i + dx[d];
+            int y = j + dy[d];
+            ans += dfs(grid, x, y, r, c, result);
+        }
+        
+        return ans;
+    }
+    
+    void check(vector<Node>& node, vector<vector<Node>>& nodes) {
+        int n = nodes.size();
+        for(int i=0; i<n; i++) {
+            int l = node.size();
+            int diffX = 0, diffY = 0;
+            int begin = true;
+            bool equal = true;
+            for(int j=0; j<l; j++) {
+                int dx = nodes[i][j].x - node[j].x;
+                int dy = nodes[i][j].y - node[j].y;
+                if(begin) {
+                    diffX = dx;
+                    diffY = dy;
+                    begin = false;
+                } else {
+                    if(dx != diffX || dy != diffY) {
+                        equal = false;
+                        break;
+                    };
+                }
+            }
+            
+            if(equal) return;
+        }
+        
+        nodes.push_back(node);
+    }
+};
