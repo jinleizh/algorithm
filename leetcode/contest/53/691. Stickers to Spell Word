@@ -1,0 +1,64 @@
+class Solution {
+//dp[s] = min(1 + dp[delete_spec_sticker])
+public:
+    unordered_map<string, int> dp;
+    int minStickers(vector<string>& stickers, string target) {
+        dp[""] = 0;
+        return helper(stickers, target);
+    }
+    
+    int helper(vector<string>& stickers, string target) {
+        if(dp.find(target) != dp.end()) {
+            return dp[target];
+        }
+        
+        int ans = INT_MAX;
+        bool hasCand = false;
+        for(int i=0; i<stickers.size(); i++) {
+            string cand = "";
+            string sticker = stickers[i];
+            unordered_map<char, int> mp;
+            for(int i=0; i<sticker.length(); i++) {
+                char c = sticker[i];
+                mp[c]++;
+            }
+
+            for(int i=0; i<target.length(); i++) {
+                char c = target[i];
+                if(mp.find(c) != mp.end()) {
+                    if(mp[c] > 0) {
+                        mp[c]--;
+                    } else {
+                        cand += c;
+                    }
+                } else {
+                    cand += c;
+                }
+            }
+
+            if(cand == target) {
+                continue;
+            } else {
+                hasCand = true;
+            }
+            
+            if(dp.find(cand) != dp.end()) {
+                if(dp[cand] != -1) {
+                    ans = min(ans, 1 + dp[cand]);
+                }
+            } else {
+                int tmp = helper(stickers, cand);
+                if(tmp != -1) {
+                    ans = min(ans, 1 + tmp);
+                }
+            }
+        }
+        
+        if(!hasCand || ans == INT_MAX) {
+            ans = -1;
+        }
+        
+        dp[target] = ans;
+        return ans;
+    }
+};
