@@ -1,0 +1,31 @@
+class Solution {
+public:
+    bool hasAlternatingBits(int n) {
+        if(n <= 0) return false;
+        
+        vector<int> bits(32, 0);
+        int base = 1;
+        for(int i=31; i>=0; i--) {
+            bits[i] = (n & base) == 0 ? 0 : 1;
+            base <<= 1;
+        }
+        
+        int i = 0;
+        while(bits[i] == 0) {
+            i++;
+        };
+        
+        int last = 1;
+        i++;
+        while(i < 32) {
+            if(bits[i] != last) {
+                last = bits[i];
+                i++;
+            } else {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+};
