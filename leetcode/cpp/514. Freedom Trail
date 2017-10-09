@@ -1,0 +1,20 @@
+class Solution {
+public:
+    map<string, int> mp;
+    int findRotateSteps(string ring, string key) {
+        if(key.empty()) return 0;
+        if(mp.find(ring + "|" + key) != mp.end()) return mp[ring + "|" + key];
+        int ans = INT_MAX;
+        char k = key[0];
+        for(int i=0; i<ring.size(); i++) {
+            if(ring[i] == k) {
+                string newRing = ring.substr(i) + ring.substr(0, i);
+                int len = min(i, (int)ring.length() - i);
+                ans = min(ans, len + 1 + findRotateSteps(newRing, key.substr(1)));
+            }
+        }
+        
+        mp[ring + "|" + key] = ans;
+        return ans;
+    }
+};
