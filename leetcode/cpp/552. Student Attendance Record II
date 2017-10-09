@@ -1,0 +1,45 @@
+/*
+* p[n] = a[n-1] + p[n-1] + l[n-1]
+* l[n] = a[n-1] + p[n-1] + a[n-2] + p[n-2]
+* a[n] = noap[n-1] + noal[n-1] = noap[n-1] + noap[n-2] + noap[n-3]
+* noap[n-1] = noap[n-2] + noal[n-2] = noap[n-2] + noap[n-3] + noap[n-4] = a[n-1]
+* noal[n-1] = noap[n-2] + noap[n-3]
+*/
+class Solution {
+public:
+    int checkRecord(int n) {
+        int mod = 1e9 + 7;
+        int ans = 0; 
+        int s = 3;
+        if(n > s) s = n;
+        int p[s+1] = {0};
+        memset(p, 0, sizeof(p));
+        
+        int l[s+1] = {0};
+        memset(l, 0, sizeof(l));
+        
+        int a[s+1] = {0};
+        memset(a, 0, sizeof(a));
+        
+        p[1] = 1;
+        l[1] = 1;
+        a[1] = 1;
+        l[2] = 3;
+        a[2] = 2;
+        a[3] = 4;
+        for(int i=2; i<=n; i++) {
+            p[i] = ((a[i-1] + p[i-1]) % mod + l[i-1]) % mod;
+            
+            if(i > 2) {
+                l[i] = (((a[i-1] + p[i-1]) % mod + a[i-2]) % mod + p[i-2]) % mod;
+            }
+            
+            if(i > 3) {
+                a[i] = ((a[i-1] + a[i-2]) % mod + a[i-3]) % mod;
+            }
+        }
+        
+        ans = ((a[n] + p[n]) % mod + l[n]) % mod;
+        return ans;
+    }
+};
