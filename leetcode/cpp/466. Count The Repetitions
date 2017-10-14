@@ -71,3 +71,28 @@ public:
         return ans + m;
     }
 };
+
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& A) {
+        int n = A.size();
+        vector<unordered_map<int, int>> dp(n, unordered_map<int, int>());
+        int ans = 0;
+       
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < i; j++) {
+                int diff = A[i] - A[j];
+                if(diff >= 0 && A[i] < A[j]) continue;
+                if(diff <= 0 && A[i] > A[j]) continue;
+                dp[i][diff]++;
+                
+                if(dp[j].find(diff) != dp[j].end()) {
+                    dp[i][diff] += dp[j][diff];
+                    ans += dp[j][diff];
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
