@@ -1,0 +1,34 @@
+class Solution {
+public:
+    //dp[n][m] ended by n, length is m
+    //dp[n][m] = sum(dp[i][m-1]) for(i in (1 .. n - 1)) i >= m - 1//ended by i, len is m-1
+    int numberOfArithmeticSlices(vector<int>& A) {
+        int n = A.size();
+        vector<vector<map<long, long>>> dp(n, vector<map<long, long>>(n, map<long, long>()));
+        
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < i; j++) {
+                    long diff = A[i] - A[j];
+                    if((diff >= 0 && A[i] < A[j]) || (diff <= 0 && A[i] > A[j])) continue;
+                    for(int l=1; l<=j+1; l++) {
+                        if(dp[j][l-1][diff] != 0) {
+                            dp[i][l][diff] += dp[j][l-1][diff];
+                        } else {
+                            if(l == 1) {
+                                dp[i][l][diff] += 1;
+                            }
+                        }
+                    }
+                }
+            
+            for(int k = 2; k < n; k++) {
+                for(auto &it : dp[i][k]) {
+                    ans += it.second;
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
