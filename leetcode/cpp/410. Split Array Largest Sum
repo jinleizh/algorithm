@@ -1,0 +1,33 @@
+class Solution {
+    //dp[n][m] = min(max(s, dp[n-1][m-1]), max(s2, dp[n-2][m-2]), ... max(si, dp[n-i][m-i]))
+public:
+    int splitArray(vector<int>& nums, int m) {
+        int n = nums.size();
+        vector<long> sums(n + 1, 0);
+        for(int i = 1; i<=n; i++) {
+            sums[i] = sums[i-1] + nums[i-1];
+        }
+        
+        vector<vector<long>> dp(n+1, vector<long>(51, 0));
+        return dfs(sums, m, 0, n, dp);
+    }
+    
+    long dfs(vector<long>& sums, int m, int s, int e, vector<vector<long>>& dp) {
+        if(s == e) return 0;
+        if(dp[s][m] > 0) return dp[s][m];
+        if(1 == m) {
+            dp[s][1] = sums[e] - sums[s];
+            return dp[s][1];
+        }
+        
+        long ans = INT_MAX;
+        for(int i = s + 1; i <= e; i++) {
+            long tmp = sums[i] - sums[s];
+            tmp = max(tmp, dfs(sums, m - 1, i, e, dp));
+            ans = min(ans, tmp);
+        }
+        
+        dp[s][m] = ans;
+        return dp[s][m];
+    }
+};
