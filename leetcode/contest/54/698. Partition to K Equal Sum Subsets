@@ -1,0 +1,43 @@
+class Solution {
+//dfs--递归返回true的条件是, k个区间，都能sum成target, 才返回true
+public:
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int n = nums.size();
+        int sum = 0;
+        for(int t : nums) {
+            sum += t;
+        }
+        
+        if(k == 1) return true;
+        if(k > n) return false;
+        if(sum % k == 1) return false;
+        int avg = sum / k;
+        
+        vector<int> sumVec(k, 0);
+        vector<bool> flag(n, false);
+        int curIdx = 0;
+        return dfs(curIdx, sumVec, nums, flag, 0, n, k, avg);
+    }
+    
+    bool dfs(int idx, vector<int>& sumVec, vector<int>& nums, vector<bool>& flag, int s, int n, int k, int avg) {
+        if(sumVec[idx] == avg) {
+            if(idx == k - 2) return true;
+            return dfs(idx + 1, sumVec, nums, flag, 0, n, k, avg);
+        }
+        
+        for(int i = s; i < n; i++) {
+            if(flag[i]) continue;
+            int tmp = nums[i] +  sumVec[idx];
+            if(tmp <= avg) {
+                flag[i] = true;
+                sumVec[idx] += nums[i];
+                bool ret = dfs(idx, sumVec, nums, flag, i + 1, n, k, avg);
+                flag[i] = false;
+                sumVec[idx] -= nums[i];
+                if(ret) return true;
+            }
+        }
+        
+        return false;
+    }
+};
