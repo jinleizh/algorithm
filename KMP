@@ -1,0 +1,46 @@
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        //edge case
+        if(s == p) return true;
+        if(s.length() < p.length()) return false;
+        if(p == "") return true;
+        
+        //预处理得到next数组
+        vector<int> next(p.length(), 0);
+        preProcess(p, next);
+        int n = s.length(); 
+        int i = 0, j = 0;
+        bool newBeg = false;
+        while(i < n) {
+            while(s[i] != p[j]) {
+                j = next[j];
+                if(j == -1) {
+                    break;
+                }
+            }
+            
+            i++;
+            j++;
+            if(j == p.length()) return true;
+        }
+        
+        return false;
+    }
+    
+    void preProcess(string s, vector<int>& next) {
+        next[0] = -1;
+        for(int i = 1; i < s.length(); i++) {
+            //默认从头比较
+            next[i] = 0;
+            
+            //比较两端的最长相同子串,取最长的给到next数组
+            for(int j = 1; j < i; j++) {
+                string l = s.substr(0, j);
+                string r = s.substr(i-j, j);
+                if(l == r) next[i] = j;
+            }
+        }
+    }
+    
+};
