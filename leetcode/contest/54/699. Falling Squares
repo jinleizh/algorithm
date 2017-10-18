@@ -1,0 +1,47 @@
+struct Square {
+public:
+    Square(int s, int e, int h) {
+        this->start = s;
+        this->end = e;
+        this->height = h;
+    }
+    
+    ~Square() {}
+    
+    int start;
+    int end;
+    int height;
+};
+
+class Solution {
+public:
+    //positions只有1000以内,所以o(n^2)的复杂度可以接受
+    vector<int> fallingSquares(vector<pair<int, int>>& positions) {
+        vector<Square> squares;
+        vector<int> ans;
+        int curH = 0;
+        for(int i = 0; i < positions.size(); i++) {
+            int s = positions[i].first;
+            int e = s + positions[i].second - 1;
+            int h = positions[i].second;
+            Square cur(s, e, h);
+            curH = max(curH, getHeight(squares, cur));
+            ans.push_back(curH);
+        }
+        
+        return ans;
+    }
+    
+    int getHeight(vector<Square>& squares, Square cur) {
+        int curH = 0;
+        for(Square sq : squares) {
+            if(sq.start > cur.end) continue;
+            if(sq.end < cur.start) continue;
+            curH = max(curH, sq.height);
+        }
+        
+        cur.height += curH;
+        squares.push_back(cur);
+        return cur.height;
+    }
+};
