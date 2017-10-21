@@ -1,0 +1,26 @@
+class Solution {
+public:
+    //dp[i][j] represents si pj match or not match
+    bool isMatch(string s, string p) {
+        if(p.empty()) return s.empty();  
+        int sl = s.length();
+        int pl = p.length();
+        vector<vector<int>> dp(sl + 1, vector<int>(pl + 1, 0));
+        dp[0][0] = 1;
+        for(int i = 0; i <= sl; i++) {
+            for(int j = 1; j <= pl; j++) {
+                //dp[i][j]
+                //if p[j] != '*' !s.empty() && (p[j] == '?' || p[j] == s[i]) && dp[i - 1][j - 1] 
+                //if p[j] == '*' dp[i][j - 1] || (!s.empty() && dp[i - 1][j])
+                
+                if(p[j - 1] != '*') {
+                    dp[i][j] = i > 0 && !s.empty() && (p[j - 1] == '?' || p[j - 1] == s[i - 1]) && dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = dp[i][j - 1] || (!s.empty() && i > 0 && (dp[i - 1][j] || dp[i - 1][j - 1]));
+                }
+            }
+        }
+        
+        return dp[sl][pl];
+    }
+};
