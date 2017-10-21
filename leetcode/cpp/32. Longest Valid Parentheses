@@ -30,3 +30,34 @@ public:
         return  max(ans, a);
     }
 };
+
+
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        //dp[j] assume it is the longest substr that has valid parenthese which ended with s[j]
+        int n = s.length();
+        if(1 >= n) return 0;
+        
+        int ans = 0;
+        vector<int> dp(n + 1, 0);
+        for(int i = 2; i <= n; i++) {
+            if(s[i - 1] == '(') {
+                dp[i] = 0; //length is zero
+            } else {
+                if(s[i - 2] == '(') {
+                    dp[i] = dp[i - 2] + 2;
+                } else {
+                    int len = dp[i - 1];
+                    if(i - len - 2 >= 0 && s[i - len - 2] == '(') {
+                        dp[i] = dp[i - 1] + 2 + dp[i - len - 2];
+                    }
+                }
+            }
+            
+            ans = max(ans, dp[i]);
+        }
+        
+        return ans;
+    }
+};
