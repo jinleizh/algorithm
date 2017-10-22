@@ -1,0 +1,81 @@
+//TLE
+class Solution {
+public:
+    //dp
+    int maxProfit(vector<int>& prices, int fee) {
+        int n = prices.size();
+        if(0 == n) return 0;
+        
+        vector<int> dp(n, 0);
+        int ans = 0;
+        for(int i = n - 2; i >= 0; i--) {
+            int maxAns = 0;
+            for(int j = i + 1; j <= n - 1; j++) {
+                int tmp = prices[j] - prices[i] - fee;
+                if(tmp > 0) {
+                    maxAns = max(maxAns, tmp + dp[j]);
+                }
+            }
+            
+            dp[i] = max(maxAns, dp[i + 1]);
+        }
+        
+        return dp[0];
+    }
+};
+
+//MLE
+class Solution {
+public:
+    //dfs
+    int maxProfit(vector<int>& prices, int fee) {
+        int n = prices.size();
+        if(0 == n) return 0;
+        vector<vector<int>> dp(n, vector<int>(n, 0));
+        return helper(prices, 0, n - 1, fee, dp);
+    }
+    
+    int helper(vector<int>& prices, int l, int e, int fee, vector<vector<int>>& dp) {
+        if(l >= e) return 0;
+        if(dp[l][e] != 0) return dp[l][e];
+        int ans = helper(prices, l + 1, e, fee, dp);
+        for(int i = l + 1; i <= e; i++) {
+            if(prices[i] - prices[l] - fee > 0) {
+                int tmp = helper(prices, i, e, fee, dp);
+                ans = max(ans, tmp + prices[i] - prices[l] - fee);
+            }
+        }
+        
+        dp[l][e] = ans;
+        return ans;
+    }
+};
+
+//contest
+class Solution {
+public:
+    //greedy
+    int maxProfit(vector<int>& prices, int fee) {
+        int n = prices.size();
+        if(0 == n) return 0;
+        
+        int ans = 0;
+        int minV = INT_MAX;
+        int nextV = INT_MAX;
+        for(int i = 0; i < n; i++) {
+            if(prices[i] < nextV) {
+                nextV = prices[i];
+                minV = min(nextV, minV);
+                continue;
+            } else {
+                int tmp = prices[i] - nextV - fee;
+                if(tmp > 0) {
+                    ans = max(ans + tmp, prices[i] - minV - fee);
+                    nextV = prices[i];
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
