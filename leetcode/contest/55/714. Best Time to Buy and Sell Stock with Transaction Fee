@@ -79,3 +79,20 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    //dp[i][k][0] = max(dp[i - 1][k][0], dp[i - 1][k][1] + prices[i] - fee)
+    //dp[i][k][1] = max(dp[i - 1][k][1], dp[i - 1][k - 1][0] - prices[i])
+    //if k is infinite, then dp[i][k][1] = max(dp[i - 1][k][1], dp[i - 1][k][0] - prices[i])
+    int maxProfit(vector<int>& prices, int fee) {
+        long a = 0, b = INT_MIN;
+        for(int i = 0; i < prices.size(); i++) {
+            long oldA = a;
+            a = max(a, b + prices[i] - fee);
+            b = max(b, oldA - prices[i]);
+        }
+        
+        return a;
+    }
+};
