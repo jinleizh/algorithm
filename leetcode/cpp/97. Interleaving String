@@ -1,0 +1,62 @@
+//TLE
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        //edge case
+        int l1 = s1.length();
+        int l2 = s2.length();
+        int l3 = s3.length();
+        if(l1 + l2 != l3) return false;
+        if(s1.empty()) return s2 == s3;
+        if(s2.empty()) return s1 == s3;
+        bool ans = false;
+        if(s1[0] == s3[0]) {
+            ans = isInterleave(s1.substr(1), s2, s3.substr(1));
+            if(ans) return true;
+        }
+        
+        if(s2[0] == s3[0]) {
+            ans = isInterleave(s1, s2.substr(1), s3.substr(1));
+            if(ans) return true;
+        }
+        
+        return ans;
+    }
+};
+
+//AC memory
+class Solution {
+public:
+    unordered_map<string, bool> dp;
+    bool isInterleave(string s1, string s2, string s3) {
+        string key = s1 + "_" + s2 + "_" + s3;
+        if(dp.find(key) != dp.end()) return dp[key];
+        
+        //edge case
+        int l1 = s1.length();
+        int l2 = s2.length();
+        int l3 = s3.length();
+        if(l1 + l2 != l3) return false;
+        if(s1.empty()) return s2 == s3;
+        if(s2.empty()) return s1 == s3;
+        bool ans = false;
+        if(s1[0] == s3[0]) {
+            ans = isInterleave(s1.substr(1), s2, s3.substr(1));
+            if(ans) {
+                dp[key] = true;
+                return true;
+            }
+        }
+        
+        if(s2[0] == s3[0]) {
+            ans = isInterleave(s1, s2.substr(1), s3.substr(1));
+            if(ans) {
+                dp[key] = true;
+                return true;
+            }
+        }
+        
+        dp[key] = ans;
+        return ans;
+    }
+};
