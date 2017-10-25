@@ -1,0 +1,72 @@
+class RangeModule {
+public:
+    typedef pair<int, int> pii;
+    vector<pii> a;
+
+    RangeModule() {
+        a.clear();
+    }
+
+    void addRange(int left, int right) {
+        if(left >= right) return;
+        vector<pii> b;
+        int x = left;
+        int y = right;
+        for(auto& it : a) {
+            if(it.first >= right || it.second <= left) {
+                b.push_back(it);
+            } else {
+                x = min(it.first, x);
+                y = max(it.second, y);
+            }
+        }
+
+        b.push_back(pii(x, y));
+        a = move(b);
+    }
+
+    bool queryRange(int left, int right) {
+        //edge case
+        if(left >= right) return false;
+        int len = 0;
+        for(auto& it : a) {
+            //if(it.first >= right || it.second <= left) continue;
+            int x = max(left, it.first);
+            int y = min(right, it.second);
+            if(x < y) len += y - x;
+        }
+
+        return right - left == len;
+    }
+
+    void removeRange(int left, int right) {
+        //edge case
+        if(left >= right) return;
+        vector<pii> b;
+        for(auto& it : a) {
+            if(it.first >= right || it.second <= left) {
+                b.push_back(it);
+            } else if(left <= it.first && right >= it.second) {
+                //do nothing
+            } else { 
+                if(left > it.first) {
+                    b.push_back(pii(it.first, left));
+                }
+                
+                if(right < it.second) {
+                    b.push_back(pii(right, it.second));
+                }
+            }
+        }
+        
+        a = move(b);
+    }
+};
+
+/**
+ * Your RangeModule object will be instantiated and called as such:
+ * RangeModule obj = new RangeModule();
+ * obj.addRange(left,right);
+ * bool param_2 = obj.queryRange(left,right);
+ * obj.removeRange(left,right);
+ */
