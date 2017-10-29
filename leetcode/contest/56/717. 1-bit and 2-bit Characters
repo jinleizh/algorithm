@@ -1,0 +1,54 @@
+class Solution {
+public:
+    bool isOneBitCharacter(vector<int>& bits) {
+        int n = bits.size();
+        if(n == 0) return false;
+        if(n == 1) return true;
+        if(bits[n - 2] == 0) return true;
+        string s;
+        int d = 0;
+        for(int i = 0; i < n - 2; i++) {
+            d = bits[i];
+            if(0 == d) s += "0";
+            if(1 == d) s += "1";
+        }
+        
+        return !helper(s);
+    }
+    
+    bool helper(string s) {
+        if(s.empty() || s == "0" || s == "10" || s == "11") return true;
+        
+        int n = s.length();
+        if(s[n - 1] == '1') {
+            if(n - 2 < 0) return false;
+            if(s[n - 2] != '1') return false;
+            return helper(s.substr(0, n - 2));
+        } else {
+            if(n - 2 < 0) return true;
+            if(s[n - 2] == '0') {
+                return helper(s.substr(0, n - 1));
+            } else {
+                return helper(s.substr(0, n - 1)) || helper(s.substr(0, n - 2));
+            }
+        }
+    }
+};
+
+class Solution {
+public:
+    bool isOneBitCharacter(vector<int>& bits) {
+        int n = bits.size();
+        int cur = -1;
+        for(int i = 0; i < n; i++) {
+            if(bits[i] == 0) {
+                cur = 0;
+            } else {
+                cur = 1;
+                i++;
+            }
+        }
+        
+        return cur == 0;
+    }
+};
