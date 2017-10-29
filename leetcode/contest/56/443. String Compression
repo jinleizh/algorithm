@@ -1,0 +1,80 @@
+class Solution {
+public:
+    int compress(vector<char>& chars) {
+        string ans;
+        char cur;
+        int pos = 0;
+        int cnt = 0;
+        for(char c : chars) {
+            //begin deal
+            if(0 == cnt) {
+                cur = c;
+                cnt++;
+            } else {
+                if(cur == c) {
+                    cnt++;
+                } else {
+                    ans += cur;
+                    chars[pos++] = cur;
+                    string lenCntStr = to_string(cnt);
+                    if(cnt > 1) {
+                        ans += lenCntStr;
+                        for(int i = 0; i < lenCntStr.length(); i++) {
+                            chars[pos++] = lenCntStr[i];
+                        }
+                    }
+                    
+                    cur = c;
+                    cnt = 1;
+                }
+            }
+        }
+        
+        //tail deal
+        if(cnt > 0) {
+            ans += cur;
+            chars[pos++] = cur;
+            string lenCntStr = to_string(cnt);
+            if(cnt > 1) {
+                ans += lenCntStr;
+                for(int i = 0; i < lenCntStr.length(); i++) {
+                    chars[pos++] = lenCntStr[i];
+                }
+            }
+        }
+        
+        return ans.length();
+    }
+};
+
+class Solution {
+public:
+    int compress(vector<char>& chars) {
+        int pos = 0, ans = 0, cnt = 0;
+        char cur = chars[0];
+        int n = chars.size();
+        for(int i = 0; i < n; i++) {
+            cnt = 0;
+            while(i < n && chars[i] == cur) {
+                cnt++;
+                i++;
+            }
+            
+            chars[pos++] = cur;
+            if(i < n) {
+                cur = chars[i];
+            }
+            
+            //print
+            i--;
+            if(cnt > 1) {
+                string lenCnt = to_string(cnt);
+                for(int i = 0; i < lenCnt.length(); i++) {
+                    chars[pos++] = lenCnt[i];
+                }
+            }
+        }
+        
+        return pos;
+    }
+};
