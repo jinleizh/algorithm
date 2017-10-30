@@ -1,0 +1,61 @@
+class Solution {
+public:
+    int smallestDistancePair(vector<int>& nums, int k) {
+        unsigned long n = nums.size();
+        vector<int> diffArr(1000000, 0);
+        for(int i = 0; i < n; i++) {
+            for(int j = i + 1; j < n; j++) {
+                int diff = abs(nums[i] - nums[j]);
+                diffArr[diff]++;
+            }
+        }
+        
+        int sum = 0;
+        for(int i = 0; i < 1000000; i++) {
+            sum += diffArr[i];
+            if(sum >= k) return i;
+        }
+        
+        return 0;
+    }
+};
+
+//accept， 注意这里利用sort, 在计数时提前break出去了, 否则会TLE
+class Solution {
+public:
+    int binarySearch(vector<int>& nums, int left, int right, int k) {
+        while(left < right) {//can't be equal
+            int mid = left + (right - left) / 2;
+            unsigned long n = nums.size();
+            int cnt = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = i + 1; j < n; j++) {
+                    if (abs(nums[i] - nums[j]) <= mid) {
+                        cnt++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (cnt < k) {
+                left = mid + 1;//left不可能是最终的解,所以left + 1
+            } else {
+                right = mid;//right有可能是解, 需要继续包含
+            }
+        }
+
+        return left;
+    }
+
+    int smallestDistancePair(vector<int>& nums, int k) {
+        unsigned long n = nums.size();
+        int minDiff = INT_MAX;
+        sort(nums.begin(), nums.end());
+        for(int i = 1; i < n; i++) {
+            minDiff = min(minDiff, abs(nums[i] - nums[i - 1]));
+        }
+        int maxDiff = nums[n - 1] - nums[0];
+        return binarySearch(nums, minDiff, maxDiff, k);
+    }
+};
