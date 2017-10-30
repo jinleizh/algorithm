@@ -1,0 +1,71 @@
+//TLE
+class Solution {
+public:
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        vector<string> result;
+        if(s.empty()) {
+            result.push_back("");
+            return result;
+        }
+        
+        unordered_map<string, bool> mp;
+        for(string p : wordDict) {
+            mp[p] = true;
+        }
+
+        string tmp;
+        for(int i = 1; i <= s.length(); i++) {
+            tmp = s.substr(0, i);
+            if(mp.find(tmp) != mp.end()) {
+                vector<string> ans = wordBreak(s.substr(i), wordDict);
+                for (string t : ans) {
+                    if(!t.empty()) {
+                        result.push_back(tmp + " " + t);
+                    } else {
+                        result.push_back(tmp);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+};
+
+//memory 优化后 accept
+class Solution {
+public:
+    map<string, vector<string>> mem;
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        if(mem.find(s) != mem.end()) return mem[s];
+        
+        vector<string> result;
+        if(s.empty()) {
+            result.push_back("");
+            return result;
+        }
+        
+        unordered_map<string, bool> mp;
+        for(string p : wordDict) {
+            mp[p] = true;
+        }
+
+        string tmp;
+        for(int i = 1; i <= s.length(); i++) {
+            tmp = s.substr(0, i);
+            if(mp.find(tmp) != mp.end()) {
+                vector<string> ans = wordBreak(s.substr(i), wordDict);
+                for (string t : ans) {
+                    if(!t.empty()) {
+                        result.push_back(tmp + " " + t);
+                    } else {
+                        result.push_back(tmp);
+                    }
+                }
+            }
+        }
+
+        mem[s] = result;
+        return result;
+    }
+};
