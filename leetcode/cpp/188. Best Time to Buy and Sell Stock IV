@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        //edge case
+        if(k <= 0 || prices.empty()) return 0;
+        int n = prices.size();
+        if(k > n / 2) {
+            int a = 0, b = INT_MIN;//when k = 0
+            for(int price : prices) {
+                int oldA = a;
+                a = max(oldA, b + price);
+                b = max(b, oldA - price);
+            }
+
+            return a;
+        }
+
+        vector<int> v0(k + 1, 0);
+        vector<int> v1(k + 1, INT_MIN);
+        for(int price : prices) {
+            for(int j = k; j > 0; j--) {
+                v0[j] = max(v0[j], v1[j] + price);
+                v1[j] = max(v1[j], v0[j - 1] - price);
+            }
+        }
+        
+        return v0[k];
+    }
+};
+
