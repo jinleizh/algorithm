@@ -1,0 +1,99 @@
+class Solution {
+public:
+    vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
+        vector<int> ans;
+        for(int len = 0; len <= k; len++) {
+            if(len <= nums1.size() && k - len >= 0 &&  k - len <= nums2.size()) {
+                 ans = getMax(ans, merge(maxArray(nums1, len), maxArray(nums2, k - len)));
+            }
+        }
+
+        return ans;
+    }
+
+    bool bigger(vector<int>& left, int i, vector<int>& right, int j) {
+        int l = left.size(), r = right.size();
+        while(i < l && j < r && left[i] == right[j]) {
+            i++;
+            j++;
+        }
+
+        if(i == l && j != r) return false;
+        if(i != l && j == r) return true;
+        if(i == l && j == r) return true;
+        if(left[i] > right[j]) return true;
+        if(left[i] < right[j]) return false;
+    }
+    
+    vector<int> merge(vector<int> left, vector<int> right) {
+        vector<int> ans;
+        int l = left.size(), r = right.size();
+        int i = 0, j = 0;
+        while(i < l && j < r) {
+            if(left[i] > right[j]) {
+                ans.push_back(left[i]);
+                i++;
+            } else if(left[i] == right[j]) {
+                if(bigger(left, i + 1, right, j + 1)) {
+                    ans.push_back(left[i]);
+                    i++;
+                } else {
+                    ans.push_back(right[j]);
+                    j++;
+                }
+            } else {
+                ans.push_back(right[j]);
+                j++;
+            }
+        }
+
+        for(int p = i; p < l; p++) {
+            ans.push_back(left[p]);
+        }
+
+        for(int p = j; p < r; p++) {
+            ans.push_back(right[p]);
+        }
+
+        return ans;
+    }
+
+    vector<int> maxArray(vector<int> nums, int k) {
+        int n = nums.size();
+        if(k == n) return nums;
+        vector<int> ans;
+        if(k > n) return ans;
+
+        int nextPos = 0;
+        for(int l = k; l >= 1; l--) {
+            int curMax = -1;
+            for(int i = nextPos; n - i >= l; i++) {
+                if(curMax < nums[i]) {
+                    curMax = nums[i];
+                    nextPos = i + 1;
+                }
+            }
+
+            ans.push_back(curMax);
+        }
+
+        return ans;
+    }
+
+    vector<int> getMax(vector<int> left, vector<int> right) {
+        int l = left.size(), r = right.size();
+        int i = 0, j = 0;
+        while(i < l && j < r) {
+            if(left[i] == right[j]) {
+                i++;
+                j++;
+            } else if(left[i] > right[j]) {
+                return left;
+            } else {
+                return right;
+            }
+        }
+
+        return l >= r ? left : right;
+    }
+};
