@@ -1,0 +1,163 @@
+//TLE
+class Solution {
+public:
+    bool canCross(vector<int>& stones) {
+        unordered_map<int, bool> mp;
+        for(int st : stones) {
+            mp[st] = true;
+        }
+        int n = stones.size();
+        return helper(mp, 0, 0, stones[n - 1]);
+    }
+    
+    bool helper(unordered_map<int, bool>& mp, int start, int lastStep, int end) {
+        if(mp.find(start) == mp.end()) return false;
+        
+        int step[3] = {-1, 0, 1};
+        for(int i = 0; i < 3; i++) {
+            int nextStep = lastStep + step[i];
+            if(nextStep <= 0) continue;
+            if(start + nextStep == end) return true;
+            if(start + nextStep > end) continue;
+            bool ret = helper(mp, start + nextStep, nextStep, end);
+            if(ret) return true;
+        }
+        
+        return false;
+    }
+};
+
+//AC DFS + MEMORY
+class Solution {
+public:
+    typedef pair<int, int> pii;
+    map<pii, int> dp;
+    bool canCross(vector<int>& stones) {
+        unordered_map<int, bool> mp;
+        for(int st : stones) {
+            mp[st] = true;
+        }
+        int n = stones.size();
+        return helper(mp, 0, 0, stones[n - 1]);
+    }
+    
+    bool helper(unordered_map<int, bool>& mp, int start, int lastStep, int end) {
+        if(mp.find(start) == mp.end()) return false;
+        pii p(start, lastStep);
+        if(dp.find(p) != dp.end()) return dp[p];
+        
+        int step[3] = {-1, 0, 1};
+        for(int i = 0; i < 3; i++) {
+            int nextStep = lastStep + step[i];
+            if(nextStep <= 0) continue;
+            if(start + nextStep == end) {dp[p] = true; return true;}
+            if(start + nextStep > end) continue;
+            bool ret = helper(mp, start + nextStep, nextStep, end);
+            if(ret) {dp[p] = true; return true;}
+        }
+        
+        dp[p] = false;
+        return false;
+    }
+};
+
+//TLE
+class Solution {
+public:
+    typedef pair<int, int> pii;
+    map<pii, bool> dp;
+    bool canCross(vector<int>& stones) {
+        map<pii, bool> mp;
+        int n = stones.size();
+        for(int i = n - 1; i >= 1; i--) {
+            for(int j = n - 2; j >= 0; j--) {
+                int l = stones[i] - stones[j];
+                pii p(stones[j], l);
+                mp[p] = true;
+            }
+        }
+        
+        for(int j = n - 2; j >= 0; j--) {
+            int l = stones[n - 1] - stones[j];
+            bool ret = check(mp, stones, stones[j], l);
+            if(ret) return true;
+        }
+        
+        return false;
+    }
+    
+    bool check(map<pii, bool>& mp, vector<int>& stones, int j, int l) {
+        if(j == 0 && l == 1) return true;
+        pii t(j, l);
+        if(dp.find(t) != dp.end()) return dp[t];
+        
+        int step[] = {-1, 0, 1};
+        for(int k = 0; k < 3; k++) {
+            int tmp = l + step[k];
+            if(tmp <= 0) continue;
+            
+            int nextI = j - tmp;
+            if(nextI < 0) continue;
+            int nextL = tmp;
+            pii p(nextI, nextL);
+            if(mp.find(p) == mp.end()) continue;
+            bool ret = check(mp, stones, nextI, nextL);
+            if(ret) {
+                dp[t] = true;
+                return true;
+            }
+        }
+        
+        dp[t] = false;
+        return false;
+    }
+};class Solution {
+public:
+    typedef pair<int, int> pii;
+    map<pii, bool> dp;
+    bool canCross(vector<int>& stones) {
+        map<pii, bool> mp;
+        int n = stones.size();
+        for(int i = n - 1; i >= 1; i--) {
+            for(int j = n - 2; j >= 0; j--) {
+                int l = stones[i] - stones[j];
+                pii p(stones[j], l);
+                mp[p] = true;
+            }
+        }
+        
+        for(int j = n - 2; j >= 0; j--) {
+            int l = stones[n - 1] - stones[j];
+            bool ret = check(mp, stones, stones[j], l);
+            if(ret) return true;
+        }
+        
+        return false;
+    }
+    
+    bool check(map<pii, bool>& mp, vector<int>& stones, int j, int l) {
+        if(j == 0 && l == 1) return true;
+        pii t(j, l);
+        if(dp.find(t) != dp.end()) return dp[t];
+        
+        int step[] = {-1, 0, 1};
+        for(int k = 0; k < 3; k++) {
+            int tmp = l + step[k];
+            if(tmp <= 0) continue;
+            
+            int nextI = j - tmp;
+            if(nextI < 0) continue;
+            int nextL = tmp;
+            pii p(nextI, nextL);
+            if(mp.find(p) == mp.end()) continue;
+            bool ret = check(mp, stones, nextI, nextL);
+            if(ret) {
+                dp[t] = true;
+                return true;
+            }
+        }
+        
+        dp[t] = false;
+        return false;
+    }
+};
