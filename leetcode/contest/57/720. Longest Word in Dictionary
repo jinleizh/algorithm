@@ -1,0 +1,57 @@
+class MyLess {
+  public:
+    bool operator() (const string& l, const string& r) {
+        int lenL = l.length();
+        int lenR = r.length();
+        if(lenL != lenR) return lenL < lenR;
+        return l < r;
+    }
+};
+
+class Solution {
+public:
+    //use dfs to find the first one
+    string longestWord(vector<string>& words) {
+        //edge case
+        string ans = "";
+        if(words.size() == 0) return ans;
+        MyLess myless;
+        sort(words.begin(), words.end(), myless);
+        vector<int> flag(words.size(), 0);//access flag
+        for(int i = 0; i < words.size(); i++) {
+            if(words[i].length() != 1) continue;
+            string tmp = dfs(words, words[i], flag, i);
+            ans = getMax(ans, tmp);
+        }
+        
+        return ans;
+    }
+    
+    string dfs(vector<string>& words, string curStr, vector<int>& flag, int start) {
+        if(flag[start]) return "";
+        string ans = curStr;
+        int curLen = curStr.length();
+        int nexLen = curLen + 1;
+        for(int i = start + 1; i < words.size(); i++) {
+            if(flag[i]) continue;//already be accessed
+            int lw = words[i].length();
+            if(lw > nexLen) break;
+            if(lw != nexLen) continue;
+            if(words[i].substr(0, curLen) == curStr) {
+                string tmp = dfs(words, words[i], flag, i);
+                ans = getMax(ans, tmp);
+            }
+        }
+        
+        flag[start] = 1;
+        return ans;
+    }
+    
+    string getMax(string l, string r) {
+        int ll = l.length();
+        int lr = r.length();
+        if(ll > lr) return l;
+        if(ll < lr) return r;
+        return l < r ? l : r;//get alp min
+    }
+};
