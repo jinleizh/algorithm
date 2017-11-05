@@ -55,3 +55,32 @@ public:
         return l < r ? l : r;//get alp min
     }
 };
+
+bool myLess(const string& l, const string& r) {
+    if(l.length() == r.length()) return l < r;
+    return l.length() > r.length();
+}
+
+class Solution {
+public:
+    //use dfs to find the first one
+    string longestWord(vector<string>& words) {
+        sort(words.begin(), words.end(), myLess);
+        set<string> st(words.begin(), words.end());
+        for(string s : words) {
+            bool flag = true;
+            string cur = "";
+            for(int i = 0; i < s.length(); i++) {
+                cur += s[i];
+                if(st.find(cur) == st.end()) {
+                    flag = false;
+                    break;
+                }
+            }
+            
+            if(flag) return s;
+        }
+        
+        return "";
+    }
+};
