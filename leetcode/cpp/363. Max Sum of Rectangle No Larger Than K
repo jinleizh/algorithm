@@ -37,3 +37,44 @@ public:
         return ans;
     }
 };
+
+class Solution {
+//do it like max sub array
+public:
+    int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
+        int row = matrix.size();
+        if(0 == row) return 0;
+        int col = matrix[0].size();
+        if(0 == col) return 0;
+        int ans = INT_MIN;
+        int maxDiff = INT_MIN;
+        for(int m = 0; m < row; m++) {
+            vector<int> sum(col, 0);
+            for(int i = m; i < row; i++) {
+                for(int j = 0; j < col; j++) {
+                    sum[j] += matrix[i][j];
+                }
+                
+                set<int> accuSet;// because it is bst
+                accuSet.insert(0);
+                int accuSum = 0; 
+                int curMax = INT_MIN;
+                int cnt = 0;
+                for(int d : sum) {
+                    accuSum += d;
+                    cnt++;
+                    //if(cnt == 3) return accuSum;
+                    set<int>::iterator sit = accuSet.lower_bound(accuSum - k);
+                    if(sit != accuSet.end()) {
+                        curMax = max(curMax, accuSum - *sit);
+                        //if(cnt == 3) return curMax;
+                    }
+                    accuSet.insert(accuSum);
+                }
+                
+                ans = max(ans, curMax);           
+            }
+        }
+        return ans;
+    }
+};
