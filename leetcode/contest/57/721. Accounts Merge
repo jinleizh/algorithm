@@ -1,0 +1,45 @@
+class Solution {
+public:
+    vector<vector<string>> result;
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        map<string, vector<int>> mp;
+        for(int i = 0; i < accounts.size(); i++) {
+            for(int j = 1; j < accounts[i].size(); j++) {
+                mp[accounts[i][j]].push_back(i);
+            }
+        }
+        
+        for(auto it : mp) {
+            string mail = it.first;
+            vector<int> ids = it.second;
+            if(ids.size() > 1) {
+                for(int i = 1; i < ids.size(); i++) {
+                    merge(accounts, ids[i], ids[i - 1]);
+                }
+            }
+        }
+        
+        set<vector<string>> sa;
+        for(vector<string> vs : accounts) {
+            sa.insert(vs);
+        }
+        
+        vector<vector<string>> ans(sa.begin(), sa.end());
+        return ans;
+    }
+    
+    void merge(vector<vector<string>>& accounts, int l, int r) {
+        set<string> s;
+        for(string t : accounts[l]) {
+            s.insert(t);
+        }
+        
+        for(string t : accounts[r]) {
+            s.insert(t);
+        }
+        
+        vector<string> result(s.begin(), s.end());
+        accounts[l] = result;
+        accounts[r] = result;
+    }
+};
