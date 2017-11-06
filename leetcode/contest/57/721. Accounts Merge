@@ -38,3 +38,59 @@ public:
 		}
 	}
 };
+
+//并查集思想, 覆盖
+class Solution {
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+		map<int, string> keyMap;
+		for(int i = 0; i < accounts.size(); i++) {
+			string key = accounts[i][0];
+			keyMap[i] = key;
+		}
+		
+        vector<vector<string>> ans;
+        
+		map<string, int> parent;
+		for(int i = 0; i < accounts.size(); i++) {
+			int curParent = i;
+			for(int j = 1; j < accounts[i].size(); j++) {
+				string s = accounts[i][j];
+                
+				if(parent.find(s) != parent.end()) {
+					if(parent[s] < curParent) {
+						int newParent = parent[s];
+						update(parent, curParent, newParent);
+						curParent = newParent;
+					} else if(parent[s] > curParent) {
+						update(parent, parent[s], curParent);
+					}
+				} else {
+					parent[s] = curParent;
+				}
+			}
+		}
+		
+		map<int, set<string>> tmp;
+		for(auto& it : parent) {
+			tmp[it.second].insert(it.first);
+		}
+		
+		for(auto& it : tmp) {
+			vector<string> v(it.second.begin(), it.second.end());
+			v.insert(v.begin(), keyMap[it.first]);
+			ans.push_back(v);
+		}
+		
+		return ans;
+    }
+	
+	void update(map<string, int>& parent, int curParent, int newParent) {
+		for(auto& it : parent) {
+			if(it.second == curParent) {
+				it.second = newParent;
+			}
+		}
+	}
+};
+
