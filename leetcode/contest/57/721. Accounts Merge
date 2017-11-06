@@ -1,45 +1,40 @@
+//dfs
 class Solution {
 public:
-    vector<vector<string>> result;
     vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
-        map<string, vector<int>> mp;
-        for(int i = 0; i < accounts.size(); i++) {
-            for(int j = 1; j < accounts[i].size(); j++) {
-                mp[accounts[i][j]].push_back(i);
-            }
-        }
-        
-        for(auto it : mp) {
-            string mail = it.first;
-            vector<int> ids = it.second;
-            if(ids.size() > 1) {
-                for(int i = 1; i < ids.size(); i++) {
-                    merge(accounts, ids[i], ids[i - 1]);
-                }
-            }
-        }
-        
-        set<vector<string>> sa;
-        for(vector<string> vs : accounts) {
-            sa.insert(vs);
-        }
-        
-        vector<vector<string>> ans(sa.begin(), sa.end());
-        return ans;
-    }
-    
-    void merge(vector<vector<string>>& accounts, int l, int r) {
-        set<string> s;
-        for(string t : accounts[l]) {
-            s.insert(t);
-        }
-        
-        for(string t : accounts[r]) {
-            s.insert(t);
-        }
-        
-        vector<string> result(s.begin(), s.end());
-        accounts[l] = result;
-        accounts[r] = result;
-    }
+		vector<int> flag(accounts.size(), 0);
+		map<string, vector<int>> mp;
+		for(int i = 0; i < accounts.size(); i++) {
+			for(int j = 1; j < accounts[i].size(); j++) {
+				mp[accounts[i][j]].push_back(i);
+			}
+		}
+		
+		vector<vector<string>> ans;
+		for(int i = 0; i < accounts.size(); i++) {
+			set<string> strSet;
+			dfs(i, strSet, flag, accounts, mp);
+			if(!strSet.empty()) {
+				vector<string> tmp(strSet.begin(), strSet.end());
+				tmp.insert(tmp.begin(), accounts[i][0]);
+				ans.push_back(tmp);
+			}
+		}
+		
+		return ans;
+	}
+	
+	void dfs(int idx, set<string>& strSet, vector<int>& flag, vector<vector<string>>& accounts, map<string, vector<int>>& mp) {
+		if(flag[idx] == 1) return;
+		flag[idx] = 1;
+		for(int i = 1; i < accounts[idx].size(); i++) {
+			strSet.insert(accounts[idx][i]);
+			vector<int> ids = mp[accounts[idx][i]];
+			if(ids.size() > 1) {
+				for(int d : ids) {
+					dfs(d, strSet, flag, accounts, mp);
+				}
+			}
+		}
+	}
 };
