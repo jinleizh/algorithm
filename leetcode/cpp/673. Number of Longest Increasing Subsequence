@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int findNumberOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0) return 0;
+        vector<int> dp(n, 1);
+        vector<int> cnt(n, 1);
+        int maxLen = 1;
+        int ans = 1;
+        for(int i = 1; i < n; i++) {
+            int curMax = 1;
+            int curCnt = 1;
+            for(int j = 0; j < i; j++) {
+                if(nums[i] > nums[j]) {
+                    int tmp = 1 + dp[j];
+                    if(tmp > curMax) {
+                        dp[i] = tmp;
+                        curMax = tmp;
+                        curCnt = cnt[j];
+                    } else if(tmp == curMax) {
+                        curCnt += cnt[j];
+                    }
+                }
+            }
+            cnt[i] = curCnt;
+
+            if(maxLen < curMax) {
+                maxLen = curMax;
+                ans = curCnt;
+            } else if(maxLen == curMax) {
+                ans += curCnt;
+            }
+        }
+
+        return ans;
+    }
+};
