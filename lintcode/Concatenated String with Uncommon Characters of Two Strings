@@ -1,0 +1,35 @@
+class Solution {
+public:
+    /*
+     * @param : the 1st string
+     * @param : the 2nd string
+     * @return: uncommon characters of given strings
+     */
+    string concatenetedString(string &s1, string &s2) {
+        // write your code here
+        unordered_map<char, int> firstMap;
+        unordered_map<char, int> secMap;
+        for(char c : s1) {
+            firstMap[c] = 1;
+        }
+
+        for(char c : s2) {
+            secMap[c] = 1;
+        }
+
+        string ans = "";
+        for(char c : s1) {
+            if(secMap.find(c) == secMap.end()) {
+                ans += c;
+            }
+        }
+
+        for(char c : s2) {
+            if(firstMap.find(c) == firstMap.end()) {
+                ans += c;
+            }
+        }
+
+        return ans;
+    }
+};
