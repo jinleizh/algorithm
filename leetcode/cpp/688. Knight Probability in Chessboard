@@ -1,32 +1,48 @@
 class Solution {
 public:
-    double ratios[25][25][100];
+    double ratios[26][26][101];
     double knightProbability(int N, int K, int r, int c) {
-        //edge case
-        if(!isOnBoard(r, c, N)) return 0;
-        memset(ratios, -1, sizeof(ratios) / sizeof(double));
+        if(!isOnBoard(N, r, c)) return 0;
+        for(int i = 0; i < 26; i++) {
+            for(int j = 0; j < 26; j++) {
+                for(int k = 0; k < 101; k++) {
+                    ratios[i][j][k] = 2;
+                }
+            }
+        }
         return helper(N, K, r, c, 1, 0);
     }
-    
-    bool isOnBoard(int x, int y, int N) {
-        if(x < 0 || y < 0 || x >= N || y >= N) return false;
+
+    bool isOnBoard(int N, int r, int c) {
+        if(r < 0 || r >= N || c < 0 || c >= N) {
+            return false;
+        }
+
         return true;
     }
-    
+
     double helper(int N, int K, int r, int c, double ratio, int step) {
-        if(!isOnBoard(r, c, N)) return 0;
-        if(ratios[r][c][step] + 1 <= 0.0000001 || ratios[r][c][step] + 1 >= -0.0000001 ) return ratios[r][c][step];
+        if(!isOnBoard(N, r, c)) return 0;
         if(step == K) return ratio;
+        if(!isEqual(2, ratios[r][c][step])) {
+            return ratios[r][c][step];
+        }
+        double ans = 0;
         int dx[8] = {-2, -2, -1, -1, 1, 1, 2, 2};
         int dy[8] = {-1, 1, -2, 2, -2, 2, -1, 1};
-        double ans = 0;
         for(int i = 0; i < 8; i++) {
             int nx = r + dx[i];
             int ny = c + dy[i];
             ans += helper(N, K, nx, ny, ratio / 8, step + 1);
         }
-        
+
+        //cout<<"r="<<r<<" c="<<c<<" ans="<<ans<<endl;
         ratios[r][c][step] = ans;
         return ans;
+    }
+
+    bool isEqual(double a, double b) {
+        if(a - b <= 0.0000001 && a - b >= -0.0000001) return true;
+        return false;
     }
 };
