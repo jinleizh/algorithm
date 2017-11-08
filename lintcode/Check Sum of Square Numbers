@@ -1,0 +1,40 @@
+class Solution {
+public:
+    /*
+     * @param : the given number
+     * @return: whether whether there're two integers
+     */
+    bool checkSumOfSquareNumbers(int num) {
+        // write your code here
+        for(int i = 0; i * i <= num; i++) {
+            for(int j = 0; j * j <= num; j++) {
+                if(i * i + j * j < num) continue;
+                if(i * i + j * j == num) return true;
+                break;
+            }
+        }
+        
+        return false;
+    }
+};
+
+class Solution {
+public:
+    /*
+     * @param : the given number
+     * @return: whether whether there're two integers
+     */
+    bool checkSumOfSquareNumbers(int num) {
+        // write your code here
+        unordered_map<int, int> mp;
+        for(int i = 0; i * i <= num; i++) {
+            mp[i * i] = 1;
+        }
+        
+        for(auto& it : mp) {
+            if(mp.find(num - it.first)) return true;
+        }
+        
+        return false;
+    }
+};
