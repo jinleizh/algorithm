@@ -46,3 +46,58 @@ public:
         return false;
     }
 };
+
+class Solution {
+public:
+    double knightProbability(int N, int K, int r, int c) {
+        if(!isOnBoard(N, r, c)) return 0;
+        if(K == 0) return 1;
+        double ratios[K][N][N];
+        for(int i = 0; i < K; i++) {
+            for(int j = 0; j < N; j++) {
+                for(int p = 0; p < N; p++) {
+                    ratios[i][j][p] = 0;
+                }
+            }
+        }
+        
+        int dx[8] = {-2, -2, -1, -1, 1, 1, 2, 2};
+        int dy[8] = {-1, 1, -2, 2, -2, 2, -1, 1};
+
+        for(int i = 0; i < K; i++) {
+            //cout<<"i="<<i<<endl;
+            for(int p = 0; p < N; p++) {
+                //cout<<"p="<<p<<endl;
+                for(int q = 0; q < N; q++) {
+                    if(i == 0) ratios[i][p][q] = 0;
+                    //cout<<"q="<<q<<endl;
+                    for(int m = 0; m < 8; m++) {
+                        int nx = p + dx[m];
+                        int ny = q + dy[m];
+                        if(isOnBoard(N, nx, ny)) {
+                            if(i == 0) {
+                                //cout<<"1 ratio="<<ratios[i][p][q]<<endl;
+                                ratios[i][p][q] += 0.125;
+                                //cout<<"2 ratio="<<ratios[i][p][q]<<endl;
+                            } else {
+                                ratios[i][p][q] += ratios[i - 1][nx][ny] / 8;
+                            }
+                            
+                            //cout<<"ratio="<<ratios[i][p][q]<<endl;
+                        }
+                    }
+                }
+            }
+        }
+
+        return ratios[K - 1][r][c];
+    }
+
+    bool isOnBoard(int N, int r, int c) {
+        if(r < 0 || r >= N || c < 0 || c >= N) {
+            return false;
+        }
+
+        return true;
+    }
+};
