@@ -30,11 +30,11 @@ public:
         for(int i = 0; i * i <= num; i++) {
             mp[i * i] = 1;
         }
-        
+
         for(auto& it : mp) {
-            if(mp.find(num - it.first)) return true;
+            if(mp.find(num - it.first) != mp.end()) return true;
         }
-        
+
         return false;
     }
 };
