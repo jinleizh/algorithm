@@ -1,0 +1,22 @@
+class Solution {
+public:
+    //dp[i][j] - max length between si and sj
+    //dp[i][j] = dp[i + 1][j - 1] + 2 if(s[i] == s[j]) when dp[i + 1][j - 1] != 0
+    //flag[i][j] wheather it is a palindromic substring
+    string longestPalindrome(string s) {
+        int n = s.length();
+        string ans = "";
+        vector<vector<int>> flag(n, vector<int>(n, 0));
+        for(int i = n - 1; i >= 0; i--) {
+            for(int j = n - 1; j >= i; j--) {
+                if(s[i] == s[j] && (j - i <= 1 || flag[i + 1][j - 1])) {
+                    flag[i][j] = 1;
+                    if(ans.length() < j - i + 1) {
+                        ans = s.substr(i, j - i + 1);
+                    }
+                }
+            }
+        }      
+        return ans;
+    }
+};
