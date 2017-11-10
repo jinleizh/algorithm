@@ -1,0 +1,23 @@
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        vector<string> vs(numRows, "");
+        int i = 0;
+        while(i < s.length()) {
+            for(int r = 0; r < numRows && i < s.length(); r++) {
+                vs[r] += s[i++];
+            }
+            
+            for(int r = numRows - 2; r >= 1 && i < s.length(); r--) {
+                vs[r] += s[i++];
+            }
+        }
+        
+        string ans = "";
+        for(string s :  vs) {
+            ans += s;
+        }
+        
+        return ans;
+    }
+};
