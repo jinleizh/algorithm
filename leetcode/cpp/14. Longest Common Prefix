@@ -1,0 +1,40 @@
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        unordered_map<string, int> cntMap;
+        int n = strs.size();
+        
+        for(string s : strs) {
+            for(int i = 1; i <= s.length(); i++) {
+                cntMap[s.substr(0, i)]++;
+            }
+        }
+        
+        string ans = "";
+        for(auto& it : cntMap) {
+            if(it.second == n && it.first.length() > ans.length()) {
+                ans = it.first;
+            }
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        string ans = "";
+        if(strs.empty()) return ans;
+        if(strs.size() == 1) return strs[0];
+        
+        for(int i = 0; i < 10000; i++) {
+            for(int j = 0; j < strs.size() - 1; j++) {
+                if(i == strs[j].length() || i == strs[j + 1].length()) return ans;
+                if(strs[j][i] != strs[j+1][i]) return ans;
+                if(j == strs.size() - 2) ans += strs[j][i];  
+            }
+        }
+        return ans;
+    }
+};
