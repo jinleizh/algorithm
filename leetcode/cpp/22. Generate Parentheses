@@ -1,0 +1,30 @@
+//the method of outputing all strings
+//two conditions
+//1. add (
+//2. add )
+//we have two options, but when choose (, when choose ) is a problem
+//we known, if open number less or equal with max, we can choose (
+//if open close number less than open number, we chan choose )
+class Solution {
+public:
+    vector<string> ans;
+    vector<string> generateParenthesis(int n) {
+        visit("", 0, 0, n);
+        return ans;
+    }
+    
+    void visit(string s, int open, int close, int max) {
+        if(s.length() == 2 * max) {
+            ans.push_back(s);
+            return;
+        }
+        
+        if(open < max) {
+            visit(s + "(", open + 1, close, max);
+        }
+        
+        if(close < open) {
+            visit(s + ")", open, close + 1, max);
+        }
+    }
+};
