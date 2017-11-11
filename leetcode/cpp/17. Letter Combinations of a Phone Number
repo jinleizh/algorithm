@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        string arr[] = {"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        vector<string> ans, tmp;
+        for(int i = 0; i < digits.length(); i++) {
+            if(digits[i] == '0' || digits[i] == '1') {
+                return vector<string>();
+            }
+            for(char c : arr[digits[i] - '0']) {
+                if(ans.empty()) {
+                    string t(1, c);
+                    tmp.push_back(t);
+                } else {
+                    for(string s : ans) {
+                        tmp.push_back(s + c);
+                    }
+                }
+            }
+            ans = tmp;
+            tmp.clear();
+        }
+        
+        return ans;
+    }
+};
