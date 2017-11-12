@@ -1,0 +1,74 @@
+class Solution {
+public:
+    typedef map<string, int> Map;
+    string countOfAtoms(string formula) {
+        string ans = "";
+        Map ret = parse(formula);
+        for(auto& it : ret) {
+            ans += it.first;
+            if(it.second > 1) {
+                ans += to_string(it.second);
+            }
+        }
+        
+        return ans;
+    }
+    
+    Map parse(const string& s) {
+        if(s.empty()) return Map();
+        Map ret;
+        if('(' == s[0]) {
+            int cnt = 1;
+            int i = 1;
+            while(i < s.size() && cnt > 0) {
+                if(s[i] == '(') {
+                    cnt++;
+                } else if(s[i] == ')') {
+                    cnt--;
+                }
+                i++;
+            }
+            
+            int b = 0;
+            ret = parse(s.substr(1, i - 2));
+            while(i < s.size() && isdigit(s[i])) {
+                b = b * 10 + s[i] - '0';
+                i++;
+            }
+            
+            if(b == 0) b = 1;
+            for(auto& it : ret) {
+                it.second *= b;
+            }
+            
+            if(i < s.size()) {
+                Map tmp = parse(s.substr(i));
+                for(auto& it : tmp) {
+                    ret[it.first] += it.second;
+                }
+            }
+        } else {
+            string name(1, s[0]);
+            int i = 1;
+            while(i < s.size() && islower(s[i])) {
+                name += s[i];
+                i++;
+            }
+            
+            int b = 0;
+            while(i < s.size() && isdigit(s[i])) {
+                b = b * 10 + s[i] - '0';
+                i++;
+            }
+            
+            if(b == 0) b = 1;
+            ret[name] = b;
+            Map tmp = parse(s.substr(i));
+            for(auto& it : tmp) {
+                ret[it.first] += it.second;
+            }
+        }
+        
+        return ret;
+    }
+};
