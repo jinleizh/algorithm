@@ -1,0 +1,90 @@
+class Solution {
+public:
+    //area find, store the position of start idx
+    //search between each other start idx
+    string minWindow(string S, string T) {
+        vector<int> pos;
+        int ls = S.length();
+        int lt = T.length();
+        for(int i = 0; i < ls; i++) {
+            if(S[i] == T[0]) {
+                pos.push_back(i);
+            }
+        }
+        
+        string maxStr = "";
+        int maxLen = INT_MAX;
+        for(int i = 0; i < pos.size(); i++) {
+            string s = "";
+            if(ls - pos[i] >= lt) {
+                s = find(pos[i], ls - 1, S, T);
+            }
+            
+            if(!s.empty() && s.length() < maxLen) {
+                maxStr = s;
+                maxLen = s.length();
+            }
+        }
+        
+        return maxStr;
+    }
+    
+    string find(int st, int ed, string& S, string& T) {
+        if(st > ed) return "";
+        int i = st, j = 0;
+        while(i <= ed && j < T.length()) {
+            if(S[i] != T[j]) {
+                i++;
+            } else {
+                i++;
+                j++;
+            }
+        }
+        
+        if(j == T.length()) return S.substr(st, i - st);
+        return "";
+    }
+};
+
+/**
+* dp[j] 保存了，当前离 t[0..j]最近的i.
+* dp[0] store the str which is nearest by t[0]
+* dp[1] store the str which is nearest by t[0..1]
+*/
+class Solution {
+public:
+    string minWindow(string S, string T) {
+        int ls = S.length();
+        int lt = T.length();
+        int dp[lt];
+        for(int i = 0; i < lt; i++) {
+            dp[i] = -1;
+        }
+        int len = INT_MAX;
+        int st = 0;
+        for(int i = 0; i < ls; i++) {
+            for(int j = lt - 1; j >= 0; j--) {
+                if(S[i] == T[j]) {
+                    if(j == 0) {
+                        dp[j] = i;
+                    } else {
+                        if(dp[j - 1] != -1) {
+                            dp[j] = dp[j - 1];
+                        }
+                    }
+                    
+                    if(j == lt - 1 && dp[j] != -1 && i - dp[j] + 1 < len) {
+                        cout<<dp[j]<<endl;
+                        len = i - dp[j] + 1;
+                        st = dp[j];
+                        cout<<1111<<endl;
+                    }
+                } 
+            }
+        }
+        
+        if(len == INT_MAX) return "";
+        cout<<st<<endl;
+        return S.substr(st, len);
+    }
+};
