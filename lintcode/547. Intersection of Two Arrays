@@ -1,0 +1,25 @@
+class Solution {
+public:
+    
+    /*
+     * @param nums1: an integer array
+     * @param nums2: an integer array
+     * @return: an integer array
+     */
+    vector<int> intersection(vector<int> nums1, vector<int> nums2) {
+        // write your code here
+        unordered_map<int, int> mp;
+        for(int t : nums1) {
+            mp[t] = 1;
+        }
+        
+        set<int> ans;
+        for(int t : nums2) {
+            if(mp.find(t) != mp.end()) {
+                ans.insert(t);
+            }
+        }
+        
+        return vector<int>(ans.begin(), ans.end());
+    }
+};
