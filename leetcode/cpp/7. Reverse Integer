@@ -1,0 +1,43 @@
+class Solution {
+public:
+    int reverse(int x) {
+        bool isNeg = false;
+        long t = x;
+        if(t < 0) {
+            isNeg = true;
+            t = -t;
+            cout<<t<<endl;
+        }
+        
+        cout<<t<<endl;
+        vector<char> dp;
+        while(t) {
+            char c = t % 10 + '0';
+            dp.push_back(c);
+            t = t / 10;
+        }
+        
+        int i = 0;
+        int j = dp.size() - 1;
+        while(i < j) {
+            int tmp = dp[i];
+            dp[i] = dp[j];
+            dp[j] = tmp;
+            i++;
+            j--;
+        }
+        
+        long ans = 0;
+        for(int i = dp.size() - 1; i >= 0; i--) {
+            ans = ans * 10 + dp[i] - '0';
+            if(ans > INT_MAX) return 0;
+        }
+        
+        if(isNeg) {
+            ans = -ans;
+            if(ans < INT_MIN) return 0;
+        }
+        
+        return ans;
+    }
+};
