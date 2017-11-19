@@ -1,0 +1,26 @@
+class Solution {
+public:
+    //speicial case are two
+    //1.divisor == 0 we will return INT_MAX directly
+    //2.dividend == INT_MIN and divisor == -1
+    int divide(int dividend, int divisor) {
+        if(divisor == 0 || (dividend == INT_MIN && divisor == -1)) return INT_MAX;
+        int sign = ((dividend > 0) ^ (divisor > 0)) ? -1 : 1;
+        long dvd = labs(dividend);
+        long dvs = labs(divisor);
+        int ans = 0;
+        while(dvd >= dvs) {
+            long tmp = 1;
+            long cand = dvs;
+            while(dvd >= (cand << 1)) {
+                cand = cand << 1;
+                tmp = tmp << 1;
+            }
+            
+            dvd -= cand;
+            ans += tmp;
+        }
+        
+        return sign > 0 ? ans : -ans;
+    }
+};
