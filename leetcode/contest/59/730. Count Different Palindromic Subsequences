@@ -1,0 +1,57 @@
+class Solution {
+public:
+    //thinking process
+    //construct an array
+    //dp[i][j] means the ans of string which starts at i and ends at j;
+    //the ans includes 26 kinds of string, starts with a, starts with b, starts with c .... starts with z
+    //len = 1 len >= 2
+    int dp[1010][1010] = {0};
+    int next[1010][26] = {0};
+    int prev[1010][26] = {0};
+    int mod = 1e9 + 7;
+    int countPalindromicSubsequences(string S) {
+        int n = S.length();
+        for(int k = 0; k < 26; k++) {
+            next[n + 1][k] = n + 1;
+            prev[0][k] = 0;
+        }
+        for(int i = n; i >= 1; i--) {
+            for(int k = 0; k < 26; k++) {
+                next[i][k] = next[i + 1][k];
+            }
+            next[i][S[i - 1] - 'a'] = i;
+        }
+        for(int i = 1; i <= n; i++) {
+            for(int k = 0; k < 26; k++) {
+                prev[i][k] = prev[i - 1][k];
+            }
+            prev[i][S[i - 1] - 'a'] = i;
+        }
+        
+        return find(1, n) - 1;
+    }
+    
+    int find(int l, int r) {
+        if(l > r) return 1; //for return result, because we count subsequence that length is >= 2
+        if(dp[l][r] > 0) return dp[l][r];
+        int ans = 1;
+        for(int i = 0; i < 26; i++) {
+            int x = next[l][i];
+            int y = prev[r][i];
+            //lenght 1
+            if(x >= l && x <= r) {
+                ans++;
+                if(ans > mod) ans -= mod;
+            }
+            
+            //length >= 2
+            if(x < y) {
+                ans += find(x + 1, y - 1);
+                if(ans > mod) ans -= mod;
+            }
+        }
+        
+        dp[l][r] = ans;
+        return ans;
+    }
+};
