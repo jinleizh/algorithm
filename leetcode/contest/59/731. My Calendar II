@@ -1,0 +1,32 @@
+class MyCalendarTwo {
+public:
+    typedef pair<int, int> pii;
+    vector<pii> a;
+    vector<pii> b;
+    MyCalendarTwo() {
+        
+    }
+    
+    bool book(int start, int end) {
+        for(pii pb : b) {
+            if(pb.first >= end || pb.second <= start) continue;
+            return false;
+        }
+        
+        for(pii pa : a) {
+            if(pa.first >= end || pa.second <= start) continue;
+            int x = max(pa.first, start);
+            int y = min(pa.second, end);
+            b.push_back(pair<int, int>(x, y));
+        }
+        
+        a.push_back(pair<int, int>(start, end));
+        return true;
+    }
+};
+
+/**
+ * Your MyCalendarTwo object will be instantiated and called as such:
+ * MyCalendarTwo obj = new MyCalendarTwo();
+ * bool param_1 = obj.book(start,end);
+ */
