@@ -1,0 +1,24 @@
+class MyCalendar {
+public:
+    typedef pair<int, int> pii;
+    vector<pii> events;
+    MyCalendar() {
+    }
+    
+    bool book(int start, int end) {
+        pii event(start, end);
+        for(pii p : events) {
+            if(p.first >= event.second || p.second <= event.first) continue;
+            return false;
+        }
+        
+        events.push_back(event);
+        return true;
+    }
+};
+
+/**
+ * Your MyCalendar object will be instantiated and called as such:
+ * MyCalendar obj = new MyCalendar();
+ * bool param_1 = obj.book(start,end);
+ */
