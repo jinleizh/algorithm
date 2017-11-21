@@ -1,0 +1,63 @@
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        int i = findMax(height, 0, n - 1);
+        int l = findMax(height, 0, i - 1);
+        int r = findMax(height, i + 1, n - 1);
+        int sum = 0;
+        if(l != -1) {
+            sum += height[l] * (i - l - 1);
+            for(int k = l + 1; k < i; k++) {
+                sum -= height[k];
+            }
+            
+            sum += trapLeft(height, 0, l);
+        }
+
+        if(r != -1) {
+            sum += height[r] * (r - i - 1);
+            for(int k = i + 1; k < r; k++) {
+                sum -= height[k];
+            }
+            
+            sum += trapRight(height, r, n - 1);
+        }
+        return sum;
+    }
+
+    int findMax(vector<int>& height, int s, int e) {
+        if(s > e) return -1;
+        int ans = s;
+        for(int i = s; i <= e; i++) {
+            if(height[i] > height[ans]) ans = i;
+        }
+        return ans;
+    }
+
+    int trapLeft(vector<int>& height, int s, int e) {
+        if(s >= e) return 0;
+        int ans = 0;
+        int i = findMax(height, s, e - 1);
+        ans += height[i] * (e - i - 1);
+        for(int k = i + 1; k < e; k++) {
+            ans -= height[k];
+        }
+
+        ans += trapLeft(height, s, i);
+        return ans;
+    }
+
+    int trapRight(vector<int>& height, int s, int e) {
+        if(s >= e) return 0;
+        int ans = 0;
+        int i = findMax(height, s + 1, e);
+        ans += height[i] * (i - s - 1);
+        for(int k = s + 1; k < i; k++) {
+            ans -= height[k];
+        }
+        
+        ans += trapRight(height, i, e);
+        return ans;
+    }
+};
