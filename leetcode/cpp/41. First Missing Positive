@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+            //requirements: nums[i] == i + 1
+            int n = nums.size();
+            for(int i = 0; i < n; i++) {
+                while(needLoop(i, nums)) {
+                    int tmp = nums[i];
+                    nums[i] = nums[tmp - 1];
+                    nums[tmp - 1] = tmp;
+                }
+            }
+
+            for(int i = 0; i < nums.size(); i++) {
+                if(nums[i] != i + 1) return i + 1;
+            }
+
+            return n + 1;
+        }
+
+        bool needLoop(int p, vector<int>& nums) {
+            if(nums[p] < 1 || nums[p] > nums.size()) return false;
+            if(nums[p] == nums[nums[p] - 1]) return false;
+            return true;
+        }
+};
