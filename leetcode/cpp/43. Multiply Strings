@@ -1,0 +1,26 @@
+class Solution {
+public:
+    //nums[i] * nums[j] == i + j, i + j + 1
+    string multiply(string num1, string num2) {
+        int l = num1.length();
+        int r = num2.length();
+        int ans[l + r] = {0};
+        for(int i = l - 1; i >= 0; i--) {
+            for(int j = r - 1; j >= 0 ; j--) {
+                int tmp = (num1[i] - '0') * (num2[j] - '0');
+                tmp += ans[i + j + 1];
+                ans[i + j + 1] = tmp % 10;
+                ans[i + j] += tmp / 10;
+            }
+        }
+
+        string result = "";
+        for(int d : ans) {
+            if(d == 0 && result.empty()) continue;
+            result += d + '0';
+        }
+
+        if(result.empty()) return "0";
+        return result;
+    }
+};
