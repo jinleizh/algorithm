@@ -1,0 +1,133 @@
+class Solution {
+public:
+    //dfs
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return dfs(dp, nums, 0, n - 1);
+    }
+    
+    int dfs(vector<vector<int>>& dp, vector<int>& nums, int s, int e) {
+        if(s >= e) return 0;
+        if(dp[s][e] != -1) return dp[s][e];
+        int step = nums[s];
+        if(s + step >= e) {
+            dp[s][e] = 1;
+            return 1;
+        }
+        
+        int ans = 10000;
+        for(int i = 1; i <= step; i++) {
+            int ret = 1 + dfs(dp, nums, s + i, e);
+            if(ret < ans) {
+                ans = ret;
+            }
+        }
+        
+        dp[s][e] = ans;
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //dfs
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        return dfs(dp, nums, 0, n - 1);
+    }
+    
+    int dfs(vector<int>& dp, vector<int>& nums, int s, int e) {
+        if(s >= e) return 0;
+        if(dp[s] != -1) return dp[s];
+        int step = nums[s];
+        if(s + step >= e) {
+            dp[s] = 1;
+            return 1;
+        }
+        
+        int ans = 1000000;
+        for(int i = 1; i <= step; i++) {
+            int ret = 1 + dfs(dp, nums, s + i, e);
+            if(ret < ans) {
+                ans = ret;
+            }
+        }
+        
+        dp[s] = ans;
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //dfs
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, 0);
+        //dp[0] = min(dp[i]...dp[k]) where 0 + k <= 0 + nums[0]
+        for(int i = n - 2;  i >= 0; i--) {
+            if(i + nums[i] >= n - 1) {
+                dp[i] = 1;
+            } else {
+                int min = 1000000;
+                for(int k = 1; k <= nums[i]; k++) {
+                    if(min > 1 + dp[i + k]) {
+                        min = 1 + dp[i + k];
+                    }
+                }
+                dp[i] = min;
+            }
+        }
+        
+        return dp[0];
+    }
+};
+
+class Solution {
+public:
+    //dfs
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, 0);
+        //edge case
+        if(n == 0 || n == 1) return 0;
+        if(nums[0] >= n - 1) return 1;
+        
+        //dp[0] = min(dp[i]...dp[k]) where 0 + k <= 0 + nums[0]
+        for(int i = n - 2;  i >= 0; i--) {
+            if(i + nums[i] >= n - 1) {
+                dp[i] = 1;
+            } else {
+                int min = 1000000;
+                for(int k = 1; k <= nums[i]; k++) {
+                    if(min > 1 + dp[i + k]) {
+                        min = 1 + dp[i + k];
+                    }
+                }
+                dp[i] = min;
+            }
+        }
+        
+        return dp[0];
+    }
+};
+
+class Solution {
+public:
+    //dfs
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        int ans = 0;
+        int curEnd = 0, curFarest = 0;
+        for(int i = 0; i < n - 1; i++) {
+            curFarest = max(i + nums[i], curFarest);
+            if(i == curEnd) {
+                ans++;
+                curEnd = curFarest;
+            }
+        }
+        return ans;
+    }
+};
