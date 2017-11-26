@@ -1,0 +1,29 @@
+class Solution {
+public:
+    double myPow(double x, int p) {
+        long n = p;
+        if(0 == n) return 1;
+        double ans = 1;
+        bool isNeg = false;
+        if(n < 0) {
+            isNeg = true;
+            n = -n;
+        }
+        ans = calc(x, n);
+        if(isNeg) return 1 / ans;
+        return ans;
+    }
+    
+    double calc(double x, int n) {
+        if(1 == n) return x;
+        int mid = n / 2;
+        bool isOdd = false;
+        if(n % 2 == 1) {
+            isOdd = true;
+        }
+        
+        double result = calc(x, mid);
+        if(isOdd) return result * result * x;
+        return result * result;
+    }
+};
