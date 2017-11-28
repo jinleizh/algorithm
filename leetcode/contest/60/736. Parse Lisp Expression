@@ -1,0 +1,74 @@
+class Solution {
+public:
+    //use map<string, int> to store let expr
+    int evaluate(string s) {
+        unordered_map<string, int> mp;
+        return evaluate(s, mp);
+    }
+    
+    int stoi(string s) {
+        stringstream ss;
+        ss << s;
+        int ans = 0;
+        ss >> ans;
+        return ans;
+    }
+    
+    vector<string> getParams(string s) {
+        vector<string> ans;
+        int i = 0, n = s.length(), cnt = 0, start = 0;
+        while(i < n) {
+            if(s[i] == '(') {
+                cnt++;
+            }
+            
+            if(s[i] == ')') {
+                cnt--;
+            }
+            
+            if(s[i] == ' ' && cnt == 0) {
+                ans.push_back(s.substr(start, i - start));
+                start = i + 1;
+            }
+            
+            i++;
+        }
+        
+        ans.push_back(s.substr(start));
+        return ans;
+    }
+    
+    int evaluate(string s, unordered_map<string, int> mp) {
+        int n = s.length();
+        if(s[0] == '(') {
+            s = s.substr(1, n - 2);
+        }
+        
+        int pos = s.find(' ');
+        int ans = 0;
+        if(pos == string::npos) {
+            if(mp.find(s) == mp.end()) {
+                ans = stoi(s);
+            } else {
+                ans = mp[s];   
+            }
+        } else {
+            string cmd = s.substr(0, pos);
+            vector<string> params = getParams(s.substr(pos + 1));
+            if(cmd == "add") {
+                ans = evaluate(params[0], mp) + evaluate(params[1], mp);
+            } else if(cmd == "mult") {
+                ans = evaluate(params[0], mp) * evaluate(params[1], mp);
+            } else {
+                //let
+                for(int i = 0; i < params.size() - 1; i += 2) {
+                    mp[params[i]] = evaluate(params[i + 1], mp);
+                }
+                
+                ans = evaluate(params.back(), mp);
+            }
+        }
+        
+        return ans;
+    }
+};
