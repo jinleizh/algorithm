@@ -48,3 +48,71 @@ public:
         }
     }
 };
+
+//正确的答案，判断对角线和列，注意这里只需要判断左上和右上两条斜线，无需考虑下面.
+class Solution {
+public:
+    vector<vector<string>> ans;
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<int>> nums(n, vector<int>(n, 0));
+        vector<int> flag(n, 0);
+        vector<int> pos(n, -1);
+        dfs(nums, flag, pos, 0, n);
+        return ans;
+    }
+    
+    bool isInBoard(int x, int y, int n) {
+        if(x < 0 || x >= n || y < 0 || y >= n) return false;
+        return true;
+    }
+    
+    bool canChoose(vector<vector<int>>& nums, vector<int>& flag, int x, int y, int n) {
+        bool left =  true, right = true;
+        int a = x, b = y;
+        while(isInBoard(--a, --b, n)) {
+            if(nums[a][b] == 1) {
+                left = false;
+                break;
+            }
+        }
+        
+        if(left) {
+            a = x, b = y;
+            while(isInBoard(--a, ++b, n)) {
+                if(nums[a][b] == 1) {
+                    right = false;
+                    break;
+                }
+            }
+        }
+        
+        return flag[y] == 0 && left && right;
+    }
+    
+    void dfs(vector<vector<int>>& nums, vector<int>& flag, vector<int>& pos, int level, int n) {
+        if(level == n) {
+            vector<string> vt;
+            for(int i = 0; i < n; i++) {
+                string tmp = "";
+                for(int j = 0; j < n; j++) {
+                    tmp += (j == pos[i] ? 'Q' : '.');
+                }
+                vt.push_back(tmp);
+            }
+            ans.push_back(vt);
+            return;    
+        }
+        
+        for(int i = 0; i < n; i++) {
+            if(canChoose(nums,flag, level, i, n)) {
+                nums[level][i] = 1;
+                flag[i] = 1;
+                pos[level] = i;
+                dfs(nums, flag, pos, level + 1, n);
+                pos[level] = -1;
+                flag[i] = 0;
+                nums[level][i] = 0;
+            }
+        }
+    }
+};
