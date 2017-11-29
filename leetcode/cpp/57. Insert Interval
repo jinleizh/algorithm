@@ -1,0 +1,45 @@
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        vector<Interval> ans;
+        int n = intervals.size(); 
+        bool finish = false;
+        for(Interval v : intervals) {
+            if(finish) {
+                ans.push_back(v);
+            } else if(isLeft(v, newInterval)) {
+                ans.push_back(v);
+            } else if(isRight(v, newInterval)) {
+                finish = true;
+                ans.push_back(newInterval);
+                ans.push_back(v);
+            } else {
+                newInterval.start = min(newInterval.start, v.start);
+                newInterval.end = max(newInterval.end, v.end);
+            }
+        }
+        
+        if(!finish) {
+            ans.push_back(newInterval);
+        }
+        
+        return ans;
+    }
+    
+    bool isLeft(Interval a, Interval b) {
+        return a.end < b.start;
+    }
+    
+    bool isRight(Interval a, Interval b) {
+        return a.start > b.end;
+    }
+};
