@@ -25,3 +25,33 @@ public:
         return a > b ? a : b;
     }
 };
+
+
+class Solution {
+public:
+    //dp[i][2][0] = max(dp[i-1][2][1] + price[i], dp[i - 1][2][0])
+    //dp[i][2][1] = max(dp[i-1][1][0] - price[i], dp[i - 1][2][1])
+    //dp[i][1][0] = max(dp[i-1][1][1] + price[i], dp[i - 1][1][0])
+    //dp[i][1][1] = max(dp[i-1][0][0] - price[i], dp[i - 1][1][1])
+    
+    //a=max(b + price[i], a);
+    //b=max(c - price[i], b);
+    //c=max(d + price[i], c);
+    //d=max(-price[i], d);
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if(n == 0) return 0;
+        int ans = 0;
+        int a = 0 , b = -prices[0], c = 0, d = -prices[0];
+        for(int i = 1; i < n; i++) {
+            a = max(b + prices[i], a);
+            b = max(c - prices[i], b);
+            c = max(d + prices[i], c);
+            d = max(-prices[i], d);
+        }
+        
+        int l = a > b ? a : b;
+        int r = c > d ? c : d;
+        return l > r ? l : r;
+    }
+};
