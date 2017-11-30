@@ -82,3 +82,53 @@ public:
     }
 };
 
+class Solution {
+public:
+    //首先计算出n！
+    //根据(n-1)!和 k的关系, 依次求出开头的值
+    string getPermutation(int n, int k) {
+        int dp[n + 1] = {1};
+        for(int i = 1; i <= n; i++) {
+            dp[i] = dp[i - 1] * i;
+        }
+        
+        int t = n;
+        string ans = "";
+        map<int, int> mp;
+        while(k) {
+            int idx = k / dp[t - 1];
+            int cand = 0;
+            if(k % dp[t - 1] == 0) {
+                cand = findMin(mp, n, idx);
+                mp[cand] = 1;
+                ans += cand + '0';
+                for(int i = n; i >= 1; i--) {
+                    if(mp.find(i) == mp.end()) {
+                        ans += i + '0';
+                    }
+                }
+                break;
+            } else { 
+                cand = findMin(mp, n, idx + 1);
+                mp[cand] = 1;
+                ans += cand + '0';
+                k -= idx * dp[t - 1];
+                t--;
+            }
+        }
+        
+        return ans;
+    }
+    
+    int findMin(map<int, int>& mp, int n, int k) {
+        int cnt = 0;
+        for(int i = 1; i <= n; i++) {
+            if(mp.find(i) == mp.end()) {
+                cnt++;
+                if(cnt == k) return i;
+            }
+        }
+        
+        return 1;
+    }
+};
