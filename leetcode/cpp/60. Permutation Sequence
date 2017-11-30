@@ -1,0 +1,83 @@
+class Solution {
+public:
+    vector<string> ans;
+    string getPermutation(int n, int k) {
+        vector<int> nums;
+        for(int i = 0; i < n; i++) {
+            nums.push_back(i + 1);
+        }
+        vector<int> path;
+        dfs(0, n - 1, path, nums);
+        sort(ans.begin(), ans.end());
+        return ans[k - 1];
+    }
+    
+    void dfs(int start, int end, vector<int>& path, vector<int>& nums) {
+        if(start == end + 1) {
+            string tmp;
+            for(int d : path) {
+                tmp += d + '0';
+            }
+            ans.push_back(tmp);
+            return;
+        }
+        
+        for(int i = start; i <= end; i++) {
+            swap(nums[start], nums[i]);
+            path.push_back(nums[start]);
+            dfs(start + 1, end, path, nums);
+            path.pop_back();
+            swap(nums[start], nums[i]);
+        }
+    }
+};
+
+class Solution {
+public:
+    vector<string> ans;
+    string getPermutation(int n, int k) {
+        if(k > nf(n)) return "";
+        vector<int> nums;
+        for(int i = 0; i < n; i++) {
+            nums.push_back(i + 1);
+        }
+        vector<int> path;
+        dfs(0, n - 1, path, nums);
+        priority_queue<string, vector<string>, std::less<string>> pq(ans.begin(), ans.begin() + k);
+        vector<string>::iterator it = ans.begin() + k;
+        for(; it != ans.end(); it++) {
+            if(*it >= pq.top()) continue;
+            pq.pop();
+            pq.push(*it);
+        }
+        
+        return pq.top();
+    }
+    
+    void dfs(int start, int end, vector<int>& path, vector<int>& nums) {
+        if(start == end + 1) {
+            string tmp;
+            for(int d : path) {
+                tmp += d + '0';
+            }
+            ans.push_back(tmp);
+            return;
+        }
+        
+        for(int i = start; i <= end; i++) {
+            swap(nums[start], nums[i]);
+            path.push_back(nums[start]);
+            dfs(start + 1, end, path, nums);
+            path.pop_back();
+            swap(nums[start], nums[i]);
+        }
+    }
+    
+    int nf(int n) {
+        long ans = 1;
+        for(int i=1; i<= n; i++) {
+            ans *= i;
+        }
+        return ans;
+    }
+};
