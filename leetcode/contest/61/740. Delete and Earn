@@ -30,3 +30,26 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    //dfs
+    int deleteAndEarn(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(10001, 0);
+        int cnt[10001] = {0};
+        for(int a : nums) {
+            cnt[a] += a;
+        }
+        
+        for(int i = 1; i <= 10000; i++) {
+            if(i >= 2) {
+                dp[i] = max(dp[i - 1], cnt[i] + dp[i - 2]);
+            } else {
+                dp[i] = cnt[i];
+            }
+        }
+        
+        return dp[10000];
+    }
+};
