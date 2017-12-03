@@ -29,3 +29,27 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    //dp[i] = 1 if dp[i] < dp[i +1]
+    //dp[i] = dp[i] > dp[i + 1], compare i, nextI = i + 1 + next[i + 1], if i > nextI and nextI == 0, return 0
+    vector<int> dailyTemperatures(vector<int>& input) {
+        int n = input.size();
+        vector<int> ans;
+        stack<int> st;
+        for(int i = n - 1; i >= 0; i--) {
+            int dis = 0;
+            while(st.size() && input[i] >= input[st.top()]) {
+                st.pop();
+            }
+            
+            if(st.size()) dis = st.top() - i;
+            st.push(i);
+            ans.push_back(dis);
+        }
+        
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
