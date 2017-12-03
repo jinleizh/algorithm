@@ -53,3 +53,37 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    //dp[i] = 1 if dp[i] < dp[i +1]
+    //dp[i] = dp[i] > dp[i + 1], compare i, nextI = i + 1 + next[i + 1], if i > nextI and nextI == 0, return 0
+    vector<int> dailyTemperatures(vector<int>& input) {
+        int n = input.size();
+        vector<int> ans(n, 0);
+        ans[n - 1] = 0;
+        for(int i = n - 2; i >= 0; i--) {
+            if(input[i] < input[i + 1]) {
+                ans[i] = 1;
+            } else {
+                int nextI = i + 1 ;
+                int k = ans[nextI];
+                while(input[i] >= input[nextI]) {
+                    if(k == 0) {
+                        ans[i] = 0;
+                        break;
+                    } else {
+                        nextI += k;
+                        k = ans[nextI];
+                    }
+                }
+                
+                if(input[i] < input[nextI]) {
+                    ans[i] = nextI - i;
+                }
+                
+            }
+        }
+        return ans;
+    }
+};
