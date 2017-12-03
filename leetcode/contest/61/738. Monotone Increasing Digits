@@ -38,3 +38,35 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    int monotoneIncreasingDigits(int n) {
+        int ans = 0;
+        vector<int> data;
+        int t = n;
+        while(t) {
+            data.push_back(t % 10);
+            t /= 10;
+        }
+    
+        reverse(data.begin(), data.end());
+        int m = data.size();
+        int prev = 0, cur = 0;
+        for(int i = 0; i < m; i++) {
+            for(int k = 9; k >= prev; k--) {//使用上届去探测
+                cur = ans;
+                for(int j = i; j < m; j++) {
+                    cur = cur * 10 + k;
+                    //cout<<cur<<endl;
+                }
+                if(cur <= n) {
+                    ans = ans * 10 + k;
+                    prev = k;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+};
