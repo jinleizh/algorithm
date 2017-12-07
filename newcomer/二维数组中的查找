@@ -1,0 +1,23 @@
+class Solution {
+public:
+    bool Find(int target, vector<vector<int> > array) {
+        int r = array.size();
+        int c = array[0].size();
+        int i = 0, j = c - 1;
+        while(isInArray(i, j, r, c)) {
+            if(array[i][j] == target) return true;
+            if(array[i][j] > target) {
+                j--;
+            } else {
+                i++;
+            }
+        }
+        
+        return false;
+    }
+    
+    bool isInArray(int x, int y, int r, int c) {
+        if(x < 0 || y < 0 || x >= r || y >= c) return false;
+        return true;
+    }
+};
