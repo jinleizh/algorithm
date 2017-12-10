@@ -1,0 +1,79 @@
+1/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //第一步求出当前节点到左右子树的最近节点
+    //第二步求出当前节点到父节点的最近节点
+    //更新成最近的点
+    map<TreeNode*, TreeNode*> pmap;//储存父节点
+    map<TreeNode*, TreeNode*> next;//储存next节点
+    map<TreeNode*, int> lmap;//储存最短距离
+    int findClosestLeaf(TreeNode* root, int k) {
+        first(root, nullptr);
+        second(root);
+        TreeNode* node = find(root, k);
+        while(next[node] != nullptr) {
+            node = next[node];
+        }
+        return node->val;
+    }
+    
+    int first(TreeNode* root, TreeNode* parent) {
+        if(root == nullptr) return 3000;
+        int left = first(root->left, root);
+        int right = first(root->right, root);
+        
+        int minLen = left < right ? left + 1: right + 1;
+        if(left < right) {
+            next[root] = root->left;
+        } else {
+            next[root] = root->right;
+        }
+        
+        pmap[root] = parent;
+        if(minLen == 3001) minLen = 1;
+        lmap[root] = minLen;
+        return minLen;
+    }
+    
+    bool hasParent(TreeNode* node) {
+        if(pmap[node] != nullptr) return true;
+        return false;
+    }
+    
+    void second(TreeNode* root) {
+        if(nullptr == root) return;
+        if(hasParent(root)) {
+            TreeNode* parent = pmap[root];
+            if(1 + lmap[parent] < lmap[root]) {
+                lmap[root] = 1 + lmap[parent];
+                next[root] = parent;
+            }
+        }
+        
+        second(root->left);
+        second(root->right);
+    }
+    
+    TreeNode* find(TreeNode* root, int k) {
+        if(nullptr == root) return nullptr;
+        
+        if(root->val == k) return root;
+        
+        TreeNode* lptr = find(root->left, k);
+        if(lptr != nullptr) return lptr;
+        
+        TreeNode* rptr = find(root->right, k);
+        if(rptr != nullptr) return rptr;
+        
+        return nullptr;
+    }
+    
+}; 
