@@ -1,0 +1,17 @@
+class Solution {
+public:
+    char nextGreatestLetter(vector<char>& letters, char target) {
+        bool find = false;
+        char ans;
+        for(char c : letters) {
+            if(c > target) {
+                ans = c;
+                find = true;
+                break;
+            }
+        }
+        
+        if(find) return ans;
+        return letters[0];
+    }
+};
