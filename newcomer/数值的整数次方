@@ -1,0 +1,13 @@
+class Solution {
+public:
+    double Power(double base, int exponent) {
+        if(0 == exponent) return 1;
+        if(1 == exponent) return base;
+        if(exponent < 0) {
+            exponent = -exponent;
+            base = 1 / base;
+        }
+        
+        return exponent % 2 ? base * Power(base * base, exponent / 2) : Power(base * base, exponent / 2);
+    }
+};
