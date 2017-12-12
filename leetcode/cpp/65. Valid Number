@@ -1,0 +1,39 @@
+class Solution {
+public:
+    bool isNumber(string s) {
+        int n = s.length();
+        int i = 0;
+        
+        //trim space
+        for(; s[i] == ' '; i++) {}
+        
+        //check sign
+        if(s[i] == '-' || s[i] == '+') i++;
+        
+        //check point and data
+        int np = 0, nd = 0;
+        for(; (s[i] >= '0' && s[i] <= '9') || (s[i] == '.'); i++) {
+            s[i] == '.' ? np++ : nd++;
+        }
+        if(np > 1 || nd < 1) return false;
+         
+        //check e
+        if(s[i] == 'e') {
+            i++;
+            
+            //check sign
+            if(s[i] == '+' || s[i] == '-') i++;
+
+            //check data
+            nd = 0;
+            for(; s[i] >='0' && s[i] <= '9'; i++) {
+                nd++;
+            }
+            if(nd < 1) return false;
+        }
+        //trim space
+        for(; s[i] == ' '; i++) {}
+        
+        return i == n;
+    }
+};
