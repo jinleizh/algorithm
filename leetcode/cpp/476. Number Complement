@@ -1,0 +1,14 @@
+class Solution {
+public:
+    int findComplement(int num) {
+        //xor
+        int ans = num ^ 0x7FFFFFFF;
+        int val = 1 << 30;
+        while(ans >= val) {
+            ans -= val;
+            val >>= 1;
+        }
+        
+        return ans;
+    }
+};
