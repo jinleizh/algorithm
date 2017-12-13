@@ -85,3 +85,90 @@ public:
         return count == 1;
     }
 };
+
+//TLE
+class Solution {
+public:
+    vector<vector<string>> ans;
+    vector<string> path;
+    int minLen = 1e7;
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        //brute force
+        //abc-->def, def-->find strs which can reach def by one step, that means the differen is one character.
+        //flag[def] = 1, so next finding ,we don't consider def
+        //path.push_back(def);
+        //for(str : strs) the problem become find shortest path from abc -->str,
+        //until find a answer, check the length of answer, if it < minLen, than we'll choose this one an final answer.
+        //if it == minLen, we just push back the path to the answer
+        //at the end, we just output the answer
+        int n = wordList.size();
+        unordered_map<string, int> flag;
+        set<string> newWordList;
+        bool hasEndWord = false;
+        for(int i = 0; i < n; i++) {
+            flag[wordList[i]] = 0;
+            newWordList.insert(wordList[i]);
+            if(wordList[i] == endWord) hasEndWord = true;
+        }
+        
+        if(flag.find(beginWord) == flag.end()) {
+            flag[beginWord] = 0;
+            newWordList.insert(beginWord);
+        }
+
+        if(hasEndWord) {
+            //cout<<"hasEndWord"<<endl;
+            dfs(beginWord, endWord, newWordList, flag);
+        }
+
+        return ans;
+    }
+
+    bool oneDiff(string a, string b) {
+        int diff = 0;
+        for(int i = 0; i < a.length(); i++) {
+            if(a[i] != b[i]) {
+                diff += 1;
+                if(diff > 1) return false;
+            }
+        }
+
+        return 1 == diff;  
+    }
+
+    void dfs(string beginWord, string endWord, set<string>& wordList, unordered_map<string, int>& flag) {
+        //cout<<"bword="<<beginWord<<" eword="<<endWord<<endl;
+        if(path.size() >= minLen) return;
+        if(beginWord == endWord) {
+            path.push_back(endWord);
+            int len = path.size();
+            if(len < minLen) {
+                ans.clear();
+                minLen = len;
+            }
+
+            vector<string> tmp(path);
+            reverse(tmp.begin(), tmp.end());
+            
+            ans.push_back(tmp);
+            path.pop_back();
+            //cout<<minLen<<endl;
+            return;
+        }
+
+        //find a word which just needs one step
+        path.push_back(endWord);
+        flag[endWord] = 1; 
+        for(string word : wordList) {
+            if(flag[word] == 0 && oneDiff(word, endWord)) {
+                dfs(beginWord, word, wordList, flag);
+            }
+        }
+
+        flag[endWord] = 0;
+        path.pop_back();
+        return;
+    }
+};
+
+
