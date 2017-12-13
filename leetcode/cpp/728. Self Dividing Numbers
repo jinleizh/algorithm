@@ -1,0 +1,28 @@
+class Solution {
+public:
+    vector<int> selfDividingNumbers(int left, int right) {
+        vector<int> ans;
+        for(int i = left; i <= right; i++) {
+            if(isSelfDivide(i)) {
+                ans.push_back(i);
+            }
+        }
+        return ans;
+    }
+    
+    bool isSelfDivide(int k) {
+        vector<int> val;
+        int t = k;
+        while(t) {
+            val.push_back(t % 10);
+            t /= 10;
+        }
+        
+        for(int d : val) {
+            if(0 == d) return false;
+            if(k % d != 0) return false;
+        }
+        
+        return true;
+    }
+};
