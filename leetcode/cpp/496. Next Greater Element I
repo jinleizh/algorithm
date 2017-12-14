@@ -1,0 +1,55 @@
+//利用数组范围, 不使用逐个比较的方式
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& findNums, vector<int>& nums) {
+        //假设指定了单个数字的范围
+        map<int, int> pos;
+        vector<int> ans;
+        for(int i = 0; i < nums.size(); i++) pos[nums[i]] = i;
+        for(int i = 0; i < findNums.size(); i++) {
+            int d = findNums[i];
+            int j = d + 1;
+            int nextPos = INT_MAX;
+            while(j < 6100) {
+                if(pos.count(j) != 0) {
+                    if(pos[j] >= pos[d] + 1 && pos[j] < nextPos) {
+                        nextPos = pos[j];
+                    }
+                }
+                j++;
+            }
+            if(nextPos == INT_MAX) {
+                ans.push_back(-1);
+            } else {
+                ans.push_back(nums[nextPos]);
+            }
+        }
+        return ans;
+    }
+};
+
+//使用stack解决
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& findNums, vector<int>& nums) {
+        vector<int> ans;
+        map<int, int> rc;
+        stack<int> st;
+        for(int d : nums) {
+            while(!st.empty() && d > st.top()) {
+                rc[st.top()] = d;
+                st.pop();
+            }
+            st.push(d);
+        }
+                  
+        for(int d : findNums) {
+            if(rc.count(d)) {
+                ans.push_back(rc[d]);
+            } else {
+                ans.push_back(-1);
+            }
+        }
+        return ans;
+    }
+};
