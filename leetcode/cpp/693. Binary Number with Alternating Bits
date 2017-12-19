@@ -1,0 +1,21 @@
+class Solution {
+public:
+    bool hasAlternatingBits(int n) {
+        vector<int> bits;
+        while(n) {
+            bits.push_back(n % 2);
+            n /= 2;
+        }
+        int last = -1;
+        for(int d : bits) {
+            if(last == -1) {
+                last = d;
+            } else {
+                if(last == d) return false;
+                last = d;
+            }
+        }
+        
+        return true;
+    }
+};
