@@ -1,0 +1,49 @@
+class Solution {
+public:
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int ans = 0;
+        int r = grid.size();
+        int c = grid[0].size();
+        vector<vector<int>> visited(r, vector<int>(c, 0));
+        for(int i = 0; i < r; i++) {
+            for(int j = 0; j < c; j++) {
+                if(grid[i][j] == 0) continue;
+                //cout<<1<<"="<<i<<" "<<j<<endl;
+                visited[i][j] = 1;
+                int ret = bfs(grid, i, j, r, c, visited);
+                if(ans < ret) ans = ret;
+            }
+        }
+        return ans;
+    }
+    
+    int bfs(vector<vector<int>>& grid, int xx, int yy, int r, int c, vector<vector<int>>& visited) {
+        queue<pair<int, int>> q;
+        int dx[4] = {0, 0, 1, -1};
+        int dy[4] = {-1, 1, 0, 0};
+        pair<int, int> node(xx, yy);
+        q.push(node);
+        int ans = 0;
+        while(!q.empty()) {
+            ans++;
+            //cout<<"ans="<<ans<<endl;
+            pair<int, int> root = q.front();
+            q.pop();
+            int x = root.first, y = root.second;
+            grid[x][y] = 0; //设置为0
+            for(int k = 0; k < 4; k++) {
+                if(isIn(x + dx[k], y + dy[k], r, c) && 1 == grid[x + dx[k]][y + dy[k]] && 0 == visited[x + dx[k]][y + dy[k]]) {
+                    pair<int, int> nextNode(x + dx[k], y + dy[k]);
+                    q.push(nextNode);
+                    visited[x + dx[k]][y + dy[k]] = 1;
+                }
+            }
+            //cout<<"queue size="<<q.size()<<endl;
+        }
+        return ans;
+    }
+    
+    bool isIn(int x, int y, int r, int c) {
+        return x >= 0 && x < r && y >= 0 && y < c;
+    }
+};
