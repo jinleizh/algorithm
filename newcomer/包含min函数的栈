@@ -1,0 +1,29 @@
+class Solution {
+public:
+    vector<int> data;
+    vector<int> minData;
+    int minHead;
+    void push(int value) {
+        if(minData.empty()) {
+            minData.push_back(value);
+        } else if(value <= minData[minData.size() - 1]) {
+            minData.push_back(value);
+        }
+        
+        data.push_back(value);
+    }
+    void pop() {
+        if(minData[minData.size() - 1] == data[data.size() - 1]) {
+            minData.pop_back();
+        }
+        data.pop_back();
+    }
+    int top() {
+        if(data.empty()) return 0;
+        return data[data.size() - 1];
+    }
+    int min() {
+        if(minData.empty()) return 0;
+        return minData[minData.size() - 1];
+    }
+};
