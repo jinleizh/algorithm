@@ -10,3 +10,21 @@ public:
         return getSum(sum, carray);
     }
 };
+
+class Solution {
+public:
+    int getSum(int a, int b) {
+        /*int carry = 0;
+        int ans = 0;
+        while(b) {
+            ans = a ^ b;
+            carry = a & b;
+            a = ans;
+            b = carry << 1;
+        }
+        return a;*/
+        
+        if(b == 0) return a;
+        return getSum(a ^ b, (a & b) << 1);
+    }
+};
