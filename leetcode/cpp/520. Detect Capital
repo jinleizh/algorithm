@@ -1,0 +1,24 @@
+class Solution {
+public:
+    bool detectCapitalUse(string word) {
+        //大写个数, 小写个数
+        //大0 小N， 大N 小0， 大1 小N - 1 且首字母为大写
+        int bigCnt = 0, smallCnt = 0;
+        for(char c : word) {
+            if(isBig(c)) {
+                bigCnt++;
+            } else {
+                smallCnt++;
+            }
+        }
+        
+        int n = word.length();
+        if(smallCnt == n || bigCnt == n) return true;
+        if(bigCnt == 1 && smallCnt == n - 1 && isBig(word[0])) return true;
+        return false;
+    }
+    
+    bool isBig(char c) {
+        return c >= 'A' && c <= 'Z';
+    }
+};
