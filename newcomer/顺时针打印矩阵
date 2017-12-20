@@ -1,0 +1,39 @@
+class Solution {
+public:
+    vector<int> printMatrix(vector<vector<int> > matrix) {
+        int r = matrix.size();
+        int c = matrix[0].size();
+        vector<int> ans;
+        int ltx = 0, lty = 0, rbx = r - 1, rby = c - 1;
+        while(ltx <= rbx && lty <= rby) {
+            print(matrix, ans, ltx, lty, rbx, rby);
+            ltx++;
+            lty++;
+            rbx--;
+            rby--;
+        }
+        return ans;
+    }
+    
+    void print(vector<vector<int> >& matrix, vector<int>& ans, int ltx, int lty, int rbx, int rby) {
+        for(int j = lty; j <= rby; j++) {
+            ans.push_back(matrix[ltx][j]);
+        }
+        
+        for(int i = ltx + 1; i <= rbx - 1; i++) {
+            ans.push_back(matrix[i][rby]);
+        }
+        
+        if(ltx != rbx) {
+            for(int j = rby; j >= lty; j--) {
+                ans.push_back(matrix[rbx][j]);
+            }
+        }
+        
+        if(lty != rby) {
+            for(int i = rbx - 1; i >= ltx + 1; i--) {
+                ans.push_back(matrix[i][lty]);
+            }
+        }
+    }
+};
