@@ -1,0 +1,38 @@
+/*
+struct RandomListNode {
+    int label;
+    struct RandomListNode *next, *random;
+    RandomListNode(int x) :
+            label(x), next(NULL), random(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    typedef RandomListNode RN;
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        if(nullptr == pHead) return nullptr;
+        unordered_map<RN*, RN*> pm;
+        RN* newHead = new RN(pHead->label);
+        pm[pHead] = newHead;
+        RN* tmp = newHead;
+        RN* old = pHead;
+        while(old->next) {
+            RN* node = new RN(old->next->label);
+            pm[old->next] = node;
+            old = old->next;
+            tmp->next = node;
+            tmp = node;
+        }
+        
+        tmp = newHead;
+        while(pHead) {
+            tmp->random = pm[pHead->random];
+            pHead = pHead->next;
+            tmp = tmp->next;
+        }
+
+        return newHead;
+    }
+};
