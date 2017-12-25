@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> PrintFromTopToBottom(TreeNode* root) {
+        vector<int> ans;
+        if(root == nullptr) return ans;
+
+        queue<TreeNode*> Q;
+        Q.push(root);
+        while(!Q.empty()) {
+            //cout<<Q.size()<<endl;
+            TreeNode* curNode = Q.front();
+            Q.pop();
+            ans.push_back(curNode->val);
+            if(curNode->left != nullptr) {
+                Q.push(curNode->left);
+            }
+
+            if(curNode->right != nullptr) {
+                Q.push(curNode->right);
+            }
+        }
+
+        return ans;
+    }
+};
