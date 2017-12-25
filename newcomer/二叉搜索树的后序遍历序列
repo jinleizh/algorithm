@@ -1,0 +1,22 @@
+class Solution {
+public:
+    bool VerifySquenceOfBST(vector<int> sequence) {
+        if(sequence.empty()) return false;
+		return help(sequence, 0, (int) (sequence.size() - 1));
+    }
+    
+    bool help(vector<int>& sequence, int st, int ed) {
+        if(st >= ed) return true;
+        int base = sequence[ed];
+        int i = st;
+        for(; i < ed; i++) {
+            if(sequence[i] > base) break;
+        }
+
+        for(int j = i; j < ed; j++) {
+            if(sequence[j] < base) return false;
+        }
+
+        return help(sequence, st, i - 1) && help(sequence, i, ed - 1);
+    }
+};
