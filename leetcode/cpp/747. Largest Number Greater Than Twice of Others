@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int dominantIndex(vector<int>& nums) {
+        int maxNum = INT_MIN;
+        int nextNum = INT_MIN;
+        int pos = -1;
+        for(int i = 0; i < nums.size(); i++) {
+            if(nums[i] <= nextNum) continue;
+            if(nums[i] >= maxNum) {
+                nextNum = maxNum;
+                maxNum = nums[i];
+                pos = i;
+            } else {
+                nextNum = nums[i];
+            }
+        }
+        
+        if(nextNum > maxNum / 2) {
+            pos = -1;
+        }
+        
+        return pos;
+    }
+};
