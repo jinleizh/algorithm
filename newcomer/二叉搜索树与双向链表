@@ -1,0 +1,50 @@
+/*
+struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+	TreeNode(int x) :
+			val(x), left(NULL), right(NULL) {
+	}
+};*/
+class Solution {
+public:
+    typedef pair<TreeNode*, TreeNode*> ptt;
+    TreeNode* Convert(TreeNode* pRootOfTree)
+    {
+        ptt ans = dfs(pRootOfTree);
+        return ans.first;
+    }
+    
+    ptt dfs(TreeNode* root) {
+        if(nullptr == root) return ptt(nullptr, nullptr);
+        if(root->left == nullptr && root->right == nullptr) return ptt(root, root);
+        ptt lsub, rsub;
+        if(nullptr != root->left) {
+            lsub = dfs(root->left);
+            lsub.second->right = root;
+            root->left = lsub.second;
+        }
+        
+        if(nullptr != root->right) {
+            rsub = dfs(root->right);
+            root->right = rsub.first;
+            rsub.first->left = root;
+        }
+        
+        ptt ans;
+        if(nullptr != root->left) {
+            ans.first = lsub.first;
+        } else {
+            ans.first = root;
+        }
+        
+        if(nullptr != root->right) {
+            ans.second = rsub.second;
+        } else {
+            ans.second = root;
+        }
+        
+        return ans;
+    }
+};
