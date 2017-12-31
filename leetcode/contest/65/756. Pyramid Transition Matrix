@@ -1,0 +1,50 @@
+class Solution {
+public:
+    //状态数组
+    //i-j-k = i-j-1-k1 + i+1-j-k2 + k1,k2 可达
+    //dp[i][j][k] = dp[i][j - 1][k1] && dp[i + 1][j][k2] && can[k1][k2][k]
+    bool pyramidTransition(string bottom, vector<string>& allowed) {
+        bool can[7][7][7];
+        memset(can, false, sizeof(can));
+        
+        bool flag[101][101][7];
+        memset(flag, false, sizeof(flag));
+        
+        for(int i = 0; i < allowed.size(); i++) {
+            int x = allowed[i][0] - 'A';
+            int y = allowed[i][1] - 'A';
+            int z = allowed[i][2] - 'A';
+            can[x][y][z] = true;
+        }
+        
+        for(int i = 0; i < bottom.size() - 1; i++) {
+            int x = bottom[i] - 'A';
+            int y = bottom[i + 1] - 'A';
+            for(int k = 0; k < 7; k++) {
+                if(can[x][y][k]) {
+                    flag[i][i + 1][k] = true;
+                }
+            }
+        }
+        
+        for(int i = bottom.size() - 3; i >= 0; i--) {
+            for(int j = i + 2; j < bottom.size(); j++) {
+                for(int k = 0; k < 7; k++) {
+                    for(int k1 = 0; k1 < 7; k1++) {
+                        for(int k2 = 0; k2 < 7; k2++) {
+                            if(flag[i][j - 1][k1] && flag[i+1][j][k2] && can[k1][k2][k]) {
+                                flag[i][j][k] = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        for(int k = 0; k < 7; k++) {
+            if(flag[0][bottom.size() - 1][k]) return true;
+        }
+        
+        return false;
+    }
+};
