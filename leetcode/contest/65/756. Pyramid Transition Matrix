@@ -48,3 +48,53 @@ public:
         return false;
     }
 };
+
+class Solution {
+public:
+    bool can[7][7][7];
+    int flag[101][101][7];
+    bool pyramidTransition(string bottom, vector<string>& allowed) {
+        memset(can, false, sizeof(can));
+        memset(flag, 0, sizeof(flag));
+        for(int i = 0; i < allowed.size(); i++) {
+            int x = allowed[i][0] - 'A';
+            int y = allowed[i][1] - 'A';
+            int z = allowed[i][2] - 'A';
+            can[x][y][z] = true;
+        }
+        
+        for(int k = 0; k < 7; k++) {
+            bool ret = dfs(bottom, can, 0, bottom.size() - 1, k);
+            if(ret) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    bool dfs(string bottom, bool can[7][7][7], int l, int r, int k) {
+        if(l > r) return false;
+        if(l == r) {
+            if(bottom[l] - 'A' == k) return true;
+            return false;
+        }
+        
+        if(flag[l][r][k] != 0) {
+            return flag[l][r][k] == 1;
+        }
+        
+        for(int k1 = 0; k1 < 7; k1++) {
+            for(int k2 = 0; k2 < 7; k2++) {
+                if(can[k1][k2][k] && 
+                dfs(bottom, can, l, r - 1, k1) &&
+                dfs(bottom, can, l + 1, r, k2)) {
+                    flag[l][r][k] = 1;
+                    return true;
+                }
+            }
+        }
+        
+        flag[l][r][k] = -1;
+        return false;
+    }
+};
