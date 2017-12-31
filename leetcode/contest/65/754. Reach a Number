@@ -1,0 +1,47 @@
+class Solution {
+public:
+    int minV = -1e9;
+    int maxV = 1e9;
+    typedef pair<int, int> pii;
+    int reachNumber(int target) {
+        queue<pii> Q;
+        queue<pii> NQ;
+        int step = 0;
+        pii d(0, 0);
+        Q.push(d);
+        while(1) {
+            while(!Q.empty()) {
+                pii v = Q.front();
+                Q.pop();
+                if(v.first == target) return v.second; 
+                pii v1(v.first + v.second + 1, v.second + 1);
+                pii v2(v.first - v.second - 1, v.second + 1);
+                NQ.push(v1);
+                NQ.push(v2);
+            }
+            queue<pii> empty;
+            swap(Q, NQ);
+            swap(NQ, empty);
+        }
+    }
+};
+
+/**
+思路：负数和正数的处理方式相同，一直加，每次选择朝左和朝右，导致的差值为 2*当前步数，永远为偶数，且所有可能的差值，都可以覆盖到
+所以，本题直接相加后，直到大于等于目标值，再根据是否差值为偶数，判断出是否可达，不为偶数时，永远到不了，因为改变方向只会导致
+结果偏差为偶数.
+**/
+class Solution {
+public:
+    int reachNumber(int target) {
+        target = abs(target);
+        int ans = 0;
+        int v = 0;
+        while(1) {
+            ans++;
+            v += ans;
+            if(v >= target && (v - target) % 2 == 0) break;
+        }
+        return ans;
+    }
+};
