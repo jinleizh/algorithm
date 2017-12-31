@@ -1,0 +1,45 @@
+class Solution {
+public:
+    //curIdx - 当前水滴在哪个idx上
+    //先比较左侧，如果有idx接收，则标记为true
+    //没接收，则从右边开始，如果还没有，则退出
+    vector<int> pourWater(vector<int>& heights, int V, int K) {
+        int curIdx;
+        for(int p = 1; p <= V; p++) {
+            curIdx = K;
+            heights[curIdx]++;
+            bool ac = false;
+            
+            //travel left
+            for(int i = curIdx - 1; i >= 0; i--) {
+                if(heights[curIdx] >= heights[i] + 2) {
+                    heights[curIdx]--;
+                    heights[i]++;
+                    curIdx = i;
+                    ac = true;
+                } else {
+                    if(heights[curIdx] <= heights[i]) {
+                        break; //too high
+                    }
+                }
+            }
+            
+            //travel right
+            if(!ac) {
+                for(int i = curIdx + 1; i < heights.size(); i++) {
+                    if(heights[curIdx] >= heights[i] + 2) {
+                        heights[curIdx]--;
+                        heights[i]++;
+                        curIdx = i;
+                    } else {
+                        if(heights[curIdx] <= heights[i]) {
+                            break; //too high
+                        }
+                    }
+                }
+            }
+        }
+        
+        return heights;
+    }
+};
