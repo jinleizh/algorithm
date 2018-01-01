@@ -1,0 +1,57 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(nullptr == root) return true;
+        reverse(root->left);
+        return isSameTree(root->left, root->right);
+    }
+    
+    TreeNode* reverse(TreeNode* root) {
+        if(nullptr == root) return nullptr;
+        TreeNode* l = reverse(root->right);
+        TreeNode* r = reverse(root->left);
+        root->left = l;
+        root->right = r;
+        return root;
+    }
+    
+    bool isSameTree(TreeNode* l, TreeNode* r) {
+        if(l == r) return true;
+        if(l == nullptr || r == nullptr) return false;
+        if(l->val != r->val) return false;
+        return isSameTree(l->left, r->left) && isSameTree(l->right, r->right);
+    }
+};
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(nullptr == root) return true;
+        return isSameTree(root->left, root->right);
+    }
+    
+    bool isSameTree(TreeNode* l,  TreeNode* r) {
+        if(nullptr == r && nullptr == l) return true;
+        if(nullptr == l || nullptr == r) return false;
+        if(l->val != r->val) return false;
+        return isSameTree(l->left, r->right) && isSameTree(l->right, r->left);
+    }
+};
