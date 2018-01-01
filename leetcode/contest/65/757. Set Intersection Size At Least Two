@@ -1,0 +1,73 @@
+class Solution {
+public:
+    int intersectionSizeTwo(vector<vector<int>>& intervals) {
+        //排序预处理区间
+        sort(intervals.begin(), intervals.end(), [](const vector<int>& left, const vector<int>& right) {
+            if(left[0] == right[0]) {
+                return left[1] < right[1];
+            }
+            return left[0] < right[0];
+        });
+        
+        stack<vector<int>> st;
+        for(vector<int> v : intervals) {
+            if(st.empty()) {
+                st.push(v);
+            } else {
+                if(isSubInterval(st.top(), v)) {
+                    continue;
+                } else {
+                    while(!st.empty() && isSubInterval(v, st.top())) {
+                        st.pop();
+                    }
+                    st.push(v);
+                }
+            }
+        }
+    
+        set<int> ret;
+        int n = st.size();
+        //cout<<"size="<<n<<endl;
+        vector<vector<int>> input(n, vector<int>());
+        vector<int> v;
+        for(int i = n - 1; i >= 0; i--) {
+            v = st.top();
+            st.pop();
+            input[i] = v;
+            //cout<<v[0]<<","<<v[1]<<endl;
+        }
+        
+        //process
+        int p1 = -1, p2 = -1, ans = 0;
+        for(vector<int> v : input) {
+            //cout<<"x"<<endl;
+            if(v[0] > p2) {
+                ans += 2;
+                p2 = v[1];
+                p1 = p2 - 1;
+                ret.insert(p2);
+                ret.insert(p1);
+                continue;
+            }
+            
+            if(v[0] <= p1) {
+                continue;
+            }
+            
+            ans++;
+            p1 = p2;
+            p2 = v[1];
+            ret.insert(p2);
+        }
+        
+        for(int d : ret) {
+            //cout<<d<<" ";
+        }
+        //cout<<endl;
+        return ans;
+    }
+    
+    bool isSubInterval(vector<int> l, vector<int> r) {
+        return (l[0] >= r[0] && l[1] <= r[1]);
+    }
+};
