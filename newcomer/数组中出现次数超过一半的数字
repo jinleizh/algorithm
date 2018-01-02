@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int MoreThanHalfNum_Solution(vector<int> numbers) {
+        map<int, int> cnt;
+        for(int d : numbers) {
+            cnt[d]++;
+        }
+        
+        for(auto& mit : cnt) {
+            if(mit.second > numbers.size() / 2) {
+                return mit.first;
+            }
+        }
+        
+        return 0;
+    }
+};
