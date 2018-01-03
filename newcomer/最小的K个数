@@ -1,0 +1,69 @@
+class Solution {
+public:
+    //partition
+    vector<int> ans;
+    vector<int> GetLeastNumbers_Solution(vector<int> input, int k) {
+        //edge case
+        if(k <= 0 || k > input.size()) return ans;
+        if(k == input.size()) return input;
+        
+        //normal case
+        partition(input, 0, input.size() - 1, k);
+        return ans;
+    }
+    
+    void partition(vector<int>& input, int l, int r, int k) {
+        //edge case
+        if(k <= 0 || r - l + 1 < k) return;
+
+        //normal case
+        int i = l + 1, j = r;
+        while(i <= j) {
+            while(i <= j && input[i] <= input[l]) {
+                i++;
+            }
+
+            while(i <= j && input[j] > input[l]) {
+                j--;
+            }
+
+            if(i < j) {
+                int tmp = input[i];
+                input[i] = input[j];
+                input[j] = tmp;
+                i++;
+                j--;
+            }
+        }
+
+        //swap first
+        int tmp = input[j];
+        input[j] = input[l];
+        input[l] = tmp;
+        int leftCnt = j - l;
+
+        if(k == leftCnt) {
+            for(int i = l; i < j; i++) {
+                ans.push_back(input[i]);
+            }
+            return;
+        }
+
+        if(k == leftCnt + 1) {
+            for(int i = l; i <= j; i++) {
+                ans.push_back(input[i]);
+            }
+            return;
+        }
+
+        if(k > leftCnt + 1) {
+            for(int i = l; i <= j; i++) {
+                ans.push_back(input[i]);
+            }
+            partition(input, j + 1, r, k - leftCnt - 1);
+            return;
+        } else {
+            partition(input, l, j - 1, k);
+        }
+    }
+};
