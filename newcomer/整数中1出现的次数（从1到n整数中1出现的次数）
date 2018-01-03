@@ -1,0 +1,43 @@
+class Solution {
+public:
+    //0-9 0-99 0-999 ... 0-999999
+    //234 0-99 100-199 200-234 00-34
+    //134 0-99 100-134 1 00-34
+    //00-34 0-9 10-19 20-29 30-34 0-4
+    int NumberOf1Between1AndN_Solution(int n)
+    {
+        if(n < 10) {
+            if(n <= 0) return 0;
+            return 1;
+        }
+        
+        int ans = 0;
+        vector<int> dp;
+        int t = n;
+        while(t) {
+            dp.push_back(t % 10);
+            t /= 10;
+        }
+        
+        int next = 0;
+        int p = dp.size();
+        for(int i = p - 2; i >= 0; i++) {
+            next = next * 10 + dp[i];
+        }
+     
+        //first element
+        int f = dp[p - 1];
+        //base step
+        int total = pow(10, p - 1);
+        if(f > 1) {
+            ans += f * total / 10;
+            ans += total;
+        } else {
+            ans += f * total / 10;
+            ans += next + 1;
+        }
+        
+        ans += NumberOf1Between1AndN_Solution(next);
+        return ans;
+    }
+};
