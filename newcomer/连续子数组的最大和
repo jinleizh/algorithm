@@ -1,0 +1,51 @@
+class Solution {
+public:
+    //o(n**2) space o(n)
+    int FindGreatestSumOfSubArray(vector<int> array) {
+    	vector<int> sum;
+        int d = 0;
+        for(int i = 0; i < array.size(); i++) {
+            sum.push_back(d + array[i]);
+            d = d + array[i];
+        }
+        
+        int ans = INT_MIN;
+        int curSum = 0;
+        for(int i = 0; i < array.size(); i++) {
+            for(int j = i; j < array.size(); j++) {
+                if(i == j) {
+                    curSum = array[i];
+                } else {
+                    curSum = sum[j] - sum[i] + array[i];
+                }
+                
+                if(curSum > ans) {
+                    ans = curSum;
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //dp[i] = max(array[i], dp[i - 1] + array[i])
+    //o(n) o(n)
+    int FindGreatestSumOfSubArray(vector<int> array) {
+        int n = array.size();
+        if(0 == n) return 0;
+        vector<int> dp(n, 0);
+        dp[0] = array[0];
+        int ans = dp[0];
+        for(int i = 1; i < n; i++) {
+            dp[i] = max(array[i], dp[i - 1] + array[i]);
+            if(dp[i] > ans) {
+                ans = dp[i];
+            }
+        }
+        
+        return ans;
+    }
+};
