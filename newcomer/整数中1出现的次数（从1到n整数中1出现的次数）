@@ -1,40 +1,36 @@
 class Solution {
 public:
-    //0-9 0-99 0-999 ... 0-999999
-    //234 0-99 100-199 200-234 00-34
-    //134 0-99 100-134 1 00-34
-    //00-34 0-9 10-19 20-29 30-34 0-4
+    //recurisive
+    //0-9 1
+    //0-99 10**2/10
+    //0-999 10***3/10
     int NumberOf1Between1AndN_Solution(int n)
     {
         if(n < 10) {
-            if(n <= 0) return 0;
+            if(n < 1) return 0;
             return 1;
         }
-        
-        int ans = 0;
         vector<int> dp;
-        int t = n;
+    	int t = n;
         while(t) {
             dp.push_back(t % 10);
             t /= 10;
         }
-        
+        int len = dp.size();
         int next = 0;
-        int p = dp.size();
-        for(int i = p - 2; i >= 0; i++) {
+        for(int i = len - 2; i >= 0; i--) {
             next = next * 10 + dp[i];
         }
-     
-        //first element
-        int f = dp[p - 1];
-        //base step
-        int total = pow(10, p - 1);
-        if(f > 1) {
-            ans += f * total / 10;
-            ans += total;
-        } else {
-            ans += f * total / 10;
+        
+        int ans = 0;
+        int first = dp[len - 1];
+        int total = pow(10, len - 1);//总个数
+        if(first == 1) {
+            ans += total / 10 * (len - 1);//总位数 = 总个数 * 单个的长度
             ans += next + 1;
+        } else {
+            ans += first * total / 10 * (len - 1);
+            ans += total;
         }
         
         ans += NumberOf1Between1AndN_Solution(next);
