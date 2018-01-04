@@ -1,0 +1,36 @@
+class Solution {
+public:
+    //bubble sort
+    string PrintMinNumber(vector<int> numbers) {
+        string ans = "";
+        int n = numbers.size();
+        bool isFinished = false;
+        int lastSorted = n;
+        while(!isFinished) {
+            isFinished = true;
+            for(int i = 0; i < lastSorted - 1; i++) {
+                if(needSwap(numbers[i], numbers[i + 1])) {
+                    int t = numbers[i];
+                    numbers[i] = numbers[i + 1];
+                    numbers[i + 1] = t;
+                    isFinished = false;
+                }
+            }
+            lastSorted--;
+        }
+        
+        for(int i = 0; i < n; i++) {
+            ans += to_string(numbers[i]);
+        }
+        
+        return ans;
+    }
+    
+    bool needSwap(int l, int r) {
+        string ls = to_string(l);
+        string lr = to_string(r);
+      	long a = stol(ls + lr);
+        long b = stol(lr + ls);
+        return a > b;
+    }
+};
