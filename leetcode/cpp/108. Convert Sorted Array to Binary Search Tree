@@ -1,0 +1,79 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return dfs(nums, 0, nums.size() - 1);
+    }
+    
+    TreeNode* dfs(vector<int>& nums, int l, int r) {
+        if(l > r) return nullptr;
+        int mid = l + (r - l) / 2;
+        TreeNode* root = new TreeNode(nums[mid]);
+        root->left = dfs(nums, l, mid - 1);
+        root->right = dfs(nums, mid + 1, r);
+        return root;
+    }
+};
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //bfs
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        if(nums.empty()) return nullptr;
+        queue<TreeNode*> Q;
+        queue<int> lidx;
+        queue<int> ridx;
+        int mid = (nums.size() - 1) / 2;
+        TreeNode* head = new TreeNode(nums[mid]);
+        Q.push(head);
+        lidx.push(0);
+        ridx.push(nums.size() - 1);
+        while(!Q.empty()) {
+            TreeNode* node = Q.front();
+            Q.pop();
+            int l = lidx.front();
+            lidx.pop();
+            int r = ridx.front();
+            ridx.pop();
+            int mid = l + (r - l) / 2;
+            if(l < mid) {
+                int nl = l, nr = mid - 1;
+                int nmid = nl + (nr - nl) / 2;
+                TreeNode* left = new TreeNode(nums[nmid]);
+                node->left = left;
+                Q.push(left);
+                lidx.push(nl);
+                ridx.push(nr);
+            }
+            
+            if(r > mid) {
+                int nl = mid + 1, nr = r;
+                int nmid = nl + (nr - nl) / 2;
+                TreeNode* right = new TreeNode(nums[nmid]);
+                node->right = right;
+                Q.push(right);
+                lidx.push(nl);
+                ridx.push(nr);
+            }
+            
+        }
+        return head;
+    }
+};
