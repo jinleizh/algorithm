@@ -78,3 +78,37 @@ public:
         return min(l, c);
     }
 };
+
+import java.util.*;
+public class Solution {
+    public int GetUglyNumber_Solution(int index) {
+        if(index <= 0) return 0;
+        ArrayList<Integer> dp = new ArrayList<Integer>();
+        dp.add(1);
+        int cnt = 1;
+        int pos = 0;
+        int a = 0, b = 0, c = 0;
+        while(cnt < index) {
+            int val = getMin(dp.get(a) * 2, dp.get(b) * 3, dp.get(c) * 5);
+            if(val == dp.get(a) * 2) {
+                a++;
+            }
+            
+            if(val == dp.get(b) * 3) {
+                b++;
+            }
+            
+            if(val == dp.get(c) * 5) {
+                c++;
+            }
+            cnt++;
+            dp.add(val);
+        }
+        return dp.get(index - 1);
+    }
+    
+    int getMin(int a, int b, int c) {
+        int l = Math.min(a, b);
+        return Math.min(l, c);
+    }
+}
