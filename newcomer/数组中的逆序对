@@ -1,0 +1,45 @@
+class Solution {
+public:
+    int mod = 1e9 + 7;
+    int InversePairs(vector<int> data) {
+        vector<int> copy(data.begin(), data.end());
+        return help(data, copy, 0, data.size() - 1);
+    }
+    
+    //merge sort and count
+    int help(vector<int>& data, vector<int>& copy, int s, int e) {
+        if(s == e) {
+            return 0;
+        }
+        
+        int mid = s + (e - s) / 2;
+        int left = help(data, copy, s, mid);
+        int right = help(data, copy, mid + 1, e);
+       	int i = mid;
+        int j = e;
+        int idx = e;
+        long cnt = 0;
+        while(i >= s && j >= mid + 1) {
+            if(data[i] > data[j]) {
+                cnt += j - (mid + 1) + 1;
+                cnt %= mod;
+                copy[idx--] = data[i--];
+            } else {
+                copy[idx--] = data[j--];
+            }
+        }
+        
+        for(; i >= s; i--) {
+            copy[idx--] = data[i];
+        }
+        
+        for(; j >= mid + 1; j--) {
+            copy[idx--] = data[j];
+        }
+        
+        for(int i = s; i <= e; i++) {
+            data[i] = copy[i];
+        }
+        return (left + right + cnt) % mod;
+    }
+};
