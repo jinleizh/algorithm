@@ -1,0 +1,57 @@
+//java
+public class Solution {
+    public int FirstNotRepeatingChar(String str) {
+        String ss = str;
+        boolean [] dp = new boolean[128];
+        for(int i = 0; i < 128; i++) {
+            dp[i] = false;
+        }
+        int n = ss.length();
+        boolean finish = false;
+        for(int i = 0; i < n; i++) {
+            finish = true;
+            int idx = ss.charAt(i);
+            if(dp[idx]) continue;
+            for(int j = i + 1; j < n; j++) {
+               	if(ss.charAt(i) == ss.charAt(j)) {
+                    dp[idx] = true;
+                    finish = false;
+                    break;
+                }
+            }
+            
+            if(finish) {
+                return i;
+            }
+        }
+        
+        return -1;
+    }
+}
+
+//c++
+class Solution {
+public:
+    int FirstNotRepeatingChar(string str) {
+        bool dp[128] = {false};
+        int n = str.length();
+        bool finish = false;
+        for(int i = 0; i < n; i++) {
+            if(dp[str[i]]) continue;
+            finish = true;
+            for(int j = i + 1; j < n; j++) {
+                if(str[i] == str[j]) {
+                    finish = false;
+                    dp[str[i]] = true;
+                    break;
+                }
+            }
+            
+            if(finish) {
+                return i;
+            }
+        }
+        
+        return -1;
+    }
+};
