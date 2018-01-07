@@ -1,0 +1,40 @@
+class Solution {
+public:
+    string boldWords(vector<string>& words, string S) {
+        //edge case
+        if(words.empty()) return S;
+        if(S.empty()) return "";
+        
+        int len = S.length();
+        int flag[len] = {0};
+        for(string w : words) {
+            int pos = S.find(w);
+            int wl = w.length();
+            while(pos != string::npos) {
+                for(int k = pos; k < pos + wl; k++) {
+                    flag[k] = 1;
+                }
+                
+                pos = S.find(w, pos + 1);
+            }
+        }
+        
+        string ans = "";
+        int i = 0;
+        while(i < len) {
+            if(flag[i] == 0) {
+                ans += S[i];
+                i++;
+            } else {
+                ans += "<b>";
+                while(i < len && flag[i] == 1) {
+                    ans += S[i];
+                    i++;
+                }
+                ans += "</b>";
+            }
+        }
+        
+        return ans;
+    }
+};
