@@ -1,0 +1,79 @@
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+
+bool myCmp(const Interval& a, const Interval& b) {
+    if(a.start < b.start) return true;
+    if(a.start == b.start && a.end < b.end) return true;
+    return false;
+}
+
+class Solution {
+public:
+    //merge interval
+    vector<Interval> employeeFreeTime(vector<vector<Interval>>& avails) {
+        //edge case
+        //pre process
+        vector<vector<Interval>> copy;
+        for(vector<Interval> v : avails) {
+            vector<Interval> ans;
+            int a = INT_MIN;
+            int b = INT_MAX;
+            int n = v.size();
+            for(int i = 0; i <= n; i++) {
+                if(i == 0) {
+                    ans.push_back(Interval(a, v[i].start));
+                } else if(i == n) {
+                    ans.push_back(Interval(v[i - 1].end, b));
+                } else {
+                    ans.push_back(Interval(v[i-1].end, v[i].start));
+                }
+            }
+            copy.push_back(ans);
+        }
+        
+        /*
+        for(vector<Interval> v: copy) {
+            for(Interval it : v) {
+                cout<<it.start<<" "<<it.end<<endl;
+            }
+        }
+        */
+        
+        vector<Interval> ans = merge(copy, 0, copy.size() - 1);
+        return vector<Interval>(ans.begin() + 1, ans.end() - 1);
+    }
+    
+    vector<Interval> merge(vector<vector<Interval>>& avails, int low, int high) {
+        cout<<1<<endl;
+        if(low == high) {
+            return avails[low];
+        }
+        
+        int mid = low + (high - low) / 2;
+        vector<Interval> left = merge(avails, low, mid);
+        vector<Interval> right = merge(avails, mid + 1, high);
+        vector<Interval> ans;
+        for(Interval a : left) {
+            for(Interval b : right) {
+                if(a.start >= b.end || a.end <= b.start) continue;
+                Interval p;
+                p.start = max(a.start, b.start);
+                p.end = min(a.end, b.end);
+                if(p.start >= p.end) continue;
+                ans.push_back(p);
+            }
+        }
+        
+        cout<<2<<endl;
+        sort(ans.begin(), ans.end(), myCmp);
+        cout<<3<<endl;
+        return ans;
+    }
+};
