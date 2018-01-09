@@ -83,3 +83,38 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        if(height.empty()) return 0;
+        //两个方向dp
+        int n = height.size();
+        int left[n] = {0};
+        int right[n] = {0};
+        int ans[n] = {0};
+        
+        for(int i = 0; i < n; i++) {
+            if(i == 0) {
+                left[i] = height[i];
+            } else {
+                left[i] = max(left[i - 1], height[i]);
+            }
+        }
+        
+        for(int i = n - 1; i >= 0; i--) {
+            if(i == n - 1) {
+                right[i] = height[i];
+            } else {
+                right[i] = max(right[i + 1], height[i]);
+            }
+        }
+        
+        int ret = 0;
+        for(int i = 0; i < n; i++) {
+            ret += min(right[i], left[i]) - height[i];
+        }
+        
+        return ret;
+    }
+};
