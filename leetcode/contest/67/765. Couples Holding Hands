@@ -1,0 +1,62 @@
+class Solution {
+public:
+    int minSwapsCouples(vector<int>& row) {
+        int n = row.size();
+        unordered_map<int, int> mp;
+        for(int i = 0; i < n ; i++) {
+            mp[row[i]] = i;
+        }
+        
+        int ans = 0;
+        for(int i = 0; i < n - 1; i += 2) {
+            if(isOk(row[i], row[i + 1])) {
+                continue;
+            } else {
+                int cur = min(row[i], row[i + 1]);
+                //cout<<"cur="<<cur<<endl;
+                if(cur % 2 == 0) {
+                    if(cur == row[i]) {
+                        int tp = mp[cur + 1];
+                        swap(row[i + 1], row[mp[cur + 1]]);
+                        mp[row[i + 1]] = i + 1;
+                        mp[row[tp]] = tp;
+                    } else {
+                        int tp = mp[cur + 1];
+                        swap(row[i], row[mp[cur + 1]]);
+                        mp[row[i]] = i;
+                        mp[row[tp]] = tp;
+                    }
+                } else {
+                    if(cur == row[i]) {
+                        int tp = mp[cur - 1];
+                        swap(row[i + 1], row[mp[cur - 1]]);
+                        mp[row[tp]] = tp;
+                        mp[row[i + 1]] = i + 1;
+                    } else {
+                        int tp = mp[cur - 1];
+                        swap(row[i], row[mp[cur - 1]]);
+                        mp[row[tp]] = tp;
+                        mp[row[i]] = i;
+                    }
+                }
+                
+                ans++;
+            }
+            
+            for(int k = 0; k < n; k++) {
+                //cout<<row[k]<<" ";
+            }
+            //cout<<endl;
+        }
+        
+        return ans;
+    }
+    
+    bool isOk(int a, int b) {
+        if(abs(a - b) == 1 && min(a, b) % 2 == 0) {
+            return true;
+        }
+        
+        return false;
+    }  
+};
