@@ -1,0 +1,73 @@
+class Solution {
+public:
+    int orderOfLargestPlusSign(int N, vector<vector<int>>& mines) {
+        //edge case
+        int m = mines.size();
+        if(m >= N * N) return 0;
+        
+        map<pair<int, int>, int> mp;
+        for(vector<int> v : mines) {
+            pair<int, int> p(v[0], v[1]);
+            mp[p] = 1;
+        }
+            
+        //common case
+        vector<vector<int>> cands;
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < N; j++) {
+                pair<int, int> p(i, j);
+                if(mp.find(p) != mp.end()) continue;
+                vector<int> d;
+                d.push_back(i);
+                d.push_back(j);
+                cands.push_back(d);
+            }
+        }
+        
+        int order = 2;
+        while(true) {
+            cands = findNextCands(cands, N, mp, order);
+            if(cands.empty()) {
+                break;
+            }
+            
+            order++;
+        }
+        
+        return --order;
+    }
+    
+    vector<vector<int>> findNextCands(vector<vector<int>>& cands, int N, map<pair<int, int>, int>& mp, int order) {
+        int dx[4] = {0, 0, -order + 1, order - 1};
+        int dy[4] = {-order + 1, order - 1, 0, 0};
+        vector<vector<int>> ans;
+        for(vector<int> v : cands) {
+            bool find = true;
+            int i = v[0], j = v[1];
+            pair<int, int> p(i, j);
+            for(int k = 0; k < 4; k++) {
+                int nx = i + dx[k];
+                int ny = j + dy[k];
+                pair<int, int> np(nx, ny);
+                if(!isInGrid(nx, ny, N) || mp.find(np) != mp.end()) {
+                    find = false;
+                    break;
+                }
+            }
+
+            if(find) {
+                vector<int> d;
+                d.push_back(i);
+                d.push_back(j);
+                ans.push_back(d);
+            }
+        }
+        
+        return ans;
+    }
+    
+    bool isInGrid(int x, int y, int N) {
+        if(x >= 0 && y >= 0 && x < N && y < N) return true;
+        return false;
+    }
+};
