@@ -1,0 +1,51 @@
+class Solution {
+public:
+    vector<int> ans;
+    vector<int> partitionLabels(string S) {
+        //edge case
+        if(S.empty()) return ans;
+        
+        vector<int> sv(26, -1);
+        vector<int> ev(26, -1);
+        int idx = -1;
+        int pos = 0;
+        for(char c : S) {
+            idx = c - 'a';
+            if(sv[idx] == -1) {
+                sv[idx] = pos;
+            }
+            
+            if(pos > ev[idx]) {
+                ev[idx] = pos;
+            }
+            
+            pos++;
+        }
+        
+        dfs(S, 0, S.length() - 1, sv, ev);
+        return ans;
+    }
+    
+    void dfs(const string& S, int l, int r, vector<int>& sv, vector<int>& ev) {
+        if(l > r) return;
+        int p = findSplit(S, l, r, sv, ev);
+        ans.push_back(p - l + 1);
+        dfs(S, p + 1, r, sv, ev);
+    }
+    
+    int findSplit(const string& S, int l, int r, vector<int>& sv, vector<int>& ev) {
+        if(l == r) return l;
+        int d = S[l] - 'a';
+        int end = ev[d];
+        int i = l + 1;
+        while(i < end && end <= r) {
+            d = S[i] - 'a';
+            if(end < ev[d]) {
+                end = ev[d];
+            }
+            i++;
+        }
+        
+        return end;
+    }
+};
