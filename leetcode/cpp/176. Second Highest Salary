@@ -1,0 +1,11 @@
+# Write your MySQL query statement below
+select distinct(Salary) as SecondHighestSalary from Employee 
+union select null 
+order by SecondHighestSalary desc limit 1,1;
+
+# Write your MySQL query statement below
+select max(Salary) as SecondHighestSalary from Employee 
+where (Salary not in (select max(Salary) from Employee));
+
+# Write your MySQL query statement below
+select ifnull((select distinct Salary from Employee e1 where (select count(distinct Salary) from Employee e2 where e2.Salary > e1.Salary) = 1), null) as SecondHighestSalary;
