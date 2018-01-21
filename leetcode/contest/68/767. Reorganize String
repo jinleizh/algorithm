@@ -1,0 +1,39 @@
+class Solution {
+public:
+    typedef pair<int, char> pii;
+    string reorganizeString(string S) {
+        priority_queue<pii> Q;
+        unordered_map<char, int> cp;
+        for(char c : S) {
+            cp[c]++;
+        }
+        
+        for(auto& it : cp) {
+            pii p(it.second, it.first);
+            Q.push(p);
+        }
+        
+        string ans;
+        while(!Q.empty()) {
+            pii p = Q.top();
+            Q.pop();
+            //cout<<p.first<<" "<<p.second<<endl;
+            if(0 == p.first) continue;
+            if(ans.empty() || ans.back() != p.second) {
+                ans.push_back(p.second);
+                p.first--;
+                Q.push(p);
+                continue;
+            }
+            if(Q.empty()) return "";
+            pii e = Q.top();
+            Q.pop();
+            //cout<<e.first<<" "<<e.second<<endl;
+            e.first--;
+            ans.push_back(e.second);
+            Q.push(e);
+            Q.push(p);
+        }
+        return ans;
+    }
+};
