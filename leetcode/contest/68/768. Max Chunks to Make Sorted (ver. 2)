@@ -1,0 +1,33 @@
+class Solution {
+public:
+    //动态规划解决该问题
+    //朴素的思想，直接解决该问题
+    //dp[n] - 前n个串可以得到的最大分割数
+    //dp[n] = max(切在0位置，切到1位置，切到2的位置。。。。。切到n-1的位置) + 1
+    //当然这里需要注意的是，能不能取切到的第j刀位置，需要取决于后面j到i的部分，是否不是它的最小值比前面j个串的最大值要大于等于
+    //dp[n] = max(dp[0] + 1, dp[1] + 1, ..., dp[k] + 1, ..., dp[n - 1] + 1)  && max(0-j) <= min(j+1, i)
+    int maxChunksToSorted(vector<int>& arr) {
+        //存储前j个数的最大值
+        int n = arr.size();
+        vector<int> maxValue(n + 1, 0);
+        for(int i = 1; i <= n; i++) {
+            maxValue[i] = max(maxValue[i - 1], arr[i - 1]);
+        }
+        
+        vector<int> dp(n + 1, 0);
+        for(int i = 1; i <= n; i++) {
+            int base = arr[i - 1];
+            for(int j = i - 1; j >= 0; j--) {
+                if(base >= maxValue[j]) {
+                    dp[i] = max(dp[i], 1 + dp[j]);
+                }
+                
+                if(j > 0) {
+                    base = min(base, arr[j - 1]);
+                }
+            }
+        }
+        
+        return dp[n];
+    }
+};
