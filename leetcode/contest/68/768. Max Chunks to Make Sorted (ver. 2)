@@ -31,3 +31,34 @@ public:
         return dp[n];
     }
 };
+
+class Solution {
+public:
+    //动态规划搞清楚如何划分
+    //    j i
+    //1 2 3 4
+    int maxChunksToSorted(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> maxV(1 + n, 0);
+        for(int i = 1; i <= n; i++) {
+            maxV[i] = max(maxV[i - 1], arr[i - 1]);
+        }
+        
+        //注意dp的判断条件
+        vector<int> dp(1 + n, 0);
+        for(int i = 1; i <= n; i++) {
+            int base = arr[i - 1];
+            for(int j = i - 1; j >= 0; j--) {
+                if(base >= maxV[j]) {
+                    dp[i] = max(dp[i], 1 + dp[j]);
+                }
+                
+                if(j > 0) {
+                    base = min(base, arr[j - 1]);
+                }
+            }
+        }
+        
+        return dp[n];
+    }
+};
