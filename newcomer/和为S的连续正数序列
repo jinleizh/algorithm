@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<vector<int> > FindContinuousSequence(int sum) {
+        int up = (sum + 1) / 2;
+        vector<int> dp(up + 1, 0);
+        for(int i = 1; i <= up; i++) {
+            dp[i] = dp[i - 1] + i;
+        }
+        
+        vector<vector<int> > ans;
+        for(int k = 0; k <= up; k++) {
+            for(int l = 2; k + l <= up; l++) {
+                if(dp[k + l] - dp[k] > sum) break;
+                if(dp[k + l] - dp[k] == sum) {
+                    vector<int> tmp;
+                    for(int j = k + 1; j <= k + l; j++) {
+                        tmp.push_back(j);
+                    }
+                    ans.push_back(tmp);
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
