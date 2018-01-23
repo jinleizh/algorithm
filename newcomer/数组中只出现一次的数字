@@ -17,3 +17,41 @@ public:
         *num2 = ret[1];
     }
 };
+
+//利用异或结果，二分数组，因为只出现一次的数，两者不同，必有一位不相同，可以据此，把这两个数分到两个数组中去
+//转换为分别求两个数组，出现1次的数
+class Solution {
+public:
+    void FindNumsAppearOnce(vector<int> data,int* num1,int *num2) {
+        int tmp = 0;
+        for(int d : data) {
+            tmp ^= d;
+        }
+        int left = 0, right = 0;
+        int base = findFirstOne(tmp);     
+        if(-1 == base) return;
+        for(int d : data) {
+            if(d & base) {
+                left ^= d;
+            } else {
+                right ^= d;
+            }
+        }
+        
+        *num1 = left;
+        *num2 = right;
+    }
+    
+    int findFirstOne(int d) {
+        if(0 == d) return -1;
+        int base = 1;
+        while(1) {
+           if(d & base) {
+               break;
+           } else {
+               base <<= 1;
+           }
+        }
+        return base;
+    }
+};
