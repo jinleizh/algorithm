@@ -24,3 +24,67 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    //dp[i][j][sum] = dp[i][j-1][sum - j] = dp[i][j - 2][sum -j - (j - 1)]
+    //dp[i][i][i] = true;
+    //dp[0][j][sum] = false;
+    //dp[i][0][sum] = false;
+    //dp[i][j][sum] = false; when i > j
+    vector<vector<int> > FindContinuousSequence(int sum) {
+        int k = (sum + 1) / 2;
+        vector<vector<int>> ans;
+        vector<vector<vector<bool>>> dp(k + 1, vector<vector<bool>>(k + 1, vector<bool>(sum + 1, false)));
+        for(int i = 1; i <= k; i++) {
+            dp[i][i][i] = true;
+            for(int j = i + 1; j <= k; j++) {
+                for(int p = j + i; p <= sum; p++) {
+                    dp[i][j][p] = dp[i][j - 1][p - j];
+                }
+            }
+        }
+        
+        for(int i = 1; i <= k; i++) {
+            for(int j = i + 1; j <= k; j++) {
+                if(dp[i][j][sum]) {
+                    vector<int> tmp;
+                    for(int k = i; k <= j; k++) {
+                        tmp.push_back(k);
+                    }
+                   	ans.push_back(tmp);
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int> > FindContinuousSequence(int sum) {
+        int k = (sum + 1) / 2;
+        vector<vector<int>> ans;
+        for(int i = 1; i <= k; i++) {
+			vector<vector<bool>> dp(k + 1, vector<bool>(sum + 1, false));
+            dp[i][i] = true;
+            for(int j = i + 1; j <= k; j++) {
+                for(int p = j + i; p <= sum; p++) {
+                    dp[j][p] = dp[j - 1][p - j];
+                }
+                
+                if(dp[j][sum]) {
+                    vector<int> tmp;
+                    for(int k = i; k <= j; k++) {
+                        tmp.push_back(k);
+                    }
+                   	ans.push_back(tmp);
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
+
