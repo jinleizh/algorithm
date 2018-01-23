@@ -1,0 +1,19 @@
+class Solution {
+public:
+    void FindNumsAppearOnce(vector<int> data,int* num1,int *num2) {
+		unordered_map<int, int> mp;
+        for(int d : data) {
+            mp[d]++;
+        }
+        
+        vector<int> ret;
+        for(auto& it : mp) {
+            if(it.second == 1) {
+                ret.push_back(it.first);
+            }
+        }
+        
+        *num1 = ret[0];
+        *num2 = ret[1];
+    }
+};
