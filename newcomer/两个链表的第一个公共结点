@@ -1,0 +1,43 @@
+/*
+struct ListNode {
+	int val;
+	struct ListNode *next;
+	ListNode(int x) :
+			val(x), next(NULL) {
+	}
+};*/
+class Solution {
+public:
+    ListNode* FindFirstCommonNode( ListNode* l, ListNode* r) {
+        if(nullptr == l || nullptr == r) return nullptr;
+        ListNode* ans = nullptr;
+        
+        ListNode* tail = l;
+        while(nullptr != tail->next) {
+            tail = tail->next;
+        }
+        
+        tail->next = r;
+        
+        ListNode* slow = l;
+        ListNode* fast = l;
+        while(fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow == fast) break;
+        }
+        
+        if(slow == fast) {
+            slow = l;
+            while(slow != fast) {
+                cout<<slow->val<<" "<<fast->val<<endl;
+                slow = slow->next;
+                fast = fast->next;
+            }
+            ans = slow;
+        }
+        
+        tail->next = nullptr;
+        return ans;
+    }
+};
