@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<int> FindNumbersWithSum(vector<int> array,int sum) {
+        int n = array.size();
+        int l = 0, r = n - 1;
+        int time = INT_MAX;
+        int small = INT_MIN, big = INT_MAX;
+        while(l < r) {
+            if(array[l] + array[r] == sum) {
+                if(array[l] * array[r] < time) {
+                    time = array[l] * array[r];
+                    small = array[l];
+                    big = array[r];
+                }
+                l++;
+                r--;
+            } else if(array[l] + array[r] < sum) {
+                l++;
+            } else {
+                r--;
+            }
+        }
+        vector<int> ans;
+    	if(small == INT_MIN && big == INT_MAX) {
+            return ans;
+        }
+        ans.push_back(small);
+        ans.push_back(big);
+        return ans;
+    }
+};
