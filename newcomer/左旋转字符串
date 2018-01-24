@@ -1,0 +1,15 @@
+class Solution {
+public:
+    string LeftRotateString(string str, int n) {
+        int len = str.length();
+        if(0 == len || 0 == n) return str;
+        int k = n % len;
+        string left = str.substr(0, k);
+        string right = str.substr(k);
+        reverse(left.begin(), left.end());
+        reverse(right.begin(), right.end());
+        string ans = left + right;
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
