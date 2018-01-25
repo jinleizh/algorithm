@@ -1,0 +1,41 @@
+struct Node {
+    int val;
+    Node* next;
+    Node(int value) {
+        this->val = value;
+        this->next = nullptr;
+    }
+};
+class Solution {
+public:
+    int LastRemaining_Solution(int n, int m)
+    {
+        if(n == 0 || n == 1) return n - 1;
+        int size = n;
+        Node* head = new Node(1);
+        Node* cur = head;
+        int i = 2;
+        while(i <= n) {
+            Node* p = new Node(i);
+            cur->next = p;
+            cur = p;
+            i++;
+        }
+        cur->next = head;
+        while(size > 1) {
+            int start = 1;
+            while(start % m != 0) {
+                head = head->next;
+                start++;
+            }
+            Node* tmp = head->next;
+            head->val = tmp->val;
+            head->next = tmp->next;
+            tmp->next = nullptr;
+            size--;
+        }
+        
+        head->next = nullptr;
+        return head->val - 1;
+    }
+};
