@@ -1,0 +1,36 @@
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> mp;
+        for(int d : nums) {
+            mp[d]++;
+        }
+        
+        vector<int> ans(2, -1);
+        int l = INT_MIN, r = INT_MIN;
+        for(int d : nums) {
+            cout<<"d="<<d<<" "<<mp[target - d]<<endl;
+            mp[d]--;
+            if(mp.find(target - d) != mp.end() && mp[target - d] > 0) {
+                l = d;
+                r = target - d;
+                break;
+            }
+            mp[d]++;
+        }
+        
+        if(l == INT_MIN && r == INT_MIN) return ans;
+        cout<<l<<" "<<r<<endl;
+        int cnt = 0;
+        for(int i = 0; i < nums.size() && cnt < 2; i++) {
+            if(nums[i] == l) {
+                ans[cnt] = i;
+                cnt++;
+            }  else if(nums[i] == r) {
+                ans[cnt] = i;
+                cnt++;
+            }
+        }
+        return ans;
+    }
+};
