@@ -1,0 +1,45 @@
+class Solution {
+public:
+    int StrToInt(string str) {
+        //format -/+xxxxxx
+        int len = str.length();
+        if(str.empty()) return 0;
+        
+        bool neg = false;
+        long ans = 0;
+        if(str[0] == '-') {
+            neg = true;
+            ans = helper(str.substr(1));
+        } else if(str[0] == '+') {
+            ans = helper(str.substr(1));
+        } else {
+            ans = helper(str);
+        }
+        
+        if(neg) {
+            ans *= -1;
+        }
+        
+        if(ans < INT_MIN || ans > INT_MAX) return 0;
+        return ans;
+    }
+    
+    long helper(string substr) {
+        long ans = 0;
+        bool first = true;
+        for(char c : substr) {
+            if(c < '0' || c > '9') return (long)INT_MAX + 1000;
+            if(first) {
+            	if(c == '0') {
+                	return (long)INT_MAX + 1000;
+                } else {
+                    first = false;
+                }
+            }
+            ans = ans * 10 + c - '0';
+        }
+        return ans;
+    }
+    
+    
+};
