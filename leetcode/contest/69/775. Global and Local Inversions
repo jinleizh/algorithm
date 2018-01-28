@@ -1,0 +1,60 @@
+class Solution {
+public:
+    int rightCnt = 0;
+    bool isIdealPermutation(vector<int>& A) {
+        int n = A.size();
+        int leftCnt = 0;
+        for(int i = 0; i < n - 1; i++) {
+            if(A[i] > A[i + 1]) {
+                leftCnt++;
+            }
+        }
+        
+        merge(A, 0, n - 1);
+        if(leftCnt == rightCnt) return true;
+        return false;
+    }
+    
+    vector<int> merge(vector<int>& A, int l, int r) {
+        vector<int> ans;
+        if(l > r) return ans;
+        if(l == r) {
+            ans.push_back(A[l]);
+            return ans;
+        }
+        int mid = l + (r - l) / 2;
+        vector<int> lv = merge(A, l, mid);
+        vector<int> rv = merge(A, mid + 1, r);
+        return mergeArray(lv, rv);
+    }
+    
+    vector<int> mergeArray(vector<int>& lv, vector<int>& rv) {
+        vector<int> ans;
+        int l = lv.size();
+        int r = rv.size();
+        int i = 0, j = 0;
+        while(i < l && j < r) {
+            int cand = 0;
+            if(lv[i] < rv[j]) {
+                cand = lv[i];
+                i++;
+            } else {
+                cand = rv[j];
+                rightCnt += l - i;
+                j++;
+            }
+            ans.push_back(cand);
+        }
+        
+        while(i < l) {
+            ans.push_back(lv[i]);
+            i++;
+        }
+        
+        while(j < r) {
+            ans.push_back(rv[j]);
+            j++;
+        }
+        return ans;
+    }
+};
