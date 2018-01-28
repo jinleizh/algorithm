@@ -1,0 +1,50 @@
+class Solution {
+public:
+    //bfs 暴力枚举出所有可能即可，并记录到达的步数
+    //这类问题出现过多次，特点就是让你取最短的路径长度
+    //通过在bfs遍历时，使用一个map记录是否出现过，或者使用一个数组，总之有个东西需要记录, 如果已经出现过的，我们就可以不用再入队列了
+    //这种方法在图的遍历中经常用到
+    //如果发现已经存在于队列中，则跳过，因为当前这一步肯定没有之前的好
+    typedef vector<vector<int>> item;
+    int slidingPuzzle(vector<vector<int>>& board) {
+        int dx[4] = {0, 0, 1, -1};
+        int dy[4] = {1, -1, 0, 0};
+        queue<item> data;
+        map<item, int> cntMap;
+        cntMap[board] = 0;
+        data.push(board);
+        int n = 2, m = 3;
+        while(!data.empty()) {
+            item cur = data.front();
+            data.pop();
+            int step = cntMap[cur];
+            int zx = 0, zy = 0;
+            for(int x = 0; x < n; x++) {
+                for(int y = 0; y < m; y++) {
+                    if(0 == cur[x][y]) {
+                        zx = x;
+                        zy = y;
+                    }
+                }
+            }
+            
+            for(int k = 0; k < 4; k++) {
+                int nx = zx + dx[k];
+                int ny = zy + dy[k];
+                if(nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+                swap(cur[zx][zy], cur[nx][ny]);
+                if(cntMap.find(cur) == cntMap.end()) {
+                    data.push(cur);
+                    cntMap[cur] = step + 1;
+                }
+                swap(cur[zx][zy], cur[nx][ny]);
+            }
+        }
+        
+        item dst = {{1,2,3}, {4,5,0}};
+        if(cntMap.find(dst) != cntMap.end()) {
+            return cntMap[dst];
+        }
+        return -1;
+    }
+};
