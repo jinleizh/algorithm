@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int numJewelsInStones(string J, string S) {
+        unordered_map<char, int> dstMap;
+        for(char c : S) {
+            dstMap[c]++;
+        }
+        
+        int ans = 0;
+        for(char c : J) {
+            if(dstMap.find(c) != dstMap.end()) {
+                ans += dstMap[c];
+            }
+        }
+        return ans;
+    }
+};
