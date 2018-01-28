@@ -1,0 +1,88 @@
+class Solution {
+public:
+    double mod = 1e-6;
+    double minmaxGasDist(vector<int>& stations, int K) {
+        double low = 0, high = 0;
+        sort(stations.begin(), stations.end());
+        int n = stations.size();
+        for(int i = 1; i < n; i++) {
+            if(high < (stations[i] - stations[i - 1])) {
+                high = stations[i] - stations[i - 1];
+            }
+        }
+        //cout<<"xxxxx="<<high<<endl;
+        
+        double mid;
+        while(high - low > mod) {
+            mid = low + (high - low) / 2;
+            //cout<<"mid="<<mid<<endl;
+            int cnt = 0;
+            for(int i = 1; i < n; i++) {
+                cnt += (int)((stations[i] - stations[i - 1]) / mid);
+            }
+            
+            if(cnt > K) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+        
+        return mid;
+    }
+};
+
+class Solution {
+    public double minmaxGasDist(int[] stations, int K) {
+        int n = stations.length;
+        double low = 0, high = 0, mid = 0;
+        double mod = 1e-6;
+        Arrays.sort(stations);
+        for(int i = 1; i < n; i++) {
+            if(high < stations[i] - stations[i - 1]) {
+                high = stations[i] - stations[i - 1];
+            }
+        }
+        
+        while(high - low > mod) {
+            int cnt = 0;
+            mid = low + (high - low) / 2;
+            for(int i = 1; i < n; i++) {
+                cnt += Math.ceil((stations[i] - stations[i - 1]) / mid) - 1;
+            }
+            if(cnt > K) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+        
+        return mid;
+    }
+}
+
+class Solution(object):
+    def minmaxGasDist(self, stations, K):
+        """
+        :type stations: List[int]
+        :type K: int
+        :rtype: float
+        """
+        sorted(stations)
+        low, high, mid = 0.0, 0.0, 0.0
+        for i in range(1, len(stations)):
+            if high < (stations[i] - stations[i - 1]):
+                high = stations[i] - stations[i - 1]
+        mod = 1e-6
+        while high - low > mod:
+            mid = low + (high - low) / 2
+            cnt = 0
+            for i in range(1, len(stations)):
+                cnt += math.ceil((stations[i] - stations[i - 1]) / mid) - 1
+            if cnt > K:
+                low = mid
+            else:
+                high = mid
+                
+        return mid
+        
