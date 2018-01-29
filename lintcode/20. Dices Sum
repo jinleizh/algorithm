@@ -1,0 +1,95 @@
+class Solution {
+public:
+    /**
+     * @param n an integer
+     * @return a list of pair<sum, probability>
+     */
+    typedef pair<int, double> pid;
+    vector<pair<int, double>> dicesSum(int n) {
+        // Write your code here
+        vector<pid> ans;
+        if(n == 0) return ans;
+        
+        //dp[i][j] = {dp[i - 1][j - k]} k = 1..6, i > 1, j >= i && j <= 6i
+        vector<vector<long long>> dp(n + 1, vector<long long>(6 * n + 1, 0));
+        for(int k = 1; k <= 6; k++) {
+            dp[1][k] = 1;
+        }
+        
+        for(int i = 2; i <= n; i++) {
+            for(int j = 6 * i; j >= i; j--) {
+                for(int k = 1; k <= 6; k++) {
+                    if(j - k >= i - 1) {
+                        dp[i][j] += dp[i - 1][j - k];
+                    }
+                }
+            }
+        }
+        
+        long long total = 0;
+        //dp[n][i] i = n .. 6 * n
+        for(int i = n; i <= 6 * n; i++) {
+            total += dp[n][i];
+        }
+        
+        //dp[n][i] i = 1 .. 6 * n
+        for(int j = n; j <= 6 * n; j++) {
+            pid p;
+            p.first = j;
+            if(total > 0) {
+                p.second = (double)dp[n][j] / total;
+            }
+            ans.push_back(p);
+        }
+        
+        return ans;
+    }
+};
+
+public class Solution {
+    /**
+     * @param n an integer
+     * @return a list of Map.Entry<sum, probability>
+     */
+    public List<Map.Entry<Integer, Double>> dicesSum(int n) {
+        // Write your code here
+        // Ps. new AbstractMap.SimpleEntry<Integer, Double>(sum, pro)
+        // to create the pair
+        List<Map.Entry<Integer, Double>> ans = new ArrayList<Map.Entry<Integer, Double>>();
+        if(n == 0) {
+            return ans;
+        }
+        
+        //we have n dice and we can get a sum which is equal with j, so we call it dp[i][j]
+        long [][] dp = new long[n + 1][6 * n + 1];
+        for(int k = 1; k <= 6; k++) {
+            dp[1][k] = 1;
+        }
+        
+        //dp[i][j] = dp[i - 1][j - k] k = 1..6
+        for(int i = 2; i <= n; i++) {
+            for(int j = 6 * i; j >= i; j--) {
+                for(int k = 1; k <= 6; k++) {
+                    if(j - k >= i - 1) {
+                        dp[i][j] += dp[i - 1][j - k];
+                    }
+                }
+            }
+        }
+        
+        //total
+        long total = 0;
+        for(int j = n; j <= 6 * n; j++) {
+            total += dp[n][j];
+        }
+        
+        //
+        for(int j = n; j <= 6 * n; j++) {
+            Map.Entry<Integer, Double> p = new AbstractMap.SimpleEntry<Integer, Double>(
+            j, (double)dp[n][j] / total);
+            ans.add(p);
+        }
+        
+        return ans;
+    }
+}
