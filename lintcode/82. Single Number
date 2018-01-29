@@ -1,0 +1,45 @@
+class Solution {
+public:
+    /*
+     * @param A: An integer array
+     * @return: An integer
+     */
+    int singleNumber(vector<int> &A) {
+        // write your code here
+        int ans = 0;
+        for(int d : A) {
+            ans ^= d;
+        }
+        return ans;
+    }
+};
+
+
+
+class Solution:
+    """
+    @param: A: An integer array
+    @return: An integer
+    """
+    def singleNumber(self, A):
+        # write your code here
+        ans = 0
+        for a in A:
+            ans ^= a
+        return ans
+ 
+ 
+ public class Solution {
+    /*
+     * @param A: An integer array
+     * @return: An integer
+     */
+    public int singleNumber(int[] A) {
+        // write your code here
+        int ans = 0;
+        for(int d : A) {
+            ans ^= d;
+        }
+        return ans;
+    }
+}
