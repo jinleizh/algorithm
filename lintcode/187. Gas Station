@@ -1,0 +1,144 @@
+class Solution {
+public:
+    /*
+     * @param gas: An array of integers
+     * @param cost: An array of integers
+     * @return: An integer
+     */
+    int canCompleteCircuit(vector<int> &gas, vector<int> &cost) {
+        // write your code here
+        int n = gas.size();
+        vector<int> dp(n, 0);
+        for(int i = 0; i < n; i++) {
+            dp[i] = gas[i] - cost[i];
+        }
+        
+        for(int i = 0; i < n; i++) {
+            if(dp[i] >= 0) {
+                int gas = 0, k = 0;
+                while(k < n) {
+                    if(gas + dp[(i + k) % n] < 0) break;
+                    gas += dp[(i + k) % n];
+                    k++;
+                }
+                
+                if(n == k) {
+                    return i;
+                }
+            }
+        }
+        
+        return -1;
+    }
+};
+
+public class Solution {
+    /*
+     * @param gas: An array of integers
+     * @param cost: An array of integers
+     * @return: An integer
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        // write your code here
+        int n = gas.length;
+        int[] dp = new int[n];
+        for(int i = 0; i < n; i++) {
+            dp[i] = gas[i] - cost[i];
+        }
+        
+        for(int i = 0; i < n; i++) {
+            if(dp[i] >= 0) {
+                int amt = 0, k = 0;
+                while(k < n) {
+                    if(amt + dp[(i + k) % n] < 0) break;
+                    amt += dp[(i + k) % n];
+                    k++;
+                }
+                
+                if(k == n) {
+                    return i;
+                }
+            }
+        }
+        
+        return -1;
+    }
+}
+
+class Solution:
+    """
+    @param: gas: An array of integers
+    @param: cost: An array of integers
+    @return: An integer
+    """
+    def canCompleteCircuit(self, gas, cost):
+        # write your code here
+        n = len(gas)
+        dp = [gas[i] - cost[i] for i in range(n)]
+        for i in range(n):
+            if dp[i] >= 0:
+                amt, k = 0, 0
+                while k < n:
+                    if(amt + dp[(i + k) % n] < 0):
+                        break
+                    amt += dp[(i + k) % n]
+                    k += 1
+                if n == k:
+                    return i
+                    
+        return -1
+ 
+ 
+ class Solution {
+public:
+    /*
+     * @param gas: An array of integers
+     * @param cost: An array of integers
+     * @return: An integer
+     */
+    int canCompleteCircuit(vector<int> &gas, vector<int> &cost) {
+        // write your code here
+        int n = gas.size();
+        vector<int> dp(n, 0);
+        
+        int total = 0;
+        int sum = 0;
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            total += gas[i] - cost[i];
+            sum += gas[i] - cost[i];
+            if(sum < 0) {
+                sum = 0;
+                ans = i + 1;
+            }
+        }
+        
+        if(total < 0) {
+            return -1;
+        }
+        
+        return ans;
+    }
+};
+
+class Solution:
+    """
+    @param: gas: An array of integers
+    @param: cost: An array of integers
+    @return: An integer
+    """
+    def canCompleteCircuit(self, gas, cost):
+        # write your code here
+        n = len(gas)
+        total = 0
+        sum = 0
+        ans = 0
+        for i in range(n):
+            total += gas[i] - cost[i]
+            sum += gas[i] - cost[i]
+            if sum < 0:
+                sum = 0
+                ans = i + 1
+        if total < 0:
+            return -1
+        return ans
