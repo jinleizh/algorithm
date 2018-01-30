@@ -1,0 +1,153 @@
+long uid = 1;
+
+struct Node {
+public:
+    int val;
+    int cnt;
+    long ut;
+    
+    Node(int val) {
+        this->val = val;
+        this->cnt = 0;
+        this->ut = 0;
+    }
+};
+
+class LFUCache {
+public:
+    map<int, Node*> cache;
+    int cap;
+    int used;
+    /*
+    * @param capacity: An integer
+    */LFUCache(int capacity) {
+        // do intialization if necessary
+        this->cap = capacity;
+        this->used = 0;
+    }
+
+    /*
+     * @param key: An integer
+     * @param value: An integer
+     * @return: nothing
+     */
+    void set(int key, int value) {
+        // write your code here
+        if(cache.find(key) != cache.end()) {
+            Node* p = cache[key];
+            p->cnt++;
+            p->val = value;
+            p->ut = ++uid;
+        } else {
+            if(0 == this->cap) return;
+            Node* p = new Node(value);
+            if(this->used == this->cap) {
+                removeLast();
+                this->used--;
+            }
+            cache[key] = p;
+            this->used++;
+        }
+    }
+    
+    void removeLast() {
+        int minCnt = INT_MAX;
+        int ut = 0;
+        int key = 0;
+        for(auto& it : cache) {
+            if(minCnt > it.second->cnt || (minCnt == it.second->cnt && ut > it.second->ut)) {
+                minCnt = it.second->cnt;
+                ut = it.second->ut;
+                key = it.first;
+            }
+        }
+        cache.erase(key);
+    }
+
+    /*
+     * @param key: An integer
+     * @return: An integer
+     */
+    int get(int key) {
+        // write your code here
+        if(cache.find(key) == cache.end()) {
+            return -1;
+        }
+        
+        cache[key]->cnt++;
+        cache[key]->ut = ++uid;
+        return cache[key]->val;
+    }
+};
+
+
+public class LFUCache {
+
+    private Map<String, Node> cache = null;
+    private int capacity = 0;
+    private int used = 0;
+
+    public LFUCache(int capacity) {
+        cache = new HashMap<String, Node>(capacity, 0.75f);
+        this.capacity = capacity;
+    }
+
+    public int get(int key) {
+        Node node = cache.get(String.valueOf(key));
+        if (node == null) {
+            return -1;
+        }
+        node.useCount++;
+        node.lastGetTime = System.nanoTime();
+        return node.value;
+    }
+
+    public void set(int key, int value) {
+        Node n = cache.get(String.valueOf(key));
+        if (n != null) {
+            n.useCount ++;
+            n.lastGetTime = System.nanoTime();
+            n.value = value;
+            return;
+        }else{
+            Node node = new Node();
+            node.value = value;
+            node.useCount = 0;
+            node.lastGetTime = System.nanoTime();
+            if(this.capacity == 0)return;
+            if (used < this.capacity) {
+                used ++;
+                cache.put(String.valueOf(key), node);
+            } else {
+                removeLast();
+                cache.put(String.valueOf(key), node);
+            }
+        }
+    }
+
+    // 淘汰最少使用的缓存
+    private void removeLast() {
+        int minCount = Integer.MAX_VALUE;
+        long getTime = System.nanoTime();
+        String t = null;
+        
+        Iterator<String> it = cache.keySet().iterator();
+        while(it.hasNext()){
+            String key = it.next();
+            Node node = cache.get(key);
+            if(node.useCount < minCount || (node.useCount == minCount && node.lastGetTime < getTime)){
+                t = key;
+                minCount = node.useCount;
+                getTime = node.lastGetTime;
+            }
+        }
+        cache.remove(t);
+
+    }
+    public class Node {
+        public int value;
+        public int useCount;
+        public long lastGetTime;
+
+    }
+}
