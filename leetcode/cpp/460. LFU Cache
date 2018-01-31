@@ -1,0 +1,127 @@
+class LFUCache {
+public:
+    unordered_map<int, pair<int, int>> value;//{value, cnt}
+    unordered_map<int, list<int>> ks;
+    unordered_map<int, list<int>::iterator> pos;
+    int minFreq;
+    int cap;
+    int size;
+    LFUCache(int capacity) {
+        cap = capacity;
+        size = 0;
+        minFreq = 0;
+    }
+    
+    int get(int key) {
+        if(value.find(key) == value.end()) {
+            return -1;
+        }
+        
+        ks[value[key].second].erase(pos[key]);
+        value[key].second++;
+        ks[value[key].second].push_back(key);
+        pos[key] = --ks[value[key].second].end();
+        if(ks[minFreq].empty()) {
+            minFreq++;
+        }
+        
+        return value[key].first;
+    }
+    
+    void put(int key, int v) {
+        if(cap == 0) return;
+        if(value.find(key) != value.end()) {
+            value[key].first = v;
+            get(key);
+            return;
+        }
+        
+        if(size >= cap) {
+            value.erase(ks[minFreq].front());
+            pos.erase(ks[minFreq].front());
+            ks[minFreq].pop_front();
+            size--;
+        }
+        
+        pair<int, int> item(v, 0);
+        value[key] = item;
+        ks[0].push_back(key);
+        pos[key] = --ks[0].end();
+        minFreq = 0;
+        size++;
+    }
+};
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key
+ * obj.put(key,value);
+ */
+ 
+ class LFUCache {
+    private HashMap<Integer, Integer> dataMap = new HashMap<Integer, Integer>();
+    private HashMap<Integer, Integer> cntMap = new HashMap<Integer, Integer>();
+    private HashMap<Integer, LinkedHashSet<Integer>> listMap = new HashMap<Integer, LinkedHashSet<Integer>>();
+    private int itemNum;
+    private int cap;
+    private int minFreq;
+    public LFUCache(int capacity) {
+        this.cap = capacity;
+        this.minFreq = 0;
+        this.itemNum = 0;
+    }
+    
+    public int get(int key) {
+        if(!dataMap.containsKey(key)) {
+            return -1;
+        }
+        int oldCnt = cntMap.get(key);
+        cntMap.put(key, oldCnt + 1);
+        listMap.get(oldCnt).remove(key);
+        if(null == listMap.get(oldCnt + 1)) {
+            LinkedHashSet<Integer> tmp = new LinkedHashSet<Integer>();
+            listMap.put(oldCnt + 1, tmp);
+        }
+        listMap.get(oldCnt + 1).add(key);
+        if(listMap.get(minFreq).size() == 0) {
+            minFreq++;
+        }
+        return dataMap.get(key);
+    }
+    
+    public void put(int key, int value) {
+        if(this.cap == 0) return;
+        if(dataMap.containsKey(key)) {
+            dataMap.put(key, value);
+            get(key);
+            return;
+        }
+        
+        if(this.itemNum >= this.cap) {
+            int evit = listMap.get(minFreq).iterator().next();
+            dataMap.remove(evit);
+            cntMap.remove(evit);
+            listMap.get(minFreq).remove(evit);
+            this.itemNum--;
+        }
+        
+        dataMap.put(key, value);
+        cntMap.put(key, 0);
+        if(null == listMap.get(0)) {
+            LinkedHashSet<Integer> tmp = new LinkedHashSet<Integer>();
+            listMap.put(0, tmp);
+        }
+        listMap.get(0).add(key);
+        minFreq = 0;
+        this.itemNum++;
+    }
+}
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
+ 
