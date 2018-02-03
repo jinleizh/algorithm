@@ -1,0 +1,25 @@
+class Solution {
+public:
+    bool match(char* str, char* pattern)
+    {
+        if(nullptr == str || nullptr == pattern) return false;
+        return matchCore(str, pattern);
+    }
+    
+    bool matchCore(char* str, char* p) {
+        if(*str == '\0' && *p == '\0') return true;
+        if(*str != '\0' && *p == '\0') return false;
+        if(*(p + 1) == '*') {
+           	if(*p == *str || (*p == '.' && *str != '\0')) {
+           		return matchCore(str, p + 2) || matchCore(str + 1, p + 2) || matchCore(str + 1, p);
+            } else {
+                return matchCore(str, p + 2);
+            }
+        } else {
+         	if(*p == *str || (*p == '.' && *str != '\0')) {
+            	return matchCore(str + 1, p + 1);
+            }
+            return false;
+        }
+    }
+};
