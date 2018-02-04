@@ -23,3 +23,34 @@ public:
         }
     }
 };
+
+public class Solution {
+    public boolean match(char[] str, char[] pattern)
+    {
+        if(null == str || pattern == null) return false;
+        return matchCore(str, 0, pattern, 0);
+    }
+    
+    boolean matchCore(char[] str, int sp, char[] pat, int pp) {
+        if(sp == str.length && pp == pat.length) return true;
+        if(sp != str.length && pp == pat.length) return false;
+        if(pp + 1 < pat.length && pat[pp + 1] == '*') {
+            if(sp < str.length) {
+                if(str[sp] == pat[pp] || pat[pp] == '.') {
+                    return matchCore(str, sp, pat, pp + 2) ||
+                        matchCore(str, sp + 1, pat, pp + 2) ||
+                        matchCore(str, sp + 1, pat, pp);
+                } else {
+                    return matchCore(str, sp, pat, pp + 2);
+                }
+            } else {
+                return matchCore(str, sp, pat, pp + 2);
+            }
+        } else {
+            if(sp < str.length && (str[sp] == pat[pp] || pat[pp] == '.')) {
+                return matchCore(str, sp + 1, pat, pp + 1);
+            }
+            return false;
+        }
+    }
+}
