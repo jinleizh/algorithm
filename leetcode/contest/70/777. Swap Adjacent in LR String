@@ -37,3 +37,31 @@ public:
     }
 };
 
+class Solution {
+public:
+    bool canTransform(string start, string end) {
+        int s = 0, e = 0, n = start.length();
+        while(true) {
+            while(s < n && start[s] == 'X') {
+                s++;
+            }
+            
+            while(e < n && end[e] == 'X') {
+                e++;
+            }
+            
+            if(s == n && e == n) return true;
+            if(s < n && e < n && start[s] == end[e]) {
+                if(start[s] == 'R') {
+                    if(s > e) return false;
+                } else {
+                    if(s < e) return false;
+                }
+                s++;
+                e++;
+            } else {
+                return false;
+            }
+        }
+    }
+};
