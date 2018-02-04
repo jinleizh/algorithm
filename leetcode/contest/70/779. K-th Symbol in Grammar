@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int kthGrammar(int N, int k) {
+        //edge 1
+        if(1 == N && 1 == k) return 0;
+        if(2 == N && 1 == k) return 0;
+        if(2 == N && 2 == k) return 1;
+        int cnt = pow(2, N - 1);
+        if(k <= cnt / 2) {
+            return kthGrammar(N - 1, k);
+        } else {
+            return kthGrammar(N - 1, k - cnt / 2) > 0 ? 0 : 1;
+        }
+    }
+};
