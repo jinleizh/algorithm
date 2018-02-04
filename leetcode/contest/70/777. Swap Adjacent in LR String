@@ -1,0 +1,39 @@
+class Solution {
+public:
+    //bfs
+    bool canTransform(string start, string end) {
+        queue<string> q;
+        map<string, int> visit;
+        q.push(start);
+        visit[start] = 1;
+        while(!q.empty()) {
+            string s = q.front();
+            q.pop();
+            if(s == end) return true;
+            vector<string> ret = trans(s);
+            for(string t : ret) {
+                if(visit[t] == 1) continue;
+                q.push(t);
+                visit[t] = 1;
+            }
+        }
+        
+        return false;
+    }
+    
+    vector<string> trans(string s) {
+        vector<string> ans;
+        int i = 0;
+        while(i + 1 < s.length()) {
+            if((s[i] == 'X' && s[i + 1] == 'L') ||
+              (s[i] == 'R' && s[i + 1] == 'X')) {
+                swap(s[i], s[i + 1]);
+                ans.push_back(s);
+                swap(s[i], s[i + 1]);
+            }
+            i++;
+        }
+        return ans;
+    }
+};
+
