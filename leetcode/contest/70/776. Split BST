@@ -1,0 +1,35 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<TreeNode*> splitBST(TreeNode* root, int V) {
+        vector<TreeNode*> ans(2, nullptr);
+        //edge
+        if(nullptr == root) return ans;
+        
+        if(root->val > V) {
+            vector<TreeNode*> ret = splitBST(root->left, V);
+            root->left = ret[1];
+            ans[0] = ret[0];
+            ans[1] = root;
+        } else if(root->val == V) {
+            ans[0] = root;
+            ans[1] = root->right;
+            root->right = nullptr;
+        } else {
+            vector<TreeNode*> ret = splitBST(root->right, V);
+            root->right = ret[0];
+            ans[0] = root;
+            ans[1] = ret[1];
+        }
+        
+        return ans;
+    }
+};
