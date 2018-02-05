@@ -50,3 +50,57 @@ public:
         return false;
     }
 };
+
+
+class Solution {
+public:
+    //使用并查集解决该问题
+    //思想即用当前grid值，表示集合编号
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        int t = 0;
+        int dx[4] = {0, 0, -1, 1};
+        int dy[4] = {1, -1, 0, 0};
+        vector<int> root(n * m, -1);
+        while(t < n * m) {
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < m; j++) {
+                    if(grid[i][j] == t) {
+                        for(int k = 0; k < 4; k++) {
+                            int nx = i + dx[k];
+                            int ny = j + dy[k];
+                            if(isInGrid(nx, ny, n, m)) {
+                                if(grid[i][j] > grid[nx][ny]) {
+                                    //cout<<"grid[i][j]="<<grid[i][j]<<" "<<grid[nx][ny]<<endl;
+                                    int cand = findRoot(root, grid[nx][ny]);
+                                    //cout<<"cand="<<cand<<endl;
+                                    if(cand < t) {
+                                        root[cand] = grid[i][j];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(findRoot(root, grid[0][0]) == findRoot(root, grid[n - 1][m - 1])) return t;
+            t++;
+        }
+        return -1;
+    }
+    
+    bool isInGrid(int x, int y, int n, int m) {
+        if(x >= 0 && x < n && y >= 0 && y < m) return true;
+        return false;
+    }
+    
+    int findRoot(vector<int>& root, int t) {
+        //cout<<"find t="<<t<<" root[t]="<<root[t]<<endl;
+        if(root[t] < 0) {
+            return t;
+        }
+        
+        return findRoot(root, root[t]);
+    }
+};
