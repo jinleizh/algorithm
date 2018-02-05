@@ -1,0 +1,52 @@
+struct Node {
+    public:
+        int val;
+        int x;
+        int y;
+    public:
+        Node(int val, int x, int y) {
+            this->val = val;
+            this->x = x;
+            this->y = y;
+        }
+        ~Node() {}
+    
+        bool operator < (const Node& node) const {
+            return val > node.val;
+        }
+};
+
+class Solution {
+public:
+    //bfs
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<int>> visited(n, vector<int>(m, 0));
+        priority_queue<Node> q;
+        int dx[4] = {1, -1, 0, 0};
+        int dy[4] = {0, 0, 1, -1};
+        Node node(grid[0][0], 0, 0);
+        q.push(node);
+        visited[0][0] = 1;
+        while(!q.empty()) {
+            Node cur = q.top();
+            q.pop();
+            if(cur.x == n - 1 && cur.y == m - 1) return cur.val;
+            for(int k = 0; k < 4; k++) {
+                int nx = cur.x + dx[k];
+                int ny = cur.y + dy[k];
+                if(isInGrid(nx, ny, n, m) && visited[nx][ny] == 0 ) {
+                    grid[nx][ny] = max(grid[cur.x][cur.y], grid[nx][ny]);
+                    q.push(Node(grid[nx][ny], nx, ny));
+                    visited[nx][ny] = 1;
+                }
+            }
+        }
+    }
+    
+    bool isInGrid(int x, int y, int n, int m) {
+        if(x >= 0 && x < n && y >= 0 && y < m) return true;
+        return false;
+    }
+};
