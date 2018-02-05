@@ -1,0 +1,67 @@
+class Solution {
+public:
+    //
+    bool isNumeric(char* string)
+    {
+        if(nullptr == string) return false;
+        if(!isNum(string[0])) {
+            if(string[0] == '+' || string[0] == '-') {
+                return helper(string, 1);
+            }
+            return false;
+        } else {
+           return helper(string, 0); 
+        }
+    }
+    
+    bool helper(char* str, int s) {
+        int pointCnt = 0;
+        int len = strlen(str);
+        //must started with number
+        if(!isNum(str[s]) && str[s] != '.') return false;
+        if(str[s] == '.') pointCnt++;
+        s++;
+        while(s < len && isNum(str[s])) {
+            s++;
+        }
+        if(s == len) return true;
+        
+        //. 或者 e 或者 E
+        if(str[s] == '.') {
+            pointCnt++;
+            if(pointCnt > 1) return false;
+            //all number
+            s++;
+            while(s < len && isNum(str[s])) {
+                s++;
+            }
+            if(s == len) return true;
+        }
+        
+        if(str[s] == 'e' || str[s] == 'E') {
+            s++;
+            if(s == len) return false;
+            if(!isNum(str[s])) {
+ 				if(str[s] == '+' || str[s] == '-') {
+                    //do nothing
+                } else {
+                    return false;
+                }
+            }
+            s++;
+            while(s < len && isNum(str[s])) {
+                s++;
+            }
+            if(s == len) return true;
+            return false;
+        } else {
+            return false;
+        }
+    }
+    
+    bool isNum(char c) {
+        if(c >= '0' && c <= '9') return true;
+        return false;
+    }
+
+};
