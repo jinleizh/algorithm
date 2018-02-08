@@ -1,0 +1,38 @@
+/*
+struct TreeLinkNode {
+    int val;
+    struct TreeLinkNode *left;
+    struct TreeLinkNode *right;
+    struct TreeLinkNode *next;
+    TreeLinkNode(int x) :val(x), left(NULL), right(NULL), next(NULL) {
+        
+    }
+};
+*/
+class Solution {
+public:
+    TreeLinkNode* GetNext(TreeLinkNode* pNode)
+    {
+        //edge case
+        if(nullptr == pNode) return nullptr;
+        
+        //general case
+        //if have right node
+        if(nullptr != pNode->right) {
+            TreeLinkNode* rightNode = pNode->right;
+            while(rightNode->left != nullptr) {
+                rightNode = rightNode->left;
+            }
+            return rightNode; // find the leftest node
+        }
+        
+        //if is right node, we need find a parent node which is also a left child 
+        while(pNode->next != nullptr) {
+            if(pNode == pNode->next->left) return pNode->next;
+            pNode = pNode->next;
+        }
+        
+        return nullptr;
+        
+    }
+};
