@@ -1,0 +1,46 @@
+/*
+struct ListNode {
+    int val;
+    struct ListNode *next;
+    ListNode(int x) :
+        val(x), next(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    ListNode* deleteDuplication(ListNode* pHead)
+    {
+		//edge case
+        if(nullptr == pHead) return pHead;
+        
+        //general case
+        ListNode dummy(-1);
+        dummy.next = pHead;
+        ListNode* cur = &dummy;
+        while(cur != nullptr && cur->next != nullptr) {
+            if(isDup(cur->next)) {
+                cur->next = findNext(cur->next);
+            } else {
+                cur = cur->next;
+            }
+        }
+        
+        return dummy.next;
+    }
+    
+    bool isDup(ListNode* p) {
+        if(nullptr == p || nullptr == p->next) return false;
+        if(p->val == p->next->val) return true;
+        return false;
+    }
+    
+    ListNode* findNext(ListNode* p) {
+        if(nullptr == p) return nullptr;
+        int cand = p->val;
+        while(p != nullptr && p->val == cand) {
+            p = p->next;
+        }
+        return p;
+    }
+};
