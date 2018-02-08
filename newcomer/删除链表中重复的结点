@@ -44,3 +44,51 @@ public:
         return p;
     }
 };
+
+
+/*
+ public class ListNode {
+    int val;
+    ListNode next = null;
+
+    ListNode(int val) {
+        this.val = val;
+    }
+}
+*/
+public class Solution {
+    public ListNode deleteDuplication(ListNode pHead)
+    {
+		//edge case
+        if(null == pHead) return pHead;
+        
+        //general case
+        ListNode dummy = new ListNode(-1);
+        dummy.next = pHead;
+        ListNode cur = dummy;
+        while(null != cur && null != cur.next) {
+            if(isDup(cur.next)) {
+                cur.next = findNext(cur.next);
+            } else {
+                cur = cur.next;
+            }
+        }
+        
+        return dummy.next;
+    }
+    
+    boolean isDup(ListNode p) {
+        if(null == p || null == p.next) return false;
+        if(p.val == p.next.val) return true;
+        return false;
+    }
+    
+    ListNode findNext(ListNode p) {
+        if(null == p) return null;
+        int cand = p.val;
+        while(null != p && p.val == cand) {
+            p = p.next;
+        }
+        return p;
+    }
+}
