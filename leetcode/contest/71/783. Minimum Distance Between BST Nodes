@@ -29,3 +29,45 @@ public:
         helper(root->right);
     }
 };
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int minAns = INT_MAX;
+    int minDiffInBST(TreeNode* root) {
+        getMaxMin(root);
+        return minAns;
+    }
+    
+    vector<int> getMaxMin(TreeNode* root) {
+        vector<int> ans(2, -1);
+        if(nullptr == root) return ans;
+        vector<int> leftAns = getMaxMin(root->left);
+        if(leftAns[1] != -1) {
+            if(root->val - leftAns[1] < minAns) {
+                minAns = root->val - leftAns[1];
+            }
+        }
+        
+        vector<int> rightAns = getMaxMin(root->right);
+        if(rightAns[0] != -1) {
+            if(rightAns[0] - root->val < minAns) {
+                minAns = rightAns[0] - root->val;
+            }
+        }
+        
+        ans[0] = root->left == nullptr ? root->val : leftAns[0];
+        ans[1] = root->right == nullptr ? root->val : rightAns[1];
+        //cout<<"ans[0]="<<ans[0]<<" ans[1]="<<ans[1]<<endl;
+        return ans;
+    }
+};
