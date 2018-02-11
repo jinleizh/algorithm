@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int numRabbits(vector<int>& answers) {
+        int ans = 0;
+        unordered_map<int, int> cnt;
+        for(int d : answers) {
+            cnt[d]++;
+        }
+        
+        for(auto& it : cnt) {
+            //it.first
+            //it.second
+            //3 10; 4 * (10 / 4 + 10 % 4 ? 1 : 0)
+            
+            int num = it.first + 1;
+            ans += num * (it.second / num);
+            if(it.second % (num) != 0) {
+                ans += num;
+            }
+        }
+        
+        return ans;
+    }
+};
