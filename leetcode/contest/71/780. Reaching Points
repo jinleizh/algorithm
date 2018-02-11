@@ -1,0 +1,151 @@
+//
+class Solution {
+public:
+    //bfs transform
+    map<pair<int,int>, int> visited;
+    bool reachingPoints(int sx, int sy, int tx, int ty) {
+        queue<pair<int, int>> q;
+        pair<int, int> start(sx, sy);
+        q.push(start);
+        visited[start] = 1;
+        while(!q.empty()) {
+            pair<int, int> cur = q.front();
+            q.pop();
+            if(cur.first == tx && cur.second == ty) {
+                return true;
+            }
+            
+            if(cur.first > tx || cur.second > ty) continue;
+        
+            if(isValid(cur.first, cur.first + cur.second)) {
+                pair<int, int> tmp(cur.first, cur.first + cur.second);
+                //cout<<"x="<<tmp.x<<" y="<<tmp.y<<" bool="<<visited[tmp]<<endl;
+                if(!visited[tmp]) {
+                    q.push(tmp);
+                    //cout<<"1 "<<tmp.x<<" "<<tmp.y<<endl;
+                    visited[tmp] = 1;
+                }
+            }
+            
+            if(isValid(cur.first + cur.second, cur.second)) {
+                pair<int, int> tmp(cur.first + cur.second, cur.second);
+                //cout<<"x="<<tmp.x<<" y="<<tmp.y<<" bool="<<visited[tmp]<<endl;
+                if(!visited[tmp]) {
+                    q.push(tmp);
+                    //cout<<"2 "<<tmp.x<<" "<<tmp.y<<endl;
+                    visited[tmp] = 1;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    bool isValid(long x, long y) {
+        //cout<<"x="<<x<<" y="<<y<<endl;
+        if(x >= 1 && x <= 1e9 && y >= 1 && y <= 1e9) return true;
+        //cout<<"false x="<<x<<" y="<<y<<endl;
+        return false;
+    }
+};
+
+//dfs + memory
+class Solution {
+public:
+    //dp[tx][ty] = dp[tx][ty - tx] || dp[tx - ty][ty]
+    map<pair<int, int>, int> dp;
+    bool reachingPoints(int sx, int sy, int tx, int ty) {
+        return helper(sx, sy, tx, ty);
+    }
+    
+    bool helper(int sx, int sy, long x, long y) {
+        if(x < sx || y < sy) return false;
+        if(x == sx && y == sy) return true;
+        
+        pair<int, int> tmp(x, y);
+        if(dp.find(tmp) != dp.end()) return dp[tmp];
+        
+        if(!isValid(x, y)) {
+            return false;
+        }
+        long nx = x, ny = y - x;
+        if(helper(sx, sy, nx, ny)) {
+            pair<int, int> node(nx, ny);
+            dp[node] = 1;
+            return true;
+        }
+        
+        nx = x - y;
+        ny = y;
+        cout<<"nx="<<nx<<" ny="<<ny<<endl;
+        if(helper(sx, sy, nx, ny)) {
+            pair<int, int> node(nx, ny);
+            dp[node] = 1;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    bool isValid(long x, long y) {
+        if(x >= 1 && x <= 1e9 && y >= 1 && y <= 1e9) return true;
+        return false;
+    }
+};
+
+//数学运算
+class Solution {
+public:
+    bool reachingPoints(int sx, int sy, int tx, int ty) {
+        if(tx < sx || ty < sy) return false;
+		if(tx == sx && ty == sy) return true;
+        
+		if(sx == tx) {
+			//return 0 == (ty - sy) % sx;
+		    return (sy % sx) == (ty % sx);
+        }
+		
+		if(sy == ty) {
+			//return 0 == (tx - sx) % sy;
+		    return (sx % sy) == (tx % sy);
+        }
+		
+		if(tx > ty) {
+			return reachingPoints(sx, sy, tx % ty, ty);
+		} else if(tx < ty) {
+			return reachingPoints(sx, sy, tx, ty % tx);
+		} else {
+            //a, b -> a + b > a, a + b > b
+            //因为a和b都是大于等于1的，所以a+b必然大于a和b，而tx，ty中必有一个是tx+ty，显然比大于另外一个
+            //所以不能出现tx == ty的情况
+            return false;
+        }
+    }
+};class Solution {
+public:
+    bool reachingPoints(int sx, int sy, int tx, int ty) {
+        if(tx < sx || ty < sy) return false;
+		if(tx == sx && ty == sy) return true;
+        
+		if(sx == tx) {
+			//return 0 == (ty - sy) % sx;
+		    return (sy % sx) == (ty % sx);
+        }
+		
+		if(sy == ty) {
+			//return 0 == (tx - sx) % sy;
+		    return (sx % sy) == (tx % sy);
+        }
+		
+		if(tx > ty) {
+			return reachingPoints(sx, sy, tx % ty, ty);
+		} else if(tx < ty) {
+			return reachingPoints(sx, sy, tx, ty % tx);
+		} else {
+            //a, b -> a + b > a, a + b > b
+            //因为a和b都是大于等于1的，所以a+b必然大于a和b，而tx，ty中必有一个是tx+ty，显然比大于另外一个
+            //所以不能出现tx == ty的情况
+            return false;
+        }
+    }
+};
