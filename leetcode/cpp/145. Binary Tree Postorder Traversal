@@ -43,3 +43,45 @@ public:
         return ans;
     }
 };
+
+//java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        if(null == root) return ans;
+        Node node = new Node(0, root);
+        Stack<Node> st = new Stack<>();
+        st.push(node);
+        while(!st.empty()) {
+            node = st.peek();
+            st.pop();
+            if(null == node.root) continue;
+            if(1 == node.opt) {
+                ans.add(node.root.val);
+            } else {
+                st.push(new Node(1, node.root));
+                st.push(new Node(0, node.root.right));
+                st.push(new Node(0, node.root.left));
+            }
+        }
+        return ans;
+    }
+    
+    private class Node {
+        public int opt;
+        public TreeNode root;
+        public Node(int opt, TreeNode root) {
+            this.opt = opt;
+            this.root = root;
+        }
+    }
+}
