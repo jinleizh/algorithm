@@ -101,3 +101,59 @@ public class Solution {
         return ans;
     }
 }
+
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    //先遍历，再入队
+    vector<vector<int> > Print(TreeNode* pRoot) {
+        vector<vector<int>> ans;
+        if(nullptr == pRoot) {
+            return ans;
+        }
+        deque<TreeNode*> q;
+        q.push_back(pRoot);
+        vector<int> tmp;
+        bool leftToRight = true;
+        while(!q.empty()) {
+            int n = q.size();
+            int i = 0;
+            if(leftToRight) {
+                deque<TreeNode*>::iterator it = q.begin();
+                while(it != q.end()) {
+                    tmp.push_back((*it)->val);
+                }
+            } else {
+                deque<TreeNode*>::reverse_iterator it = q.rbegin();
+                while(it != q.rend()) {
+                    tmp.push_back((*it)->val);
+                }
+            }
+            cout<<tmp.size()<<endl;
+            leftToRight = !leftToRight;
+            ans.push_back(tmp);
+            tmp.clear();
+            while(i < n) {
+                TreeNode* cur = q.front();
+                q.pop_front();
+                if(nullptr != cur->left) {
+                    q.push_back(cur->left);
+                }
+                if(nullptr != cur->right) {
+                    q.push_back(cur->right);
+                }
+                i++;
+            }
+        }
+        return ans;
+    }
+};
