@@ -1,0 +1,88 @@
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    //bfs
+        vector<vector<int> > Print(TreeNode* pRoot) {
+            queue<TreeNode*> q;
+            vector<vector<int>> ans;
+            if(nullptr == pRoot) {
+                return ans;
+            }
+            q.push(pRoot);
+            while(!q.empty()) {
+                int n = q.size();
+                int i = 0;
+                vector<int> tmp;
+                while(i < n) {
+                    TreeNode* cur = q.front();
+                    q.pop();
+                    tmp.push_back(cur->val);
+                    if(nullptr != cur->left) {
+                        q.push(cur->left);
+                    }
+                    if(nullptr != cur->right) {
+                        q.push(cur->right);
+                    }
+                    i++;
+                }
+                ans.push_back(tmp);
+            }
+            return ans;
+        }
+};
+
+import java.util.*;
+
+
+/*
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    ArrayList<ArrayList<Integer> > Print(TreeNode pRoot) {
+        ArrayList<ArrayList<Integer> > ans = new ArrayList<ArrayList<Integer>>();
+        if(null == pRoot) {
+            return ans;
+        }
+        LinkedList<TreeNode> q = new LinkedList<>();
+        q.offer(pRoot);
+        while(!q.isEmpty()) {
+            int n = q.size();
+            int i = 0;
+            ArrayList<Integer> tmp = new ArrayList<>();
+            while(i < n) {
+                TreeNode cur = q.peek();
+                q.poll();
+                tmp.add(cur.val);
+                if(null != cur.left) {
+                    q.offer(cur.left);
+                }
+                if(null != cur.right) {
+                    q.offer(cur.right);
+                }
+                i++;
+            }
+            ans.add(tmp);
+        }
+        return ans;
+    }
+    
+}
