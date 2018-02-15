@@ -42,3 +42,62 @@ public:
         return ans;
     }
 };
+
+import java.util.*;
+
+/*
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    public ArrayList<ArrayList<Integer> > Print(TreeNode pRoot) {
+        LinkedList<TreeNode> q = new LinkedList<TreeNode>();
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<ArrayList<Integer>>();
+        if(null == pRoot) {
+            return ans;
+        }
+        q.offer(pRoot);
+        boolean leftToRight = true;
+        while(!q.isEmpty()) {
+            int n = q.size();
+            int i = 0;
+            
+            //先遍历输出，再有序入队
+            Iterator<TreeNode> iter = null;
+            if(leftToRight) {
+                iter = q.iterator();
+            } else {
+                iter = q.descendingIterator();
+            }
+            
+            leftToRight = !leftToRight;
+            ArrayList<Integer> tmp = new ArrayList<>();
+            while(iter.hasNext()) {
+                tmp.add(iter.next().val);
+            }
+            ans.add(tmp);
+            
+            while(i < n) {
+                TreeNode cur = q.peek();
+                q.poll();
+                if(null != cur.left) {
+                    q.offer(cur.left);
+                }
+                if(null != cur.right) {
+                    q.offer(cur.right);
+                }
+                i++;
+            }
+        }
+        return ans;
+    }
+}
