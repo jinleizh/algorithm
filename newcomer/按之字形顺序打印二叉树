@@ -131,11 +131,13 @@ public:
                 deque<TreeNode*>::iterator it = q.begin();
                 while(it != q.end()) {
                     tmp.push_back((*it)->val);
+                    it++;
                 }
             } else {
                 deque<TreeNode*>::reverse_iterator it = q.rbegin();
                 while(it != q.rend()) {
                     tmp.push_back((*it)->val);
+                    it++;
                 }
             }
             cout<<tmp.size()<<endl;
