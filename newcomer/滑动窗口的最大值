@@ -1,0 +1,86 @@
+import java.util.ArrayList;
+
+public class Solution {
+    public ArrayList<Integer> maxInWindows(int [] num, int size)
+    {
+        ArrayList<Integer> ans = new ArrayList<>();
+        int len = num.length;
+        if(size <= 0 || size > len) return ans;
+        int lastMax = Integer.MIN_VALUE;
+        int i;
+        for(i = 0; i < size; i++) {
+            if(lastMax < num[i]) {
+                lastMax = num[i];
+            }
+        }
+        ans.add(lastMax);
+        while(i < len) {
+            int left = num[i - size];
+            int next = num[i];
+            if(left == lastMax) {
+                lastMax = getMax(num, i, size);
+            } else {
+                if(next <= lastMax) {
+                    //do nothing
+                } else {
+                    lastMax = next;
+                }
+            }
+            ans.add(lastMax);
+            i++;
+        }
+        return ans;
+    }
+    
+    int getMax(int[] num, int end, int size) {
+        int ans = Integer.MIN_VALUE;
+        for(int k = end - size + 1; k <= end; k++) {
+            if(ans < num[k]) {
+                ans = num[k];
+            }
+        }
+        return ans;
+    }
+}
+
+class Solution {
+public:
+    vector<int> maxInWindows(const vector<int>& num, unsigned int size)
+    {
+        vector<int> ans;
+        if(size <= 0 || size > num.size()) return ans;
+        int n = num.size();
+        int i = 0;
+        int lastMax = INT_MIN;
+        for(; i < size; i++) {
+            if(lastMax < num[i]) {
+                lastMax = num[i];
+            }
+        }
+        ans.push_back(lastMax);
+        while(i < n) {
+            int left = num[i - size];
+            int next = num[i];
+            if(left == lastMax) {
+                lastMax = getMax(num, i, size);
+            } else {
+                if(next > lastMax) {
+                    lastMax = next;
+                }
+            }
+            ans.push_back(lastMax);
+            i++;
+        }
+        return ans;
+    }
+    
+    int getMax(const vector<int>& num, int end, unsigned int size) {
+        int ans = INT_MIN;
+        for(int i = end - size + 1; i <= end; i++) {
+            if(ans < num[i]) {
+                ans = num[i];
+            }
+        }
+        return ans;
+    }
+};
