@@ -1,0 +1,83 @@
+class Solution {
+public:
+    //维护两个堆，小顶堆和大顶堆
+    //我们需要不断调整，以使小顶堆的个数大于等于小顶堆
+    priority_queue<int, vector<int>, std::less<int>> maxHeap;
+    priority_queue<int, vector<int>, std::greater<int>> minHeap;
+    void Insert(int num)
+    {
+        if(maxHeap.empty()) {
+            maxHeap.push(num);
+        } else {
+            if(num <= maxHeap.top()) {
+                maxHeap.push(num);
+            } else {
+                minHeap.push(num);
+            }
+        }
+        
+        if(maxHeap.size() < minHeap.size()) {
+            int num = minHeap.top();
+            maxHeap.push(num);
+            minHeap.pop();
+        } else {
+            if(maxHeap.size() > minHeap.size() + 1) {
+                int num = maxHeap.top();
+                minHeap.push(num);
+                maxHeap.pop();
+            }
+        }
+    }
+
+    double GetMedian()
+    {
+        if(maxHeap.size() == minHeap.size()) {
+            return (maxHeap.top() + minHeap.top()) / 2.0;
+        }
+        return maxHeap.top();
+    }
+
+};
+
+import java.util.PriorityQueue;
+import java.util.Comparator;
+
+public class Solution {
+    private PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    private PriorityQueue<Integer> maxHeap = new PriorityQueue<>(15, new Comparator<Integer>() {
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            return o2 - o1;
+        }
+    });
+    public void Insert(Integer num) {
+        if(maxHeap.isEmpty()) {
+            maxHeap.offer(num);
+        } else {
+            if(num <= maxHeap.peek()) {
+                maxHeap.offer(num);
+            } else {
+                minHeap.offer(num);
+            }
+        }
+        
+        if(maxHeap.size() < minHeap.size()) {
+            int val = minHeap.peek();
+            maxHeap.offer(val);
+            minHeap.poll();
+        } else {
+            if(maxHeap.size() > minHeap.size() + 1) {
+                int val = maxHeap.peek();
+                minHeap.offer(val);
+                maxHeap.poll();
+            }
+        }
+    }
+
+    public Double GetMedian() {
+        if(minHeap.size() == maxHeap.size()) {
+            return (minHeap.peek() + maxHeap.peek()) / 2.0;
+        }
+        return Double.valueOf(maxHeap.peek());
+    }
+}
