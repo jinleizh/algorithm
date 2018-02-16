@@ -103,3 +103,58 @@ public class Solution {
         return node;
     }
 }
+
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    //preorder 
+    vector<int> data;
+    char* Serialize(TreeNode *root) {    
+        if(nullptr == root) return nullptr;
+        preOrder(root);
+        int *p = new int[data.size()];
+        int i = 0;
+        for(int d : data) {
+            p[i++] = d;
+        }
+        return (char*)p;
+    }
+    
+    void preOrder(TreeNode* root) {
+        if(nullptr == root) {
+            data.push_back(-1);
+            return;
+        }
+        
+        data.push_back(root->val);
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+    
+    TreeNode* Deserialize(char *str) {
+        if(nullptr == str) return nullptr;
+        int* data = (int*)str;
+        return dfs(data);
+    }
+    
+    TreeNode* dfs(int*& data) {
+        if(*data == -1) {
+            data++;
+            return nullptr;
+        }
+        TreeNode* node = new TreeNode(*data);
+        data++;
+        node->left = dfs(data);
+        node->right = dfs(data);
+        return node;
+    }
+};
