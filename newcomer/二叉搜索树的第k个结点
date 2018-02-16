@@ -1,0 +1,134 @@
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    TreeNode* KthNode(TreeNode* pRoot, int k)
+    {
+        vector<TreeNode*> data;
+        inOrder(pRoot, data);
+        int n = data.size();
+        int cnt = 1;
+        for(int i = 0; i < n; i++) {
+            if(cnt == k) {
+                return data[i];
+            }
+            cnt++;
+        }
+        return nullptr;
+    }
+
+    void inOrder(TreeNode* root, vector<TreeNode*>& data) {
+        if(nullptr == root) return;
+        inOrder(root->left, data);
+        data.push_back(root);
+        inOrder(root->right, data);
+    }
+};
+
+/*
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+import java.util.ArrayList;
+public class Solution {
+    TreeNode KthNode(TreeNode pRoot, int k)
+    {
+        ArrayList<TreeNode> ans = new ArrayList<>();
+        inOrder(pRoot, ans);
+        if(k - 1 >= 0 && k - 1 < ans.size()) {
+            return ans.get(k - 1);
+        }
+        return null;
+    }
+    
+    void inOrder(TreeNode root, ArrayList<TreeNode> ans) {
+        if(null == root) return;
+        inOrder(root.left, ans);
+        ans.add(root);
+        inOrder(root.right, ans);
+    }
+}
+
+/*
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x) :
+            val(x), left(NULL), right(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    //左子树中查找第k大的，根节点查询，右子树中查找第k大的
+    int index = 0;
+    TreeNode* KthNode(TreeNode* pRoot, int k)
+    {
+        if(nullptr == pRoot) return nullptr;
+        TreeNode* leftAns = KthNode(pRoot->left, k);
+        if(leftAns != nullptr) {
+            return leftAns;
+        }
+        index++;
+        if(k == index) {
+            return pRoot;
+        }
+        TreeNode* rightAns = KthNode(pRoot->right, k);
+        if(rightAns != nullptr) {
+            return rightAns;
+        }
+        return nullptr;
+    }
+};
+
+/*
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    private int index = 0;
+    TreeNode KthNode(TreeNode pRoot, int k)
+    {
+        if(null == pRoot) return null;
+        TreeNode leftAns = KthNode(pRoot.left, k);
+        if(null != leftAns) {
+            return leftAns;
+        }
+        index++;
+        if(index == k) {
+            return pRoot;
+        }
+        TreeNode rightAns = KthNode(pRoot.right, k);
+        if(null != rightAns) {
+            return rightAns;
+        }
+        return null;
+    }
+}
