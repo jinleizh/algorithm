@@ -1,0 +1,82 @@
+class Solution {
+public:
+    //o(n^3) bfs
+    //
+    bool hasPath(char* matrix, int rows, int cols, char* str)
+    {
+        if(nullptr == matrix || nullptr == str || rows <= 0 || cols <= 0) return false;
+        vector<vector<int>> visited(rows, vector<int>(cols, 0));
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                bool ret = dfs(matrix, rows, cols, str, i, j, visited, 0);
+                if(ret) return true;
+            }
+        }
+        return false;
+    }
+    
+    bool dfs(char* matrix, int rows, int cols, char* str, int i, int j, vector<vector<int>>& visited, int k) {
+        if(!isInGrid(rows, cols, i, j) || 1 == visited[i][j]) return false;
+        if(*(matrix + i * cols + j) != *(str + k)) return false;
+        if(k == strlen(str) - 1) return true;
+        int dx[] = {-1, 1, 0, 0};
+        int dy[] = {0, 0, -1, 1};
+        visited[i][j] = 1;
+        int nx = 0, ny = 0;
+        for(int m = 0; m < 4; m++) {
+            nx = i + dx[m];
+            ny = j + dy[m];
+            bool ret = dfs(matrix, rows, cols, str, nx, ny, visited, k + 1);
+            if(ret) return ret;
+        }
+        visited[i][j] = 0;
+        return false;
+    }
+    
+    bool isInGrid(int rows, int cols, int i, int j) {
+        return i >= 0 && i < rows && j >= 0 && j < cols;
+    }
+};
+
+public class Solution {
+    //回溯法总结：dfs的判断条件如果写到递归函数内部，会使得代码更简单
+    //这样，外层只管考虑递归到下一步要选的节点，
+    //由递归函数判断该点返回true 还是 false
+    //如果返回为true，则递归返回true
+    //如果利用strlen长度的判断，会有一个问题，当最后一个元素位于边界时，k+1会取不到内容
+    //所以改为判断k是否为最后一个元素即可
+    public boolean hasPath(char[] matrix, int rows, int cols, char[] str)
+    {
+        int[][] visited = new int[rows][cols];
+        boolean ret = false;
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                ret = dfs(matrix, rows, cols, str, i, j, 0, visited);
+                if(ret) return ret;
+            }
+        }
+        return false;
+    }
+
+    boolean dfs(char[] matrix, int rows, int cols, char[] str, int x, int y, int k, int[][] visited) {
+        if(!isInGrid(rows, cols, x, y) || 1 == visited[x][y]) return false;
+        if(matrix[x * cols + y] != str[k]) return false;
+        if(k == str.length - 1) return true;
+        visited[x][y] = 1;
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, -1, 1};
+        int nx = 0, ny = 0;
+        for(int m = 0; m < 4; m++) {
+            nx = x + dx[m];
+            ny = y + dy[m];
+            boolean ret = dfs(matrix, rows, cols, str, nx, ny, k + 1, visited);
+            if(ret) return ret;
+        }
+        visited[x][y] = 0;
+        return false;
+    }
+    
+    boolean isInGrid(int rows, int cols, int x, int y) {
+        return x >= 0 && x < rows && y >= 0 && y < cols;
+    }
+}
