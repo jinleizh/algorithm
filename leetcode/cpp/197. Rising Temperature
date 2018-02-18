@@ -1,0 +1,2 @@
+# Write your MySQL query statement below
+select t1.Id from Weather t1 where t1.Temperature > (select Temperature from Weather where Date=DATE_SUB(t1.Date, INTERVAL 1 DAY));
