@@ -1,0 +1,90 @@
+class Solution {
+    //1 - 9 * 1
+    //2 - 90 * 2
+    //3 - 900 * 3
+    //4 - 9000 * 4
+    public int findNthDigit(int input) {
+        if(input <= 9) return input;
+        long n = input;
+        int bit = 1;
+        long num = 9 * (long)Math.pow(10, bit - 1) * bit;
+        long start = (long)Math.pow(10, bit - 1);
+        while(n > num) {
+            System.out.println("num=" + num);
+            n -= num;
+            bit += 1;
+            num = 9 * (long)Math.pow(10, bit - 1) * bit;
+            start = (long)Math.pow(10, bit - 1); 
+        }
+        
+        System.out.println("start=" + start + " bit=" + bit);
+        if(n % bit == 0) {
+            return getAns(start + n / bit - 1);
+        } else {
+            return getAns(start + n / bit, bit - n % bit + 1);
+        }
+    }
+    
+    int getAns(long x) {     
+        return (int)(x % 10);
+    }
+    
+    int getAns(long x, long offset) {
+        System.out.println("x=" + x + " offset=" + offset);
+        int bit = 0;
+        while(x > 0) {
+            bit++;
+            if(bit == offset) {
+                return (int)(x % 10);
+            }
+            
+            x /= 10;
+        }
+        
+        return -1;
+    }
+}
+
+class Solution {
+public:
+    //9 - bit 1
+    //90 - bit 2
+    //900 - bit 3
+    //9000 - bit 4
+    int findNthDigit(int n) {
+        if (n <= 9) return n;
+        long tmp = n;
+        long bit = 1;
+        long num = 9 * pow(10, bit - 1) * bit;
+        long start = pow(10, bit - 1);
+        while(tmp > num) {
+            tmp -= num;
+            bit++;
+            num = 9 * pow(10, bit - 1) * bit;
+            start = pow(10, bit - 1);
+        }
+        
+        if(tmp % bit == 0) {
+            return getAns(start + tmp / bit - 1);
+        } else {
+            return getAns(start + tmp / bit, bit - tmp % bit + 1);
+        }
+    }
+    
+    int getAns(long x) {
+        return (int)(x % 10);
+    }
+    
+    int getAns(long x, long offset) {
+        long cnt = 0;
+        while(x > 0) {
+            cnt++;
+            if(cnt == offset) {
+                return (int)(x % 10);
+            }
+            
+            x /= 10;
+        }
+        return 0;
+    }
+};
