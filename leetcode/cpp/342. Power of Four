@@ -1,0 +1,25 @@
+class Solution {
+public:
+    bool isPowerOfFour(int num) {
+        if(0 == num) return false;
+        if(1 == num) return true;
+        if(num % 4 != 0) return false;
+        return isPowerOfFour(num / 4);
+    }
+};
+
+class Solution {
+public:
+    //x & -x, x & (x - 1)
+    bool isPowerOfFour(int num) {
+        //num > 0  且 num是2的指数，且 1只能出现在odd位上
+        return num > 0 && ((num & (num - 1)) == 0) && (num == (num & 0x55555555));
+    }
+};
+
+class Solution {
+    //== has higher priority when it is compared with &
+    public boolean isPowerOfFour(int num) {
+        return num > 0 && ((num & (num - 1)) == 0) && (num == (num & 0x55555555));
+    }
+}
