@@ -1,0 +1,48 @@
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        HashMap<Character, Integer> srcMp = new HashMap<>();
+        HashMap<Character, Integer> dstMp = new HashMap<>();
+        for(int i = 0; i < ransomNote.length(); i++) {
+            char c = ransomNote.charAt(i);
+            if(null == srcMp.get(c)) {
+                srcMp.put(c, 1);
+            } else {
+                srcMp.put(c, srcMp.get(c) + 1);
+            }
+        }
+        
+        for(int i = 0; i < magazine.length(); i++) {
+            char c = magazine.charAt(i);
+            if(null == dstMp.get(c)) {
+                dstMp.put(c, 1);
+            } else {
+                dstMp.put(c, dstMp.get(c) + 1);
+            }
+        }
+        
+        for(int i = 0; i < ransomNote.length(); i++) {
+            char c = ransomNote.charAt(i);
+            if(null == dstMp.get(c)) return false;
+            if(srcMp.get(c) > dstMp.get(c)) return false;
+        }
+        return true;
+    }
+}
+
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        unordered_map<char, int> srcMp;
+        unordered_map<char, int> dstMp;
+        for(char c : ransomNote) {
+            srcMp[c]++;
+        }
+        for(char c : magazine) {
+            dstMp[c]++;
+        }
+        for(char c : ransomNote) {
+            if(srcMp[c] > dstMp[c]) return false;
+        }
+        return true;
+    }
+};
