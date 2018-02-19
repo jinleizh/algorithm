@@ -1,0 +1,72 @@
+class Solution {
+public:
+    string reverseVowels(string s) {
+        int len = s.length();
+        int i = 0, j = len - 1;
+        while(i < j) {
+            //cout<<i<<" "<<j<<endl;
+            while(i < j && !isVowel(s.at(i))) {
+                i++;
+            }
+            
+            while(i < j && !isVowel(s.at(j))) {
+                j--;
+            }
+            
+            char tmp = s[i];
+            s[i] = s[j];
+            s[j] = tmp;
+            i++;
+            j--;
+        }
+        
+        return s;
+    }
+    
+    bool isVowel(char c) {
+        return 
+          tolower(c) == 'a' ||
+          tolower(c) == 'e' || 
+          tolower(c) == 'i' ||
+          tolower(c) == 'o' ||
+          tolower(c) == 'u';
+    }
+};
+class Solution {
+    public String reverseVowels(String s) {
+        char[] str = s.toCharArray();
+        int len = str.length;
+        int i = 0, j = len - 1;
+        while(i < j) {
+            while(i < j && !isVowel(str[i])) {
+                i++;
+            }
+            
+            while(i < j && !isVowel(str[j])) {
+                j--;
+            }
+            
+            char tmp = str[i];
+            str[i] = str[j];
+            str[j] = tmp;
+            i++;
+            j--;
+        }
+        
+        return new String(str);
+    }
+    
+    boolean isVowel(char c) {
+        return 
+            c == 'a' ||
+            c == 'A' ||
+            c == 'e' ||
+            c == 'E' || 
+            c == 'i' ||
+            c == 'I' ||
+            c == 'o' ||
+            c == 'O' ||
+            c == 'u' ||
+            c == 'U';
+    }
+}
