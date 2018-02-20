@@ -1,0 +1,127 @@
+class Solution {
+public:
+    /**
+     * @param ListA: The relation between ListB's books
+     * @param ListB: The relation between ListA's books
+     * @return: The answer
+     */
+     //union find usage
+    vector<string> maximumAssociationSet(vector<string> &ListA, vector<string> &ListB) {
+        // Write your code here
+        //a->b = parent[b] = a parent[a] = a
+        //b->c = parent[c] = b = parent[b] = a
+        //d->e = parent[e] = d = parent[d]
+        //e->g = parent[g] = e = parent[e] = d
+        //f->g = parent[f] = parent[g] = e = parent[d] = d
+        //union find
+        int n = ListA.size();
+        map<string, string> parent;
+        for(int i = 0; i < n; i++) {
+            parent[ListA[i]] = ListA[i];
+            parent[ListB[i]] = ListB[i];
+        }
+        
+        for(int i = 0; i < n; i++) {
+            string lp = findParent(parent, ListA[i]);
+            string rp = findParent(parent, ListB[i]);
+            if(lp < rp) {
+                parent[rp] = lp;
+            } else {
+                parent[lp] = rp;
+            }
+        }
+
+        unordered_map<string, vector<string>> cntMp;
+        for(auto& it : parent) {
+            cntMp[findParent(parent, it.second)].push_back(it.first);
+        }
+        
+        int maxCnt = 0;
+        string maxKey = "";
+        for(auto& it : cntMp) {
+            if(it.second.size() > maxCnt) {
+                maxCnt = it.second.size();
+                maxKey = it.first;
+            }
+        }
+        
+        return cntMp[maxKey];
+    }
+    
+    string findParent(map<string, string>& parent, string key) {
+        while(key != parent[key]) {
+            key = parent[key];
+        }
+        return key;
+    }
+};
+
+
+public class Solution {
+    /**
+     * @param ListA: The relation between ListB's books
+     * @param ListB: The relation between ListA's books
+     * @return: The answer
+     */
+     //union find solution
+    public List<String> maximumAssociationSet(String[] ListA, String[] ListB) {
+        // Write your code here
+        HashMap<String, String> parent = new HashMap<>();
+        int len = ListA.length;
+        for(int i = 0; i < len; i++) {
+            parent.put(ListA[i], ListA[i]);
+            parent.put(ListB[i], ListB[i]);
+        }
+        
+        //update union find set and compress path
+        for(int i = 0; i < len; i++) {
+            String lp = findParent(parent, ListA[i]);
+            String rp = findParent(parent, ListB[i]);
+            if(lp.compareTo(rp) < 0) {
+                parent.put(rp, lp); 
+            } else {
+                parent.put(lp, rp);
+            }
+        }
+        
+        //计数器
+        HashMap<String, ArrayList<String>> cntMp = new HashMap<>();
+        for(String key : parent.keySet()) {
+            String value = parent.get(key);
+            String pk = findParent(parent, value);
+            if(null == cntMp.get(pk)) {
+                cntMp.put(pk, new ArrayList<String>());
+            }
+            cntMp.get(pk).add(key);
+        }
+        
+        //求最大
+        int maxCnt = 0;
+        String maxKey = "";
+        for(String key : cntMp.keySet()) {
+            len = cntMp.get(key).size();
+            if(len > maxCnt) {
+                maxCnt = len;
+                maxKey = key;
+            }
+        }
+        
+        //输出
+        return cntMp.get(maxKey);
+    }
+    
+    public String findParent(HashMap<String, String> parent, String key) {
+        String curKey = key;
+        while(key != parent.get(key)) {
+            key = parent.get(key);
+        }
+        
+        while(curKey != key) {
+            String nextKey = parent.get(curKey);
+            parent.put(curKey, key);
+            curKey = nextKey;
+        }
+        
+        return key;
+    }
+}
