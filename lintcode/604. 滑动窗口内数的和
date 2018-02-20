@@ -1,0 +1,56 @@
+class Solution {
+public:
+    /**
+     * @param nums: a list of integers.
+     * @param k: length of window.
+     * @return: the sum of the element inside the window at each moving.
+     */
+    vector<int> winSum(vector<int> &nums, int k) {
+        // write your code here
+        vector<int> ans;
+        int n = nums.size();
+        if(n < k) return ans;
+        if(k <= 0) return ans;
+        int sum = 0;
+        int i = 0;
+        for(; i < k; i++) {
+            sum += nums[i];
+        }
+        ans.push_back(sum);
+        while(i < n) {
+            sum += nums[i];
+            sum -= nums[i - k];
+            ans.push_back(sum);
+            i++;
+        }
+        return ans;
+    }
+};
+
+public class Solution {
+    /**
+     * @param nums: a list of integers.
+     * @param k: length of window.
+     * @return: the sum of the element inside the window at each moving.
+     */
+    public int[] winSum(int[] nums, int k) {
+        // write your code here
+        int len = nums.length;
+        if(len < k || k <= 0) return new int[0];
+        int[] ans = new int[len - k + 1];
+        int sum = 0, i = 0;
+        for(; i < k; i++) {
+            sum += nums[i];
+        }
+        ans[0] = sum;
+        int j = 1, p = i;
+        while(p < len) {
+            sum += nums[p];
+            sum -= nums[p - k];
+            ans[j] = sum;
+            p++;
+            j++;
+        }
+        return ans;
+    }
+}
