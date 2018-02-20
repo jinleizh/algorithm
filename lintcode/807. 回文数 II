@@ -1,0 +1,66 @@
+class Solution {
+public:
+    /**
+     * @param n: non-negative integer n
+     * @return: return whether a binary representation of a non-negative integer n is a palindrome.
+     */
+    bool isPalindrome(int n) {
+        // Write your code here
+        int bit[32] = {0};
+        int base = 1;
+        for(int i = 0; i < 32; i++) {
+            bit[i] = (n & base) ? 1 : 0;
+            base = base << 1;
+        }
+        
+        int i = 0, j = 31;
+        while(j >= 0 && bit[j] == 0) {
+            j--;
+        }
+        
+        while(i < j) {
+            if(bit[i] == bit[j]) {
+                i++;
+                j--;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+public class Solution {
+    /**
+     * @param n: non-negative integer n.
+     * @return: return whether a binary representation of a non-negative integer n is a palindrome.
+     */
+    public boolean isPalindrome(int n) {
+        // Write your code here
+        int[] bits = new int[32];
+        for(int i = 0; i < bits.length; i++) {
+            bits[i] = 0;
+        }
+        
+        int base = 1;
+        for(int i = 0; i < 32; i++) {
+            bits[i] = ((n & base) > 0) ? 1 : 0;
+            base <<= 1;
+        }
+        
+        int j = 31;
+        while(j >= 0 && bits[j] == 0) {
+            j--;
+        }
+        int i = 0;
+        while(i < j) {
+            if(bits[i] == bits[j]) {
+                i++;
+                j--;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+}
