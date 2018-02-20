@@ -1,0 +1,70 @@
+class Solution {
+public:
+    /**
+     * @param rating: the rating of the movies
+     * @param G: the realtionship of movies
+     * @param S: the begin movie
+     * @param K: top K rating 
+     * @return: the top k largest rating moive which contact with S
+     */
+    vector<int> topKMovie(vector<int> &rating, vector<vector<int>> &G, int S, int K) {
+        // Write your code here
+        priority_queue<int, vector<int>, std::greater<int>> heap;
+        
+        //pre process
+        vector<vector<int>> F(rating.size(), vector<int>());
+        for(int i = 0; i < G.size(); i++) {
+            for(int d : G[i]) {
+                F[d].push_back(i);
+            }
+        }
+        
+        //pos
+        unordered_map<int, int> posMp;
+        int i = 0;
+        for(int d : rating) {
+            posMp[d] = i;
+            i++;
+        }
+        
+        //flag
+        vector<bool> flag(rating.size(), false);
+        
+        //travel
+        flag[S] = true;
+        update(F, flag, S);
+        flag[S] = false;
+        
+        //update heap
+        for(int i = 0; i < flag.size(); i++) {
+            if(flag[i] == false) continue;
+
+            if(heap.size() < K) {
+                heap.push(rating[i]);
+            } else {
+                int val = heap.top();
+                //cout<<"top="<<val<<" push="<<rating[i]<<endl;
+                if(rating[i] > val) {
+                    heap.pop();
+                    heap.push(rating[i]);
+                }
+            }
+        }
+        
+        vector<int> ans;
+        while(!heap.empty()) {
+            //cout<<"top="<<heap.top()<<endl;
+            ans.push_back(posMp[heap.top()]);
+            heap.pop();
+        }
+        return ans;
+    }
+    
+    void update(vector<vector<int>> &F, vector<bool>& flag, int k) {
+        for(int d : F[k]) {
+            if(flag[d]) continue;
+            flag[d] = true;
+            update(F, flag, d);
+        }
+    }
+};
