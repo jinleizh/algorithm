@@ -1,0 +1,39 @@
+class Solution {
+public:
+    /**
+     * @param n: An integer
+     * @return: a list of combination
+     */
+    vector<vector<int>> ans;
+    vector<vector<int>> getFactors(int n) {
+        // write your code here
+        vector<int> items;
+        for(int k = 2; k < n; k++) {
+            if(n % k == 0) {
+                items.push_back(k);
+                //cout<<k<<endl;
+            }
+        }
+        
+        vector<int> path;
+        helper(items, path, n, 1, 0);
+        return ans;
+    }
+    
+    void helper(vector<int>& items, vector<int>& path, long long n, long long sum, int begin) {
+        //cout<<"begin="<<begin<<endl;
+        if(sum > n || begin >= items.size()) return;
+        if(sum == n) {
+            ans.push_back(path);
+            return;
+        }
+        
+        //choose current 
+        path.push_back(items[begin]);
+        helper(items, path, n, sum * items[begin], begin);
+        path.pop_back();
+        
+        //don't choose current
+        helper(items, path, n, sum, begin + 1);
+    }
+};
