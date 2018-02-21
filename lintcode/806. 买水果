@@ -1,0 +1,81 @@
+class Solution {
+public:
+    /**
+     * @param codeList: The codeList
+     * @param shoppingCart: The shoppingCart
+     * @return: The answer
+     */
+    int buyFruits(vector<vector<string>> &codeList, vector<string> &shoppingCart) {
+        // Write your code here
+        stack<string> codes;
+        stack<string> shopCart;
+        for(vector<string> v : codeList) {
+            for(string s : v) {
+                codes.push(s);
+            }
+        }
+        
+        for(string s : shoppingCart) {
+            shopCart.push(s);
+        }
+        
+        bool begin = false;
+        while(!codes.empty() && !shopCart.empty()) {
+            if(codes.top() == shopCart.top() || codes.top() == "anything") {
+                begin = true;
+                codes.pop();
+                shopCart.pop();
+            } else {
+                if(!begin) {
+                    shopCart.pop();
+                } else {
+                    return 0;
+                }
+            }
+        }
+        
+        if(codes.empty()) return 1;
+        return 0;
+    }
+};
+
+public class Solution {
+    /**
+     * @param codeList: The codeList
+     * @param shoppingCart: The shoppingCart
+     * @return: The answer
+     */
+    public int buyFruits(List<List<String>> codeList, List<String> shoppingCart) {
+        // Write your code here
+        Stack<String> codeSt = new Stack<>();
+        Stack<String> shopSt = new Stack<>();
+        
+        for(List<String> item : codeList) {
+            for(String s : item) {
+                codeSt.push(s);
+            }
+        }
+        
+        for(String s : shoppingCart) {
+            shopSt.push(s);
+        }
+        
+        boolean begin = false;
+        while(!codeSt.empty() && !shopSt.empty()) {
+            if(codeSt.peek().compareTo(shopSt.peek()) == 0 ||
+            codeSt.peek().compareTo("anything") == 0) {
+                begin = true;
+                codeSt.pop();
+                shopSt.pop();
+            } else {
+                if(begin) {
+                    return 0;
+                }
+                shopSt.pop();
+            }
+        }
+        
+        if(codeSt.empty()) return 1;
+        return 0;
+    }
+}
