@@ -1,0 +1,87 @@
+class Solution {
+public:
+    vector<string> readBinaryWatch(int num) {
+        vector<string> ans;
+        for(int h = 0; h < 12; h++) {
+            for(int m = 0; m < 60; m++) {
+                bitset<10> val((h << 6) | m);
+                if(val.count() == num) {
+                    string hour = to_string(h);
+                    string minute = m < 10 ? "0" + to_string(m) : to_string(m);
+                    ans.push_back(hour + ":" + minute);
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+class Solution {
+    public List<String> readBinaryWatch(int num) {
+        List<String> ans = new ArrayList<>();
+        for(int h = 0; h < 12; h++) {
+            for(int m = 0; m < 60; m++) {
+                if(Integer.bitCount((h << 6) | m) == num) {
+                    String hour = String.valueOf(h);
+                    String minute = m < 10 ? "0" + String.valueOf(m) : String.valueOf(m);
+                    ans.add(hour + ":" + minute);
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+class Solution {
+public:
+    vector<string> readBinaryWatch(int num) {
+        vector<string> ans;
+        vector<int> vh = {8, 4, 2, 1};
+        vector<int> vm = {32, 16, 8, 4, 2, 1};
+        for(int i = 0; i <= vh.size(); i++) {
+            if(num - i >= 0 && num - i <= vm.size()) {
+                vector<int> hours = get(vh, i);
+                vector<int> mins = get(vm, num - i);
+                for(int h : hours) {
+                    if(h >= 12) continue;
+                    string s = to_string(h) + ":";
+                    for(int m : mins) {
+                        if(m >= 60) continue;
+                        string tmp = s;
+                        if(m < 10) {
+                            tmp += "0" + to_string(m);
+                        } else {
+                            tmp += to_string(m);
+                        }
+                        ans.push_back(tmp);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+    
+    vector<int> get(vector<int>& vec, int cnt) {
+        vector<int> ans;
+        helper(vec, cnt, 0, 0, ans);
+        return ans;
+    }
+    
+    void helper(vector<int>& vec, int cnt, int pos, int val, vector<int>& ans) {
+        if(cnt == 0) {
+            ans.push_back(val);
+            return;
+        }
+        if(pos == vec.size()) return;
+        /*
+        //choose pos
+        helper(vec, cnt - 1, pos + 1, val + vec[pos], ans);
+        //not choose pos
+        helper(vec, cnt, pos + 1, val, ans);
+        */
+        
+        for(int i = pos; i < vec.size(); i++) {
+            helper(vec, cnt - 1, i + 1, val + vec[i], ans);
+        }
+    }
+};
