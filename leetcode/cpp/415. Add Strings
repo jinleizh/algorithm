@@ -1,0 +1,98 @@
+class Solution {
+public:
+    //大数加法
+    string addStrings(string num1, string num2) {
+        int lenA = num1.length();
+        int lenB = num2.length();
+        int len = max(lenA, lenB) + 1;
+        int i = lenA - 1;
+        int j = lenB - 1;
+        int pos = len - 1;
+        int arr[len] = {0};
+        int carry = 0;
+        while(i >= 0 && j >= 0) {
+            int d = num1[i] - '0' + num2[j] - '0' + carry;
+            arr[pos] = d % 10;
+            carry = d / 10;
+            pos--;
+            i--;
+            j--;
+        }
+        
+        while(i >= 0) {
+            int d = num1[i] - '0' + carry;
+            arr[pos] = d % 10;
+            carry = d / 10;
+            i--;
+            pos--;
+        }
+        
+        while(j >= 0) {
+            int d = num2[j] - '0' + carry;
+            arr[pos] = d % 10;
+            carry = d / 10;
+            j--;
+            pos--;
+        }
+        
+        arr[pos] = carry;
+        vector<char> tmp(len, '0');
+        for(int i = 0; i < len; i++) {
+            tmp[i] += arr[i];
+            //cout<<tmp[i]<<" ";
+        }
+        //cout<<endl;
+        
+        string ans(tmp.begin(), tmp.end());
+        //cout<<ans<<endl;
+        if(carry == 0) {
+            return ans.substr(1);
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+    public String addStrings(String num1, String num2) {
+        int lenA = num1.length();
+        int lenB = num2.length();
+        int len = Math.max(lenA, lenB) + 1;
+        int[] arr = new int[len];
+        int i = lenA - 1, j = lenB - 1, pos = len - 1;
+        int carry = 0;
+        while(i >= 0 && j >= 0) {
+            int d = num1.charAt(i) - '0' + num2.charAt(j) - '0' + carry;
+            arr[pos] = d % 10;
+            carry = d / 10;
+            i--;
+            j--;
+            pos--;
+        }
+        
+        while(i >= 0) {
+            int d = num1.charAt(i) - '0' + carry;
+            arr[pos] = d % 10;
+            carry = d / 10;
+            i--;
+            pos--;
+        }
+        
+        while(j >= 0) {
+            int d = num2.charAt(j) - '0' + carry;
+            arr[pos] = d % 10;
+            carry = d / 10;
+            j--;
+            pos--;
+        }
+        
+        arr[pos] = carry;
+        StringBuilder sb = new StringBuilder();
+        int k = 0;
+        if(carry == 0) k++;
+        for(int p = k; p < len; p++) {
+            sb.append(arr[p]);
+        }
+        return sb.toString();
+    }
+}
