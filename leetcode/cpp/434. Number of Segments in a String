@@ -1,0 +1,36 @@
+class Solution {
+    public int countSegments(String s) {
+        if(s.isEmpty()) return 0;
+        String[] result = s.split(" ");
+        int ans = 0;
+        for(String tmp : result) {
+            if(!tmp.isEmpty()) ans++;
+        }
+        return ans;
+    }
+}
+
+class Solution {
+public:
+    int countSegments(string s) {
+        int ans = 0;
+        int n = s.length() - 1;
+        int i = 0;
+        while(i <= n) {
+            bool find = false;
+            while(i <= n && s[i] == ' ') {
+                i++;
+            }
+            
+            while(i <= n && s[i] != ' ') {
+                find = true;
+                i++;
+            }
+            
+            if(find) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
