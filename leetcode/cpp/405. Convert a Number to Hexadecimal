@@ -1,0 +1,62 @@
+class Solution {
+public:
+    string toHex(int num) {
+        if(0 == num) return "0";
+        stack<char> st;
+        int base = 0xf;
+        for(int i = 1; i <= 8; i++) {
+            int data = num & base;
+            if(data >= 10) {
+                st.push('a' + data - 10);
+            } else {
+                st.push('0' + data);
+            }
+            num >>= 4;
+        }
+        
+        string ans;
+        bool first = true;
+        while(!st.empty()) {
+            char head = st.top();
+            if(head == '0' && first) {
+                st.pop();
+                continue;
+            }
+            first = false;
+            st.pop();
+            ans += head;
+        }
+        return ans;
+    }
+};
+
+class Solution {
+    public String toHex(int num) {
+        if(0 == num) return "0";
+        Stack<Character> st = new Stack<>();
+        int base = 0xf;
+        for(int i = 1; i <= 8; i++) {
+            int data = num & base;
+            if(data >= 10) {
+                st.push((char)('a' + data - 10));
+            } else {
+                st.push((char)('0' + data));
+            }
+            num >>= 4;
+        }
+        
+        boolean first = true;
+        StringBuilder sb = new StringBuilder();
+        while(!st.empty()) {
+            char head = st.peek();
+            if(head == '0' && first) {
+                st.pop();
+                continue;
+            }
+            first = false;
+            sb.append(head);
+            st.pop();
+        }
+        return sb.toString();
+    }
+}
