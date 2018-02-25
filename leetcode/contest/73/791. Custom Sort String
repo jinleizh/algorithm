@@ -1,0 +1,26 @@
+class Solution {
+public:
+    string customSortString(string S, string T) {
+        if(S.empty() || T.empty()) return T;
+        int lenS = S.length();
+        int lenT = T.length();
+        int flag[lenT] = {0};
+        string ans;
+        for(char c : S) {
+            for(int i = 0; i < lenT; i++) {
+                if(T[i] == c) {
+                    ans += T[i];
+                    flag[i] = 1;
+                }
+            }
+        }
+        
+        for(int i = 0; i < lenT; i++) {
+            if(flag[i] == 0) {
+                ans += T[i];
+            }
+        }
+        
+        return ans;
+    }
+};
