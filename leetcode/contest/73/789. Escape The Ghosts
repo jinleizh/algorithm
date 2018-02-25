@@ -1,0 +1,12 @@
+class Solution {
+public:
+    bool escapeGhosts(vector<vector<int>>& ghosts, vector<int>& target) {
+        if(target.empty()) return false;
+        int distance = abs(target[0]) + abs(target[1]);
+        for(vector<int> v : ghosts) {
+            int tmp = abs(target[0] - v[0]) + abs(target[1] - v[1]);
+            if(tmp <= distance) return false;
+        }
+        return true;
+    }
+};
