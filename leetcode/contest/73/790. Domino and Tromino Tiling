@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int numTilings(int N) {
+        //这个题dp的递推公式确实比较难想
+        //参考答案 https://cs.stackexchange.com/questions/66658/domino-and-tromino-combined-tiling
+        //dp[n] = dp[n - 1] + dp[n - 2] + 2 * dp[n - 3] + 2 * dp[n - 4] + 2 * dp[n - 5] + ... + 2 * dp[0]
+        //即f(n) = f(n - 1) + f(n - 2) + 2 * f(n - 3) + 2 * f(n - 4) + ... + 2 * f(1) + 2 * f(0)
+        //化简后可以得到f(n) - f(n - 1) = f(n - 1) + f(n - 3) 
+        //f(n) = 2 * f(n - 1) + f(n - 3)
+        int mod = 1e9 + 7;
+        int dp[1001] = {0};
+        dp[0] = 1;
+        dp[1] = 1;
+        dp[2] = 2;
+        for(int i = 3; i <= N; i++) {
+            dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
+            for(int k = i - 3; k >= 0; k--) {
+                dp[i] = (dp[i] + (2 * dp[k]) % mod) % mod;
+            }
+        }
+        return dp[N];
+    }
+};
