@@ -21,3 +21,23 @@ public:
         return dp[N];
     }
 };
+
+class Solution {
+public:
+    int numTilings(int N) {
+        //even - even[i] = even[i - 1] + even[i - 2] + 2 * odd[i - 2]
+        //odd -  odd[i] = odd[i - 1] + even[i - 1]
+        int mod = 1e9 + 7;
+        vector<int> even(N + 1, 0);
+        vector<int> odd(N + 1, 0);
+        even[1] = 1;
+        even[2] = 2;
+        odd[1] = 1;
+        odd[2] = 2;
+        for(int i = 3; i <= N; i++) {
+            even[i] = ((even[i - 1] + even[i - 2]) % mod + (2 * odd[i - 2]) % mod) % mod;
+            odd[i] = (odd[i - 1] + even[i - 1]) % mod;
+        }
+        return even[N];
+    }
+};
