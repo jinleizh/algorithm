@@ -1,0 +1,25 @@
+class Solution {
+    public int dominantIndex(int[] nums) {
+        int len = nums.length;
+        if(1 == len) return 0;
+        int first = 0, sec = 1;
+        if(nums[0] < nums[1]) {
+            first = 1;
+            sec = 0;
+        }
+        for (int i = 2; i < len; i++) {
+            if (nums[i] >= nums[first]) {
+                sec = first;
+                first = i;
+            } else {
+                if (nums[i] > nums[sec]) {
+                    sec = i;
+                }
+            }
+        }
+        if (nums[first] >= 2 * nums[sec]) {
+            return first;
+        }
+        return -1;
+    }
+}
