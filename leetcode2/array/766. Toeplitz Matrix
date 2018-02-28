@@ -1,0 +1,47 @@
+class Solution {
+public:
+    bool isToeplitzMatrix(vector<vector<int>>& matrix) {
+        int row = matrix.size();
+        int col = matrix[0].size();
+        //edge case
+        //if (0 == row || 0 == col) return false;
+        
+        int x = 0, y = 0;
+        for(int i = 0; i < row; i++) {
+            for(int j = 0; j < col; j++) {
+                x = i + 1;
+                y = j + 1;
+                if(isInMatrix(x, y, row, col) && matrix[i][j] != matrix[x][y]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    bool isInMatrix(int x, int y, int row, int col) {
+        return x >= 0 && x < row && y >= 0 && y < col;
+    }
+};
+
+class Solution {
+    public boolean isToeplitzMatrix(int[][] matrix) {
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int x = 0, y = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                x = i + 1;
+                y = j + 1;
+                if (isInMatrix(x, y, row, col) && matrix[i][j] != matrix[x][y]) {
+                   return false; 
+                }
+            }
+        }
+        return true;
+    }
+    
+    private boolean isInMatrix(int x, int y, int row, int col) {
+        return x >= 0 && x < row && y >= 0 && y < col;
+    }
+}
