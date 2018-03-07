@@ -51,3 +51,30 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        unordered_map<int, int> cmp;
+        for(int d : nums) {
+            cmp[d]++;
+        }
+        int ans = 0;
+        if(k < 0) return 0;
+        if(k == 0) {
+            for(auto& it : cmp) {
+                if(it.second >= 2) {
+                    ans++;
+                }
+            }
+        } else {
+            for(auto& it : cmp) {
+                if(cmp.find(it.first + k) != cmp.end()) {
+                    ans++;
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
