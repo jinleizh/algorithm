@@ -1,0 +1,53 @@
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        //brute force time o(n^2) space o(n)
+        int n = nums.size();
+        if(0 == n) return 0;
+        if(k < 0) return 0;
+        int ans = 0;
+        sort(nums.begin(), nums.end());
+        if(k == 0) {
+            int i = 0;
+            int last = 1e7 + 1;
+            int next = 1e7 + 2;
+            while(i < n) {
+                next = nums[i];
+                if(last != next) {
+                    last = next;
+                    i++;
+                } else {
+                    ans++;
+                    while(i < n && nums[i] == last) {
+                        i++;
+                    }
+                }
+            }
+        } else {
+            vector<int> st;
+            int last = 1e7 + 1;
+            int next = 1e7 + 2;
+            int i = 0;
+            while(i < n) {
+                next = nums[i];
+                if(last != next) {
+                    st.push_back(next);
+                    last = next;
+                    i++;
+                } else {
+                    while(i < n && last == nums[i]) {
+                        i++;
+                    }
+                }
+            }
+            for(int i = 0; i < st.size(); i++) {
+                for(int j = i + 1; j < st.size(); j++) {
+                    if(st[j] - st[i] == k) {
+                        ans++;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
