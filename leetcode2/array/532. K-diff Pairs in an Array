@@ -78,3 +78,25 @@ public:
         return ans;
     }
 };
+
+class Solution {
+    public int findPairs(int[] nums, int k) {
+        if(nums == null || nums.length == 0 || k < 0) return 0;
+        HashMap<Integer, Integer> cmp = new HashMap<>();
+        int cnt = 0;
+        for(int d : nums) {
+            cmp.put(d, cmp.getOrDefault(d, 0) + 1);
+        }
+        int ans = 0;
+        if(k == 0) {
+            for(Map.Entry<Integer, Integer> e : cmp.entrySet()) {
+                if(e.getValue() >= 2) ans++;
+            }
+        } else {
+            for(Map.Entry<Integer, Integer> e : cmp.entrySet()) {
+                if(cmp.containsKey(e.getKey() + k)) ans++;
+            }
+        }
+        return ans;
+    }
+}
