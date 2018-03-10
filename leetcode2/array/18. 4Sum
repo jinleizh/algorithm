@@ -1,0 +1,93 @@
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> ans;
+        //cout<<nums.size()<<endl;
+        sort(nums.begin(), nums.end());
+        int n = nums.size() - 3;
+        for(int i = 0; i <= n; i++) {
+            //cout<<"xxx"<<n<<endl;
+            vector<vector<int>> tmp = threeSum(nums, i + 1, target - nums[i]);
+            for(vector<int> v : tmp) {
+                v.push_back(nums[i]);
+                //sort(v.begin(), v.end());
+                ans.push_back(v);
+            }
+        }
+              
+        set<vector<int>> uniq(ans.begin(), ans.end());
+        vector<vector<int>> result(uniq.begin(), uniq.end());
+        return result;
+        //return ans;
+    }
+    
+    vector<vector<int>> threeSum(vector<int>& nums, int start, int target) {
+        vector<vector<int>> ans;
+        int n = nums.size() - 2;
+        for(int i = start; i <= n; i++) { 
+            vector<vector<int>> tmp = twoSum(nums, i + 1, target - nums[i]);
+            for(vector<int> v : tmp) {
+                v.push_back(nums[i]);
+                ans.push_back(v);
+            }
+        }
+        return ans;
+    }
+    
+    vector<vector<int>> twoSum(vector<int>& nums, int start, int target) {
+        unordered_map<int, int> data;
+        vector<vector<int>> ans;
+        for(int i = start; i < nums.size(); i++) {
+            if(data.find(target - nums[i]) != data.end()) {
+                vector<int> tmp;
+                tmp.push_back(target - nums[i]);
+                tmp.push_back(nums[i]);
+                ans.push_back(tmp);
+            } else {
+                data[nums[i]] = i;
+            }
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        unordered_map<int, vector<vector<int>>> twoSum;
+        for(int i = 0; i < nums.size(); i++) {
+            for(int j = i + 1; j < nums.size(); j++) {
+                vector<int> tmp;
+                tmp.push_back(i);
+                tmp.push_back(j);
+                twoSum[nums[i] + nums[j]].push_back(tmp);
+            }
+        }
+        
+        unordered_map<int, int> visited;
+        set<vector<int>> uniq;
+        for(auto& mit : twoSum) {
+            int d = mit.first;
+            if(1 == visited[d]) continue;
+            visited[d] = 1;
+            if(twoSum.find(target - d) == twoSum.end()) continue;
+            visited[target - d] = 1;
+            for(vector<int> v : twoSum[target - d]) {
+                for(vector<int> p : twoSum[d]) {
+                    if(v[0] == p[0] || v[0] == p[1] || v[1] == p[0] || v[1] == p[1]) continue;
+                    vector<int> tmp;
+                    tmp.push_back(nums[v[0]]);
+                    tmp.push_back(nums[v[1]]);
+                    tmp.push_back(nums[p[0]]);
+                    tmp.push_back(nums[p[1]]);
+                    sort(tmp.begin(), tmp.end());
+                    uniq.insert(tmp);
+                }
+            }
+        }
+        
+        vector<vector<int>> ans(uniq.begin(), uniq.end());
+        return ans;
+    }
+};
