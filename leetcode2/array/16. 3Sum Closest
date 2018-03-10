@@ -1,0 +1,81 @@
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        int n = nums.size();
+        int diff = INT_MAX;
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = i + 1; j < n; j++) {
+                for(int k = j + 1; k < n; k++) {
+                    int tmp = nums[i] + nums[j] + nums[k];
+                    if(diff > abs(tmp - target)) {
+                        diff = abs(tmp - target);
+                        ans = tmp;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+//时间复杂度n平方，空间复杂度o(1)
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        int ans = 0;
+        int diff = INT_MAX;
+        int sum = 0;
+        for(int i = 0; i < n - 2; i++) {
+            int j = i + 1;
+            int k = n - 1;
+            while(j < k) {
+                sum = nums[i] + nums[j] + nums[k];
+                if(diff > abs(sum - target)) {
+                    diff = abs(sum - target);
+                    ans = sum;
+                }
+                
+                if(sum > target) {
+                    k--;
+                } else if(sum < target) {
+                    j++;
+                } else {
+                    return ans;
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        int ans = 0;
+        int diff = Integer.MAX_VALUE;
+        int sum = 0;
+        for(int i = 0; i < n; i++) {
+            int j = i + 1;
+            int k = n - 1;
+            while(j < k) {
+                sum = nums[i] + nums[j] + nums[k];
+                if(diff > Math.abs(sum - target)) {
+                    diff = Math.abs(sum - target);
+                    ans = sum;
+                }
+                
+                if(sum > target) {
+                    k--;
+                } else if(sum < target) {
+                    j++;
+                } else {
+                    return ans;
+                }
+            }
+        }
+        return ans;
+    }
+}
