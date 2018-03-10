@@ -91,3 +91,81 @@ public:
         return ans;
     }
 };
+
+
+//利用减枝加速
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> ans;
+        sort(nums.begin(), nums.end());
+        int n = nums.size() - 4;
+        if(n < 0) return ans;
+        int l = nums[0], r = nums[nums.size() - 1];
+        //cout<<r<<endl;
+        if(4 * l > target || 4 * r < target) return ans;
+        int cur = nums[0];
+        for(int i = 0; i <= n; i++) {
+            cur = nums[i];
+            if(i > 0 && cur == nums[i - 1]) {
+                //cout<<"1"<<endl;
+                continue;
+            }
+            if(4 * cur > target) {
+                //cout<<"2"<<endl;
+                continue;
+            }
+            if(cur + 3 * r < target) {
+                //cout<<"3"<<endl;
+                continue;
+            }
+            vector<vector<int>> tmp = threeSum(nums, i + 1, target - nums[i]);
+            for(vector<int> v : tmp) {
+                v.push_back(nums[i]);
+                ans.push_back(v);
+            }
+        }
+              
+        set<vector<int>> uniq(ans.begin(), ans.end());
+        vector<vector<int>> result(uniq.begin(), uniq.end());
+        return result;
+    }
+    
+    vector<vector<int>> threeSum(vector<int>& nums, int start, int target) {
+        vector<vector<int>> ans;
+        int n = nums.size() - 2;
+        int l = nums[start];
+        int r = nums[nums.size() - 1];
+        if(3 * l > target || 3 * r < target) return ans;
+        int cur = nums[start];
+        for(int i = start; i <= n; i++) { 
+            cur = nums[i];
+            if(i > start && cur == nums[i - 1]) continue;
+            if(cur + 2 * r < target) continue;
+            if(cur * 3 > target) continue;
+            vector<vector<int>> tmp = twoSum(nums, i + 1, target - nums[i]);
+            for(vector<int> v : tmp) {
+                v.push_back(nums[i]);
+                ans.push_back(v);
+            }
+        }
+        return ans;
+    }
+    
+    vector<vector<int>> twoSum(vector<int>& nums, int start, int target) {
+        unordered_map<int, int> data;
+        vector<vector<int>> ans;
+        for(int i = start; i < nums.size(); i++) {
+            if(data.find(target - nums[i]) != data.end()) {
+                vector<int> tmp;
+                tmp.push_back(target - nums[i]);
+                tmp.push_back(nums[i]);
+                ans.push_back(tmp);
+            } else {
+                data[nums[i]] = i;
+            }
+        }
+        
+        return ans;
+    }
+};
