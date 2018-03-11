@@ -1,0 +1,102 @@
+//TLE
+class Solution {
+public:
+    int bestRotation(vector<int>& A) {
+        int n = A.size();
+        int ans = -1;
+        int points = 0;
+        int j = 0;
+        for(int p = 0; p < n; p++) {
+            //two points scan
+            int sum = 0;
+            int j = 0;
+            for(int i = p; i < n; i++) {
+                sum += A[i] - j <= 0 ? 1 : 0;
+                j++;
+            }
+            
+            for(int i = 0; i < p; i++) {
+                sum += A[i] - j <= 0 ? 1 : 0;
+                j++;
+            }
+            
+            if(sum > points) {
+                points = sum;
+                ans = p;
+            }
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int bestRotation(vector<int>& A) {
+        //维护一个数组
+        int n = A.size();
+        vector<int> cnt(n, 0);
+        for(int i = 0; i < n; i++) {
+            if(A[i] <= i) {
+                for(int k = 0; k <= i - A[i]; k++) {
+                    cnt[k]++;
+                }
+                for(int k = i + 1; k < n; k++) {
+                    cnt[k]++;
+                }
+            } else {
+                for(int k = i + 1; k <= n + i - A[i] ; k++) {
+                    cnt[k]++;
+                }
+            }
+        }
+        
+        int ans = -1;
+        int maxP = 0;
+        for(int i = 0; i < n; i++) {
+            if(maxP < cnt[i]) {
+                maxP = cnt[i];
+                ans = i;
+            }
+        }
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //因为数据量为20000，所以n平方的解肯定不行
+    //尝试nlogn 和 n的解法
+    //可以找到最初的count值，然后如果能计算出每一次的变动值，那们就变成了复杂度为on的解法
+    //如何记录每次移动的变动值，使用一维数组
+    //因为记录的是相邻两次move的变化值, 具体到每一个元素a[i] 与 i的差值
+    //if a[i] little or equal i, we know when k between 0 and i - a[i], a[i]'s point in these move always 1,
+    //when k = i - a[i] + 1, then a[i]'s point become to 0, and than, until k = i + 1, a[i]'s point become to 1
+    //and until loop finished, so we known ,when k = i - a[i] + 1 and k = i + 1, the total points will change.
+    //so we can compute these positions of each array element, by this way, we get the changed value for each move
+    int bestRotation(vector<int>& A) {
+        int n = A.size();
+        vector<int> change(n, 0);
+        int total = 0;
+        for(int i = 0; i < n; i++) {
+            if(i >= A[i]) total++;
+            if(i >= A[i]) {
+                change[i - A[i] + 1]--;
+                change[i + 1]++;
+            } else {
+                change[i + 1]++;
+                change[n + i - A[i] + 1]--;
+            }
+        }
+        
+        int ans = 0, maxTotal = total;
+        for(int k = 1; k < n; k++) {
+            total += change[k];
+            if(total > maxTotal) {
+                total = maxTotal;
+                ans = k;
+            }
+        }
+        return ans;
+    }
+};
