@@ -42,3 +42,15 @@ public:
         return false;
     }
 };
+
+class Solution {
+public:
+    bool rotateString(string A, string B) {
+        int lena = A.length();
+        int lenb = B.length();
+        if(lena != lenb) return false;
+        string s = A + A;
+        if(s.find(B) != string::npos) return true;
+        return false;
+    }
+};
