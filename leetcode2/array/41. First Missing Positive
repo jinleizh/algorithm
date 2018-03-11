@@ -1,0 +1,40 @@
+class Solution {
+public:
+    //归位 o(1)的操作 数组里有交换
+    int firstMissingPositive(vector<int>& nums) {
+        for(int i = 0; i < nums.size(); i++) {
+            while(nums[i] > 0 && nums[i] <= nums.size() && nums[nums[i] - 1] != nums[i]) {
+                swap(nums[i], nums[nums[i] - 1]);
+            }
+        }
+        
+        for(int i = 0; i < nums.size(); i++) {
+            if(i + 1 != nums[i]) {
+                return i + 1;
+            }
+        }
+        
+        return nums.size() + 1;
+    }
+};
+
+//java里没有swap函数
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        for(int i = 0; i < n; i++) {
+            while(nums[i] > 0 && nums[i] <= n && nums[i] != nums[nums[i] - 1]) {
+                int p = nums[i] - 1;
+                int tmp = nums[i];
+                nums[i] = nums[p];
+                nums[p] = tmp;
+            }
+        }
+        
+        for(int i = 0; i < n; i++) {
+            if(i + 1 != nums[i]) return i + 1;
+        }
+        
+        return n + 1;
+    }
+}
