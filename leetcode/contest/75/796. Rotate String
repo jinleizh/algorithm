@@ -1,0 +1,30 @@
+class Solution {
+public:
+    bool rotateString(string A, string B) {
+        int lena = A.length();
+        int lenb = B.length();
+        if(lena != lenb) return false;
+        if(A == B) return true;
+        string t;
+        for(int i = 0; i < lena; i++) {
+            t = A;
+            reverse(t, 0, i);
+            reverse(t, i + 1, lena - 1);
+            reverse(t, 0, lena - 1);
+            if(t == B) return true;
+        }
+        return false;
+    }
+    
+    void reverse(string& A, int l, int r) {
+        int i = l, j = r;
+        while(i < j && i >= 0 &&  j < A.length()) {
+            char tmp = A[i];
+            A[i] = A[j];
+            A[j] = tmp;
+            i++;
+            j--;
+        }
+    }
+};
+
