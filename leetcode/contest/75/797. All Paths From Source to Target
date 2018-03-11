@@ -1,0 +1,30 @@
+class Solution {
+public:
+    //dfs 无环 
+    vector<vector<int>> ans;
+    vector<int> path;
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+        int n = graph.size();
+        if(1 >= n) return ans;
+        vector<int> flag(n, 0);
+        path.push_back(0);
+        dfs(graph, flag, 0);
+        return ans;
+    }
+    
+    void dfs(vector<vector<int>>& graph, vector<int>& flag, int pos) {
+        if(pos == graph.size() - 1) {
+            ans.push_back(path);
+            return;
+        }
+        
+        for(int d : graph[pos]) {
+            if(flag[d] == 1) continue;
+            flag[d] = 1;
+            path.push_back(d);
+            dfs(graph, flag, d);
+            path.pop_back();
+            flag[d] = 0;
+        }
+    }
+};
