@@ -1,0 +1,90 @@
+//TLE
+class Solution {
+    public boolean canJump(int[] nums) {
+        int n = nums.length;
+        if(0 == n) return false;
+        return dfs(nums, 0, nums[0]);
+    }
+    
+    private boolean dfs(int[] nums, int pos, int val) {
+        if(pos + val >= nums.length - 1) return true;
+        for(int i = pos + 1; i <= pos + val; i++) {
+            boolean ret = dfs(nums, i, nums[i]);
+            if(ret) return true;
+        }
+        return false;
+    }
+}
+
+//stack overflow
+class Solution {
+    public boolean canJump(int[] nums) {
+        int n = nums.length;
+        if(0 == n) return false;
+        HashMap<Integer, Boolean> flag = new HashMap<>();
+        return dfs(nums, 0, nums[0], flag);
+    }
+    
+    private boolean dfs(int[] nums, int pos, int val, HashMap<Integer, Boolean> flag) {
+        if(flag.containsKey(pos)) return flag.get(pos);
+        if(pos + val >= nums.length - 1) {
+            flag.put(pos, true);
+            return true;
+        }
+        for(int i = pos + 1; i <= pos + val; i++) {
+            boolean ret = dfs(nums, i, nums[i], flag);
+            flag.put(i, ret);
+            if(ret) return true;
+        }
+        flag.put(pos, false);
+        return false;
+    }
+}
+
+//TLE C++ 没有stack over flow
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int n = nums.size();
+        if(0 == n) return false;
+        unordered_map<int, bool> flag;
+        return dfs(nums, 0, nums[0], flag);
+    }
+    
+    bool dfs(vector<int>& nums, int pos, int val, unordered_map<int, bool>& flag) {
+        if(flag.find(pos) != flag.end()) {
+            return flag[pos];
+        }
+        
+        if(pos + val >= nums.size() - 1) {
+            flag[pos] = true;
+            return true;
+        }
+        
+        for(int i = pos + 1; i <= pos + val; i++) {
+            bool ret = dfs(nums, i, nums[i], flag);
+            flag[i] = ret;
+            if(ret) return true;
+        }
+        
+        flag[pos] = false;
+        return false;
+    }
+};
+
+//顺序递增 时间复杂度n
+class Solution {
+    public boolean canJump(int[] nums) {
+        int n = nums.length;
+        if(n == 0) return false;
+        int reach = 0;
+        if(reach >= n - 1) return true;
+        for(int i = 0; i < n && i <= reach; i++) {
+            if(i + nums[i] > reach) {
+                reach = i + nums[i];
+                if(reach >= n - 1) return true;
+            }
+        }
+        return false;
+    }
+}
