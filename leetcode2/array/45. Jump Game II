@@ -1,0 +1,47 @@
+class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        dp[n - 1] = 0;
+        for(int i = n - 2; i >= 0; i--) {
+            if(nums[i] == 0) {
+                dp[i] = n + 1;
+                continue;
+            };
+            
+            if(i + nums[i] >= n - 1) {
+                dp[i] = 1;
+            } else {
+                int best = n + 1;
+                for(int j = i + 1; j <= i + nums[i]; j++) {
+                    if(dp[j] > n) continue;
+                    if(best > dp[j] + 1) {
+                        best = dp[j] + 1;
+                    }
+                }
+                dp[i] = best;
+            }
+        }
+        return dp[0];
+    }
+}
+
+class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        int ans = 0;
+        int end = 0, far = 0;
+        for(int i = 0; i < n - 1; i++) {
+            if(i + nums[i] > far) {
+                far = i + nums[i];
+            }
+            
+            if(i == end) {
+                ans++;
+                end = far;
+            }
+        }
+        
+        return ans;
+    }
+}
