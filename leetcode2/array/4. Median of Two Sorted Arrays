@@ -1,0 +1,48 @@
+class Solution {
+    //找第k小的数
+    //find the kth number, we can split the array 
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int lenA = nums1.length;
+        int lenB = nums2.length;
+        int total = lenA + lenB;
+        if(1 == (total & 0x1)) {
+            return findKth(nums1, 0, lenA - 1, nums2, 0, lenB - 1, total / 2 + 1);
+        } else {
+            return (findKth(nums1, 0, lenA - 1, nums2, 0, lenB - 1, total / 2) + findKth(nums1, 0, lenA - 1, nums2, 0, lenB - 1, total / 2 + 1)) / 2;
+        }
+    }
+    
+    public double findKth(int[] nums1, int ls, int le, int[] nums2, int rs, int re, int k) {
+        //we will split this array into two parts, and one part totaly has just k numbers
+        if(ls > le) return nums2[rs + k - 1];
+        if(rs > re) return nums1[ls + k - 1];
+        if(1 == k) {
+            //System.out.println(Math.min(nums1[ls], nums2[rs]));
+            return Math.min(nums1[ls], nums2[rs]);
+        }
+        int lenA = le - ls + 1;
+        int lenB = re - rs + 1;
+        if(lenA > lenB) {
+            return findKth(nums2, rs, re, nums1, ls, le, k);
+        } else {
+            int firstPartLen = Math.min(lenA, k / 2);
+            int secPartLen = k - firstPartLen;
+            int lp = ls + firstPartLen - 1;
+            int rp = rs + secPartLen - 1;
+            //System.out.println("a=" + lp);
+            //System.out.println("b=" + rp);
+            //System.out.println("c=" + k);
+            //System.out.println("d=" + firstPartLen);
+            if(nums1[lp] < nums2[rp]) {
+                return findKth(nums1, lp + 1, le, nums2, rs, rp, k - firstPartLen);
+            } else if(nums1[lp] > nums2[rp]) {
+                //System.out.println("exchange");
+                //System.out.println("e=" + rp + 1);
+                //System.out.println("f=" + re);
+                return findKth(nums1, ls, lp, nums2, rp + 1, re, k - secPartLen);
+            } else {
+                return nums1[lp];
+            }
+        }
+    }
+}
