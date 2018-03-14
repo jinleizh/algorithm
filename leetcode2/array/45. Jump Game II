@@ -45,3 +45,31 @@ class Solution {
         return ans;
     }
 }
+
+
+class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        if(1 >= n) return 0;
+        
+        int ans = 0, i = 0, curFar = 0, nextFar = 0;
+        while(i < n - 1) {
+            if(i + nums[i] >= n - 1) {
+                break;
+            }
+            
+            if(i + nums[i] > nextFar) {
+                nextFar = i + nums[i];
+            }
+            
+            if(i == curFar) {
+                ans++;
+                curFar = nextFar;
+            }
+            
+            i++;
+        }
+        
+        return ans + 1;
+    }
+}
