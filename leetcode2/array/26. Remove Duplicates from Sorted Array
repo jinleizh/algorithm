@@ -28,3 +28,22 @@ class Solution {
         return j + 1;
     }
 }
+
+
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        int n = nums.length;
+        if(n <= 1) return n;
+        int prev = 0;
+        int ans = 1;
+        for(int i = 1; i < n; i++) {
+            if(nums[i] == nums[prev]) {
+                continue;
+            }
+            
+            ans++;
+            nums[++prev] = nums[i];
+        }
+        return ans;
+    }
+}
