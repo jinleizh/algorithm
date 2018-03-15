@@ -79,3 +79,43 @@ class Solution {
         return ans;
     }
 }
+
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int diff = Integer.MAX_VALUE;
+        for(int i = 0; i < n - 2; i++) {
+            int ret = findCloset(nums, i + 1, target - nums[i]);
+            if(Math.abs(diff) > Math.abs(ret)) {
+                diff = ret;
+            }
+        }
+        
+        return target + diff;
+    }
+    
+    int findCloset(int[] nums, int p, int val) {
+        int n = nums.length;
+        int i = p, j = n - 1;
+        int diff = Integer.MAX_VALUE;
+        while(i < j) {
+            int tmp = nums[i] + nums[j];
+            if(tmp > val) {
+                if(Math.abs(diff) > tmp - val) {
+                    diff = tmp - val;
+                }
+                j--;
+            } else if(tmp < val) {
+                if(Math.abs(diff) > val - tmp) {
+                    diff = tmp - val;
+                }
+                i++;
+            } else {
+                diff = 0;
+                break;
+            }
+        }
+        return diff;
+    }
+}
