@@ -1,0 +1,110 @@
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        //find upper bound and lower bound
+        int n = nums.length;
+        int[] ans = {-1, -1};
+        if(n <= 0) return ans;
+        int l = 0, r = n - 1;
+        int up = -1, low = -1;
+        //find upper bound
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(nums[mid] <= target) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        
+        if(nums[r] == target) {
+            up = r;
+        } else if(nums[l] == target) {
+            up = l;
+        } else if(l - 1 >= 0 && nums[l - 1] == target) {
+            up = l - 1;
+        }
+        
+        //find lower bound
+        l = 0;
+        r = n - 1;
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(nums[mid] >= target) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        
+        if(nums[l] == target) {
+            low = l;
+        } else if(nums[r] == target) {
+            low = r;
+        } else if(r + 1 <= n - 1 && nums[r + 1] == target) {
+            low = r + 1;
+        }
+        
+        ans[0] = low;
+        ans[1] = up;
+        return ans;
+    }
+}
+
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<int> ans = {-1, -1};
+        if(n <= 0) return ans;
+        
+        int upper = -1, lower = -1;
+        //find upper bound
+        int l = 0, r = n - 1;
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(nums[mid] == target) {
+                l = mid;
+            } else if(nums[mid] > target) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        
+        if(nums[r] == target) {
+            upper = r;
+        } else if(nums[l] == target) {
+            upper = l;
+        } else if(l - 1 >= 0 && nums[l - 1] == target) {
+            upper = l - 1;
+        }
+        
+        if(-1 == upper) return ans;
+        
+        //find lower bound
+        l = 0;
+        r = n - 1;
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(nums[mid] == target) {
+                r = mid;
+            } else if(nums[mid] > target) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        
+        if(nums[l] == target) {
+            lower = l;
+        } else if(nums[r] == target) {
+            lower = r;
+        } else if(r + 1 < n && nums[r + 1] == target) {
+            lower = r + 1;
+        }
+        
+        ans[0] = lower;
+        ans[1] = upper;
+        return ans;
+    }
+};
