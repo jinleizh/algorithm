@@ -41,3 +41,40 @@ class Solution {
         }
     }
 }
+
+class Solution {
+    public void nextPermutation(int[] nums) {
+        //want to find next asc array, so we shoud find first down point,we will find this from end to start
+        //1.find down point
+        int n = nums.length;
+        if(n <= 1) return;
+        
+        int i = n - 1;
+        for(; i >= 1; i--) {
+            if(nums[i] > nums[i - 1]) break;
+        }
+        if(i == 0) {
+            int l = 0, r = n - 1;
+            while(l < r) {
+                int tmp = nums[l];
+                nums[l] = nums[r];
+                nums[r] = tmp;
+                l++;
+                r--;
+            }
+        } else {       
+            //2.exchange
+            int j = n - 1;
+            for(; j >= i; j--) {
+                if(nums[j] > nums[i - 1]) break;
+            }
+            
+            int tmp = nums[i- 1];
+            nums[i - 1] = nums[j];
+            nums[j] = tmp;
+            
+            //3.sort
+            Arrays.sort(nums, i, n);
+        }
+    }
+}
