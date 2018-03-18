@@ -1,0 +1,33 @@
+class Solution {
+    public int minSwap(int[] A, int[] B) {
+        int keep = 0;
+        int swap = 1;
+        int n = A.length;
+        int nkeep = 100000, nswap = 100000;
+        for(int i = 1; i < n; i++) {
+            if(A[i] > A[i - 1] && B[i] > B[i - 1]) {
+                nkeep = Math.min(nkeep, keep);
+            }
+            
+            if(A[i] > B[i - 1] && B[i] > A[i - 1]) {
+                nswap = Math.min(nswap, keep + 1);
+            }
+            
+            //System.out.println("1. nkeep=" + nkeep + " nswap=" + swap);
+            if(A[i] > B[i - 1] && B[i] > A[i - 1]) {
+                nkeep = Math.min(nkeep, swap);
+            }
+            
+            if(A[i] > A[i - 1] && B[i] > B[i - 1]) {
+                nswap = Math.min(nswap, swap + 1);
+            }
+            
+            //System.out.println("2. nkeep=" + nkeep + " nswap=" + swap);
+            keep = nkeep;
+            swap = nswap;
+            nkeep = 10000;
+            nswap = 10000;
+        }
+        return Math.min(swap, keep);
+    }
+}
