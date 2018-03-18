@@ -1,0 +1,91 @@
+class Solution {
+public:
+    //find sub graph which doesn't have cycle
+    //so we can use topological order
+    //i will give two solution, forward and backward
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        //backward method
+        //start from nodes that have 0 out degree
+        queue<int> que;
+        int nodeNum = graph.size();
+        vector<int> inDegree(nodeNum, 0);
+        for(int i = 0; i < nodeNum; i++) {
+            inDegree[i] = graph[i].size();
+            if(inDegree[i] == 0) {
+                que.push(i);
+            }
+        }
+        vector<vector<int>> newGraph(nodeNum, vector<int>());
+        for(int i = 0; i < nodeNum; i++) {
+            for(int j : graph[i]) {
+                newGraph[j].push_back(i);
+            }
+        }
+        
+        vector<int> ans;
+        while(!que.empty()) {
+            int p = que.front();
+            ans.push_back(p);
+            que.pop();
+            for(int k : newGraph[p]) {
+                --inDegree[k];
+                if(inDegree[k] == 0) {
+                    que.push(k);
+                }
+            }
+        }
+        
+        sort(ans.begin(), ans.end());
+        return ans;
+        
+        //forward method
+        //start from nodes that have 0 in degree
+    }
+};
+
+class Solution {
+public:
+    //这道题，前向遍历不行，因为入度为0的点，跟出度为0的点不同
+    //前向遍历是把入度为0的点当解了，但这里入度为0的点，未必是解，因为它的出度可能有很多，与题目要求的终止解点出度为0不符合
+    //入度不为0的节点，也未必不是解，因为它的出度可能是0
+    //所以按照题意，从出度为0的点开始发向拓扑，才能得到正确的解，因为出度为0的点，才是终点
+    //以这些点为起点返向拓扑出符合条件的非环结果
+    //find sub graph which doesn't have cycle
+    //so we can use topological order
+    //i will give two solution, forward and backward
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        //backward method
+        //start from nodes that have 0 out degree
+        queue<int> que;
+        int nodeNum = graph.size();
+        vector<int> inDegree(nodeNum, 0);
+        for(int i = 0; i < nodeNum; i++) {
+            inDegree[i] = graph[i].size();
+            if(inDegree[i] == 0) {
+                que.push(i);
+            }
+        }
+        vector<vector<int>> newGraph(nodeNum, vector<int>());
+        for(int i = 0; i < nodeNum; i++) {
+            for(int j : graph[i]) {
+                newGraph[j].push_back(i);
+            }
+        }
+        
+        vector<int> ans;
+        while(!que.empty()) {
+            int p = que.front();
+            ans.push_back(p);
+            que.pop();
+            for(int k : newGraph[p]) {
+                --inDegree[k];
+                if(inDegree[k] == 0) {
+                    que.push(k);
+                }
+            }
+        }
+        
+        sort(ans.begin(), ans.end());
+        return ans;
+    }
+};
