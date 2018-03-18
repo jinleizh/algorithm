@@ -1,0 +1,31 @@
+class Solution {
+public:
+    //we can solve it by recursive
+    vector<vector<int>> ans;
+    vector<int> path;
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        int n = candidates.size();
+        if(n <= 0) return ans;
+        for(int i = 0; i < n; i++) {
+            dfs(candidates, i, n, target);
+        }
+        return ans;
+    }
+    
+    //the results that are behgin with candidates[pos]
+    void dfs(vector<int>& candidates, int pos, int end, int target) {
+        int cand = candidates[pos];
+        if(cand > target) return;
+        if(cand == target) {
+            path.push_back(cand);
+            ans.push_back(path);
+            path.pop_back();
+            return;
+        }
+        path.push_back(cand);
+        for(int i = pos; i < end; i++) {
+            dfs(candidates, i, end, target - cand);
+        }
+        path.pop_back();
+    }
+};
