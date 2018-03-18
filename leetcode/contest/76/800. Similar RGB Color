@@ -1,0 +1,67 @@
+class Solution {
+public:
+    string similarRGB(string color) {
+        string ans = "#";
+        for(int i = 1; i <= 3; i++) {
+            ans += get(color, 2 * i - 1, 2 * i);
+        }
+        return ans;
+    }
+    
+    string get(string& color, int l, int r) {
+        string ans;
+        char lc = color[l];
+        char rc = color[r];
+        if(lc == rc) {
+            return ans + lc + rc;
+        }
+        
+        int vl = getVal(lc);
+        int vr = getVal(rc);
+        
+        int val = vl * 16 + vr;
+        int prev, next;
+        if(vl - 1 < 0) {
+            prev = 15 * 16 + 15;
+        } else {
+            prev = (vl - 1) * 16 + (vl - 1);
+        }
+        
+        if(vl + 1 > 15) {
+            next = 0;
+        } else {
+            next = (vl + 1) * 16 + (vl + 1);
+        }
+        int cur = vl * 16 + vl;
+        
+        if(abs(val - prev) <= abs(val - next)) {
+            if(abs(val - prev) <= abs(val - cur)) {
+                return ans + getChar(vl - 1) + getChar(vl - 1);
+            } else {
+                return ans + lc + lc;
+            }
+        } else {
+            if(abs(val - next) <= abs(val - cur)) {
+                return ans + getChar(vl + 1) + getChar(vl + 1);
+            } else {
+                return ans + lc + lc;
+            }
+        }
+    }
+    
+    int getVal(char c) {
+        if(c <= '9') {
+            return c - '0';
+        }
+        
+        return c - 'a' + 10;
+    }
+    
+    char getChar(int v) {
+        if(v <= 9) {
+            return v + '0';
+        }
+        
+        return v - 10 + 'a';
+    }
+};
