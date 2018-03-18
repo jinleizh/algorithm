@@ -1,0 +1,37 @@
+class Solution {
+public:
+    vector<vector<int>> ans;
+    vector<int> path;
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        int n = candidates.size();
+        if(n <= 0) return ans;
+        sort(candidates.begin(), candidates.end());
+        int prev = -1;
+        for(int i = 0; i < n; i++) {
+            if(candidates[i] == prev) continue;
+            prev = candidates[i];
+            dfs(candidates, i, n, target);
+        }
+        return ans;
+    }
+    
+    void dfs(vector<int>& candidates, int pos, int end, int target) {
+        int cand = candidates[pos];
+        if(cand > target) return;
+        if(cand == target) {
+            path.push_back(cand);
+            ans.push_back(path);
+            path.pop_back();
+            return;
+        }
+        
+        path.push_back(cand);
+        int prev = -1;
+        for(int i = pos + 1; i < end; i++) {
+            if(candidates[i] == prev) continue;
+            prev = candidates[i];
+            dfs(candidates, i, end, target - cand);
+        }
+        path.pop_back();
+    }
+};
