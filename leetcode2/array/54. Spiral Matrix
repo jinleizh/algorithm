@@ -1,0 +1,81 @@
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        //four direction
+        List<Integer> ans = new ArrayList<Integer>();
+        int left, right, top, bottom;
+        int row = matrix.length;
+        if(row < 1) return ans;
+        int col = matrix[0].length;
+        left = 0;
+        right = col - 1;
+        top = 0;
+        bottom = row - 1;
+        while(left <= right && top <= bottom) {
+            //top
+            for(int j = left; j <= right; j++) {
+                ans.add(matrix[top][j]);
+            }
+            //right
+            for(int i = top + 1; i < bottom; i++) {
+                ans.add(matrix[i][right]);
+            }
+            //bottom
+            if(top < bottom) {
+                for(int j = right; j >= left; j--) {
+                    ans.add(matrix[bottom][j]);
+                }
+            }
+            //left
+            if(left < right) {
+                for(int i = bottom - 1; i > top; i--) {
+                    ans.add(matrix[i][left]);
+                }
+            }
+            
+            top++;
+            bottom--;
+            left++;
+            right--;
+        }
+        return ans;
+    }
+}
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> ans;
+        int row = matrix.size();
+        if(row < 1) return ans;
+        int col = matrix[0].size();
+        int left = 0, right = col - 1, top = 0, bottom = row - 1;
+        while(left <= right && top <= bottom) {
+            //top
+            for(int j = left; j <= right; j++) {
+                ans.push_back(matrix[top][j]);
+            }
+            //left
+            for(int i = top + 1; i < bottom; i++) {
+               ans.push_back(matrix[i][right]);
+            }
+            //bottom
+            if(top < bottom) {
+                for(int j = right; j >= left; j--) {
+                    ans.push_back(matrix[bottom][j]);
+                }
+            }
+            //right
+            if(left < right) {
+                for(int i = bottom - 1; i > top; i--) {
+                    ans.push_back(matrix[i][left]);
+                }
+            }
+            
+            top++;
+            bottom--;
+            left++;
+            right--;
+        }
+        return ans;
+    }
+};
