@@ -1,0 +1,47 @@
+class Solution {
+public:
+    vector<int> plusOne(vector<int>& digits) {
+        int n = digits.size();
+        vector<int> ans;
+        if(n <= 0) return ans;
+        
+        int carry = 1;
+        for(int i = n - 1; i >= 0; i--) {
+            int tmp = digits[i] + carry;
+            digits[i] = tmp % 10;
+            carry = tmp / 10;
+        }
+        if(carry == 0) {
+            return digits;
+        }
+        
+        ans.push_back(carry);
+        for(int d : digits) {
+            ans.push_back(d);
+        }
+        return ans;
+    }
+};
+
+class Solution {
+    public int[] plusOne(int[] digits) {
+        int n = digits.length;
+        int carry = 1;
+        for(int i = n - 1; i >= 0; i--) {
+            int tmp = digits[i] + carry;
+            carry = tmp / 10;
+            digits[i] = tmp % 10;
+        }
+        
+        if(carry > 0) {
+            int[] ans = new int[n + 1];
+            ans[0] = carry;
+            for(int i = 1; i < n + 1; i++) {
+                ans[i] = digits[i - 1];
+            }
+            return ans;
+        }
+        
+        return digits;
+    }
+}
