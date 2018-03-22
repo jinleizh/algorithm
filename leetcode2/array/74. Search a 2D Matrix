@@ -45,3 +45,28 @@ public:
         return false;
     }
 };
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int row = matrix.size();
+        if(row <= 0) return false;
+        int col = matrix[0].size();
+        if(col <= 0) return false;
+        int total = row * col - 1;
+        int l = 0, r = total;
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(matrix[mid / col][mid % col] == target) return true;
+            if(matrix[mid / col][mid % col] < target) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        
+        if(matrix[l / col][l % col] == target) return true;
+        if(matrix[r / col][r % col] == target) return true;
+        return false;
+    }
+};
