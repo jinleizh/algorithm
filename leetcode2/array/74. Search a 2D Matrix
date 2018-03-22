@@ -1,0 +1,47 @@
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        //binary search the last column
+        int row = matrix.size();
+        if(row <= 0) return false;
+        int col = matrix[0].size();
+        if(col <= 0) return false;
+        
+        int l = 0, r = row - 1;
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(matrix[mid][col - 1] == target) return true;
+            if(matrix[mid][col - 1] < target) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        
+        if(matrix[l][col - 1] == target) return true;
+        if(matrix[l][col - 1] > target) {
+            return bs(matrix[l], 0, col - 1, target);
+        } else {
+            if(matrix[r][col - 1] == target) return true;
+            if(matrix[r][col - 1] > target) {
+                return bs(matrix[r], 0, col - 1, target);
+            }
+            return false;
+        }
+    }
+    
+    bool bs(vector<int> nums, int l, int r, int target) {
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(nums[mid] == target) return true;
+            if(nums[mid] < target) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        
+        if(target == nums[l] || target == nums[r]) return true;
+        return false;
+    }
+};
