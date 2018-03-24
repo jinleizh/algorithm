@@ -1,0 +1,51 @@
+class Solution {
+public:
+    //dfs
+    bool exist(vector<vector<char>>& board, string word) {
+        int len = word.size();
+        if(0 == len) return true;
+        int row = board.size();
+        if(row <= 0) return false;
+        int col = board[0].size();
+        if(col <= 0) return false;
+        
+        vector<vector<int>> visited(row, vector<int>(col, 0));
+        for(int i = 0; i < row; i++) {
+            for(int j = 0; j < col; j++) {
+                int pos = 0;
+                if(board[i][j] == word[pos]) {
+                    visited[i][j] = 1;
+                    bool ret = find(word, i, j, pos + 1, board, visited);
+                    if(ret) return true;
+                    visited[i][j] = 0;
+                }
+            }
+        }
+        return false;
+    }
+    
+    bool find(string word, int x, int y, int pos, vector<vector<char>>& board, vector<vector<int>>& visited) {
+        int len = word.size();
+        int row = board.size();
+        int col = board[0].size();
+        if(pos == len) return true;
+        int dx[4] = {0, 0, -1, 1};
+        int dy[4] = {1, -1, 0, 0};
+        int tx = 0, ty = 0;
+        for(int k = 0; k < 4; k++) {
+            tx = x + dx[k];
+            ty = y + dy[k];
+            if(isInGrid(tx, ty, row, col) && visited[tx][ty] == 0 && word[pos] == board[tx][ty]) {
+                visited[tx][ty] = 1;
+                bool ret = find(word, tx, ty, pos + 1, board, visited);
+                if(ret) return true;
+                visited[tx][ty] = 0;
+            }
+        }
+        return false;
+    }
+    
+    bool isInGrid(int x, int y, int row, int col) {
+        return x >= 0 && x < row && y >= 0 && y < col;
+    }
+};
