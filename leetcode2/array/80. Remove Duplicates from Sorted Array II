@@ -1,0 +1,39 @@
+class Solution {
+public:
+    //we can use space
+    int removeDuplicates(vector<int>& nums) {
+        /*
+        map<int, int> cnt;
+        for(int d : nums) {
+            cnt[d]++;
+        }
+        
+        int ans = 0;
+        int i = 0;
+        for(auto& it : cnt) {
+            if(it.second >= 2) {
+                ans += 2;
+                nums[i++] = it.first;
+                nums[i++] = it.first;
+            } else {
+                ans++;
+                nums[i++] = it.first;
+            }
+        }
+    
+        return ans;
+        */
+        
+        //we can't use space
+        int n = nums.size();
+        if(n <= 2) return n;
+        
+        int j = 2;
+        for(int i = 2; i < nums.size(); i++) {
+            if(nums[i] == nums[j - 1] && nums[i] == nums[j - 2]) continue;
+            nums[j++] = nums[i];
+        }
+        
+        return j;
+    }
+};
