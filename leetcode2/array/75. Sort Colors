@@ -16,3 +16,27 @@ public:
         }
     }
 };
+
+class Solution {
+public:
+    //分割点的起点和终点
+    void sortColors(vector<int>& nums) {
+        int n = nums.size();
+        int oneStart = 0, oneEnd = n - 1;
+        for(int i = oneStart; i <= oneEnd; i++) {
+            if(nums[i] == 1) continue;
+            if(nums[i] == 0) {
+                int tmp = nums[i];
+                nums[i] = nums[oneStart];
+                nums[oneStart] = tmp;
+                oneStart++;
+            } else {
+                int tmp = nums[i];
+                nums[i] = nums[oneEnd];
+                nums[oneEnd] = tmp;
+                oneEnd--;
+                i--;
+            }
+        }
+    }
+};
