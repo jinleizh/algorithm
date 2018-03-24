@@ -91,3 +91,20 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = nums.size();
+        int k = pow(2, n);
+        vector<vector<int>> ans(k, vector<int>());
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < k; j++) {
+                if(j >> i & 1) {
+                    ans[j].push_back(nums[i]);
+                }
+            }
+        }
+        return ans;
+    }
+};
