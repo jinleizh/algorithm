@@ -1,0 +1,59 @@
+class Solution {
+public:
+    vector<vector<int>> ans;
+    vector<int> path;
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 0) return ans;
+        //以第一个数开头 以第二个数开头 。。。 以第n个数开头
+        ans.push_back(path);
+        for(int i = 0; i < n; i++) {
+            dfs(nums, i, n);
+        }
+        return ans;
+    }
+    
+    void dfs(vector<int> &nums, int start, int end) {
+        if(start == end) {
+            ans.push_back(path);
+            return;
+        }
+        
+        path.push_back(nums[start]);
+        //以第一个数开头 以第二个数开头 。。。 以第n个数开头
+        for(int i = start + 1; i <= end; i++) {
+            dfs(nums, i, end);
+        }
+        path.pop_back();
+    }
+};
+
+class Solution {
+    public List<List<Integer>> ans = new ArrayList<List<Integer>>();
+    public List<Integer> path = new ArrayList<Integer>();
+    public List<List<Integer>> subsets(int[] nums) {
+        int n = nums.length;
+        if(0 == n) {
+            return ans;
+        }
+        ans.add(path);
+        for(int i = 0; i < n; i++) {
+            dfs(nums, i, n);
+        }
+        return ans;
+    }
+    
+    void dfs(int[] nums, int start, int end) {
+        if(start == end) {
+            List<Integer> tmp = new ArrayList<>(path);
+            ans.add(tmp);
+            return;
+        }
+        
+        path.add(nums[start]);
+        for(int i = start + 1; i <= end; i++) {
+            dfs(nums, i, end);
+        }
+        path.remove(path.size() - 1);
+    }
+}
