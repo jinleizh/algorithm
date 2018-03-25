@@ -1,0 +1,45 @@
+class Solution {
+public:
+    //avg case o(logN) worse case o(N)
+    bool search(vector<int>& nums, int target) {
+        int n = nums.size();
+        return binSearch(nums, 0, n - 1, target);
+    }
+    
+    bool binSearch(vector<int>& nums, int l, int r, int target) {
+        while(l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if(nums[mid] == target) return true;
+            if(nums[mid] > nums[r]) {
+                if(target > nums[r]) {
+                    if(nums[mid] > target) {
+                        r = mid;
+                    } else {
+                        l = mid;
+                    }
+                } else {
+                    l = mid;
+                }
+            } else if(nums[mid] < nums[r]) {
+                if(target > nums[r]) {
+                    r = mid;
+                } else {
+                    if(nums[mid] > target) {
+                        r = mid;
+                    } else {
+                        l = mid;
+                    }
+                }
+            } else {
+                r--;
+            }
+        }
+        
+        if(l >= 0 && r >= 0) {
+            if(nums[l] == target) return true;
+            if(nums[r] == target) return true;
+        }
+        
+        return false;
+    }
+};
