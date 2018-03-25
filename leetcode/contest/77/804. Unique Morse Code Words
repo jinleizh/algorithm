@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int uniqueMorseRepresentations(vector<string>& words) {
+        set<string> ans;
+        string dict[26] = {".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."};
+        for(string s : words) {
+            string tmp = "";
+            for(char c : s) {
+                tmp += dict[c - 'a'];
+            }
+            ans.insert(tmp);
+        }
+        return ans.size();
+    }
+};
