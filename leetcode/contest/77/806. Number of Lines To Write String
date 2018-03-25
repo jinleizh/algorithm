@@ -1,0 +1,22 @@
+class Solution {
+public:
+    vector<int> numberOfLines(vector<int>& widths, string S) {
+        vector<int> ans;
+        vector<int> cnt(26, 0);
+        int line = 1;
+        int total = 0;
+        for(char c : S) {
+            int idx = c - 'a';
+            if(total + widths[idx] > 100) {
+                total = widths[idx];
+                line++;
+            } else {
+                total += widths[idx];
+            }
+        }
+        
+        ans.push_back(line);
+        ans.push_back(total);
+        return ans;
+    }
+};
