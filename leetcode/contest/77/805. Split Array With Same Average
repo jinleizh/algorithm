@@ -88,3 +88,41 @@ public:
         return false;
     }
 };
+
+class Solution {
+public:
+    //dp[k][sum] 是否存在长度为k的解
+    //dp[k][sum] = dp[k - 1][sum -]
+    bool splitArraySameAverage(vector<int>& A) {
+        int n = A.size();
+        vector<vector<int>> dp(31, vector<int>(300001, 0));
+        dp[0][0] = 1;
+        int cnt = 0;
+        int sum = 0;
+        int total = 0;
+        for(int d : A) {
+            total += d;
+        }
+        
+        for(int i = 0; i < n; i++) {
+            int cur = A[i];
+            for(int j = cnt; j >= 0; j--) {
+                for(int k = sum; k >= 0; k--) {
+                    if(dp[j][k]) {
+                        dp[j + 1][k + cur] = 1;
+                    }
+                }
+            }
+            cnt++;
+            sum += cur;
+        }
+
+        for(int k = 1; k < n; k++) {
+            if(total * k % n != 0) continue;
+            int target = total * k / n;
+            if(dp[k][target]) return true;
+        }
+        
+        return false;
+    }
+};
