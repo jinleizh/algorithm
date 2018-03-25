@@ -52,3 +52,39 @@ public:
         return false;
     }
 };
+
+
+class Solution {
+public:
+    //使用了k sum，但是由于使用的是dp的方式，只是把dp的求个数转变为了bool值
+    //结果tle了，发现是最内层sum的循环太耗时间了，尽管对循环范围做了优化，还是没有减小数量级
+    //所以需要采用其他方式来做
+    //total/n = Asum/k + Bsum/n-k
+    //假设Asum是数组长度小的一方,则1<=k<=n/2
+    //有因为Asum和Bsum为整数，所以有 total*k % n == 0 total*(n - k) % n == 0
+    //得到符合条件的k之后，再进行计算
+    bool splitArraySameAverage(vector<int>& A) {
+        int n = A.size();
+        int total = 0;
+        for(int d : A) {
+            total += d;
+        }
+        
+        for(int k = 1; k <= n / 2; k++) {
+            if((total * k) % n != 0 || (total * (n - k)) % n != 0) continue;
+            bool ret = find(A, 0, k, (total * k) / n);
+            if(ret) return true;
+        }
+        
+        return false;
+    }
+    
+    bool find(vector<int>& A, int idx, int level, int target) {
+        if(0 == level) return 0 == target;
+        for(int i = idx; i < A.size(); i++) {
+            bool ret = find(A, i + 1, level - 1, target - A[i]);
+            if(ret) return true;
+        }
+        return false;
+    }
+};
