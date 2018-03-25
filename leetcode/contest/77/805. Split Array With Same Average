@@ -1,0 +1,54 @@
+//TLE
+class Solution {
+public:
+    bool splitArraySameAverage(vector<int>& A) {
+        //find kth sum
+        double diff = 1e-6;
+        int n = A.size();
+        int total = 0;
+        int curMax = 0;
+        int curMin = INT_MAX;
+        for(int d : A) {
+            total += d;
+            if(d > curMax) {
+                curMax = d;
+            }
+            
+            if(d < curMin) {
+                curMin = d;;
+            }
+        }
+        
+        vector<vector<vector<bool>>> dp(31, vector<vector<bool>>(31, vector<bool>(300001, false)));
+        for(int i = 1; i <= n; i++) {
+            dp[0][i][0] = true;
+            for(int j = n; j >= i; j--) {
+                dp[j][1][A[i - 1]] = true;
+            }
+        }
+        
+        double avg = (double)total / n;
+        for(int j = 2; j < n; j++) {
+            for(int i = j; i <= n; i++) {
+                for(int s = curMin * j; s <= 300000 && s <= total && s <= curMax * j; s++) {
+                    dp[i][j][s] = dp[i - 1][j][s];
+                    if(s >= A[i - 1]) {
+                        dp[i][j][s] = dp[i][j][s] || dp[i - 1][j - 1][s - A[i - 1]];
+                    }
+
+                    if(isInt(j * avg) && s == (int)(j * avg)) {
+                        int target = (int)(j * avg);
+                        if(dp[i][j][target]) return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    bool isInt(double d) {
+        if(abs(d - (int)d) <= 1e-6) return true;
+        return false;
+    }
+};
