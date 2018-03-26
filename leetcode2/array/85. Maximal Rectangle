@@ -1,0 +1,80 @@
+class Solution {
+    //思路，以当前高度，寻找左右两侧的宽度
+    //当前高度只和上一层有关，宽度分左侧和右侧，当前的值也是只同上一层的有关
+    public int maximalRectangle(char[][] matrix) {
+        int row = matrix.length;
+        if(row == 0) return 0;
+        int col = matrix[0].length;
+        if(col == 0) return 0;
+        int[] height = new int[col];
+        int[] left = new int[col];
+        int[] right = new int[col];
+        
+        int ans = 0;
+        for(int i = 0; i < row; i++) {
+            for(int j = 0; j < col; j++) {
+                //calc height
+                if(matrix[i][j] == '1') {
+                    height[j]++;
+                } else {
+                    height[j] = 0;
+                }
+                //System.out.println("height[i]=" + height[j]);
+            }
+            
+            //calc rectange size
+            int ret = calc(height);
+            if (ret > ans) {
+                ans = ret;
+            } 
+        }
+        return ans;
+    }
+    
+    int calc(int[] height) {
+        //寻找当前高度求对应的左右边界
+        int n = height.length;
+        int left = -1, right = n;
+        int[] la = new int[n];
+        for(int i = 0; i < n; i++) {
+            la[i] = -1;
+        }
+        int[] ra = new int[n];
+        for(int i = 0; i < n; i++) {
+            ra[i] = n;
+        }
+        //find left
+        for(int i = 1; i < n; i++) {
+            int p = i - 1;
+            while(p >= 0 && height[i] <= height[p]) {
+                p = la[p];
+            }
+            la[i] = p;
+        }
+        
+        //find right
+        for(int i = n - 2; i >= 0; i--) {
+            int p = i + 1;
+            while(p < n && height[i] <= height[p]) {
+                p = ra[p];
+            }
+            ra[i] = p;
+        }
+        
+        //cala size
+        int ans = 0, ret = 0;
+        for (int i = 0; i < n; i++) {
+            ret = (ra[i] - la[i] - 1) * height[i];
+            /*
+            System.out.println(ret);
+            System.out.println(ra[i]);
+            System.out.println(la[i]);
+            System.out.println(height[i]);
+            */
+            if (ret > ans) {
+                ans = ret;
+            }
+        }
+        return ans;
+    }
+}
