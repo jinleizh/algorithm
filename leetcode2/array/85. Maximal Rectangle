@@ -78,3 +78,61 @@ class Solution {
         return ans;
     }
 }
+
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        //进一步优化的方法
+        int row = matrix.length;
+        if (0 == row) return 0;
+        int col = matrix[0].length;
+        if (0 == col) return 0;
+        int[] height = new int[col];
+        int[] left = new int[col];
+        for(int i = 0; i < col; i++) {
+            left[i] = -1;
+        }
+        int[] right = new int[col];
+        for(int i = 0; i < col; i++) {
+            right[i] = col;
+        }
+        int ans = 0;
+        for(int i = 0; i < row; i++) {
+            for(int j = 0; j < col; j++) {
+                if(matrix[i][j] == '1') {
+                    height[j]++;
+                } else {
+                    height[j] = 0;
+                }
+                //System.out.println("height[j]=" + height[j]);
+            }
+            
+            int beforeOnePos = -1;
+            for(int j = 0; j < col; j++) {
+                if(matrix[i][j] == '0') {
+                    left[j] = -1;
+                    beforeOnePos = j;
+                } else {
+                    left[j] = Math.max(left[j], beforeOnePos);
+                }
+            }
+            
+            int afterOnePos = col;
+            for(int j = col - 1; j >= 0; j--) {
+                if(matrix[i][j] == '0') {
+                    right[j] = col;
+                    afterOnePos = j;
+                } else {
+                    right[j] = Math.min(right[j], afterOnePos);
+                }
+            }
+            
+            for(int j = 0; j < col; j++) {
+                int ret = (right[j] - left[j] - 1) * height[j];
+                if(ret > ans) {
+                    ans = ret;
+                }
+            }
+        }
+        return ans;
+    }
+}
