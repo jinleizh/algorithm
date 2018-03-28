@@ -36,3 +36,38 @@ public:
         return root;
     }
 };
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int m = preorder.length;
+        int n = inorder.length;
+        if (m != n) return null;
+        if (m == 0) return null;
+        return dfs(preorder, 0, m - 1, inorder, 0, n - 1);
+    }
+    
+    TreeNode dfs(int[] preorder, int ls, int le, int[] inorder, int rs, int re) {
+        if (ls > le || rs > re) return null;
+        TreeNode root = new TreeNode(preorder[ls]);
+        int pos = 0;
+        for (int i = rs; i <= re; i++) {
+            if (inorder[i] == preorder[ls]) {
+                pos = i;
+                break;
+            }
+        }
+        int leftPart = pos - rs;
+        root.left = dfs(preorder, ls + 1, ls + leftPart, inorder, rs, pos - 1);
+        root.right = dfs(preorder, ls + leftPart + 1, le, inorder, pos + 1, re);
+        return root;
+    }
+}
