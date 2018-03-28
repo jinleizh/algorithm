@@ -33,3 +33,34 @@ class Solution {
         }
     }
 }
+
+
+class Solution {
+    //改用动态规划，类似求最大最小，同时又不允许变更元素顺序的，可以往dp的方向考虑下
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (null == triangle) return 0;
+        int row = triangle.size();
+        if (0 == row) return 0;
+        int col = triangle.get(0).size();
+        if (0 == col) return 0;
+        
+        for (int i = 1; i < row; i++) {
+            for (int j = 0; j <= i; j++) {
+                int val = Integer.MAX_VALUE;
+                if (j <= i - 1) {
+                    val = Math.min(val, triangle.get(i - 1).get(j));
+                }
+                if (j - 1 >= 0) {
+                    val = Math.min(val, triangle.get(i - 1).get(j - 1));
+                }
+                triangle.get(i).set(j, val + triangle.get(i).get(j));
+            }
+        }
+        
+        int ans = Integer.MAX_VALUE;
+        for (int j = 0; j < row; j++) {
+            ans = Math.min(ans, triangle.get(row - 1).get(j));
+        }
+        return ans;
+    }
+}
