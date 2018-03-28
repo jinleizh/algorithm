@@ -1,0 +1,35 @@
+class Solution {
+    //dfs
+    private List<Integer> path = new ArrayList<>();
+    private int ans = Integer.MAX_VALUE;
+    private int sum = 0;
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (null == triangle) return 0;
+        int row = triangle.size();
+        if (0 == row) return 0;
+        int col = triangle.get(0).size();
+        if (0 == col) return 0;
+        dfs(triangle, 0, 0, row);
+        return ans;
+    }
+    
+    void dfs(List<List<Integer>> triangle, int pos, int level, int row) {
+        if (level == row) {
+            if (sum < ans) {
+                ans = sum;
+            }
+            return;
+        }
+        
+        for (int k = 0; k <= 1; k++) {
+            if (pos + k <= level) {
+                int val = triangle.get(level).get(pos + k);
+                path.add(val);
+                sum += val;
+                dfs(triangle, pos + k, level + 1, row);
+                path.remove(path.size() - 1);
+                sum -= val;
+            }
+        }
+    }
+}
