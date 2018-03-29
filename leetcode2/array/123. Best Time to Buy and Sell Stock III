@@ -87,3 +87,20 @@ class Solution {
         return ans;
     }
 }
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int hold1 = Integer.MIN_VALUE;
+        int hold2 = Integer.MIN_VALUE;
+        int release1 = 0;
+        int release2 = 0;
+        for (int d : prices) {
+            release2 = Math.max(release2, hold2 + d);
+            hold2 = Math.max(hold2, release1 - d);
+            release1 = Math.max(release1, hold1 + d);
+            hold1 = Math.max(hold1, -d);
+        }
+        
+        return Math.max(Math.max(hold1, hold2), Math.max(release1, release2));
+    }
+}
