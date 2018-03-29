@@ -1,0 +1,42 @@
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        if (n <= 1) return 0;
+        
+        //just trade one time
+        int ans = getMaxProfit(prices, 0, n - 1);
+        
+        //just trade two times
+        int left = 0, right = 0;
+        for (int k = 1; k <= n - 2; k++) {
+            for (int j = 0; j < k; j++) {
+                if (prices[k] - prices[j] > left) {
+                    left = prices[k] - prices[j];
+                }
+            }
+            
+            right = getMaxProfit(prices, k, n - 1);
+            
+            if (ans < left + right) {
+                ans = left + right;
+            }
+        }
+        return ans;
+    }
+    
+    int getMaxProfit(int[] prices, int l, int r) {
+        int ans = 0;
+        int lowPrice = prices[l];
+        for (int i = l; i <= r; i++) {
+            if (prices[i] < lowPrice) {
+                lowPrice = prices[i];
+            } else {
+                if (ans < prices[i] - lowPrice) {
+                    ans = prices[i] - lowPrice;
+                }
+            }
+        }
+        return ans;
+    }
+}
+
