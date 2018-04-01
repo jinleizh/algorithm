@@ -1,0 +1,78 @@
+class Solution {
+public:
+    int expressiveWords(string S, vector<string>& words) {
+        string in = encode(S);
+        //cout<<in<<endl;
+        int ans = 0;
+        for (string word : words) {
+            string tmp = encode(word);
+            //cout<<tmp<<endl;
+            if (in.size() != tmp.size() || in == tmp) continue;    
+            bool find = true;
+            for (int i = 0; i < in.size(); i++) {
+                //cout<<in[i]<<endl;
+                if (in[i] != tmp[i]) {
+                    if (isnum(in[i]) && isnum(tmp[i])) {
+                        //cout<<"current==="<<in[i]<<" "<<tmp[i]<<endl;
+                        if (in[i] < tmp[i]) {
+                            find = false;
+                            break;
+                        } else {
+                            //cout<<"current22==="<<in[i]<<" "<<tmp[i]<<endl;
+                            if (in[i] < '3') {
+                                //cout<<tmp<<" "<<word<<endl;
+                                find = false;
+                                break;
+                            }
+                        }
+                    } else {
+                        find = false;
+                        break;
+                    }
+                }
+            }
+            
+            if (find) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+    
+    string encode(string in) {
+        if (in.empty()) return "";
+        string out = "";
+        int cnt = 0;
+        char prev = in[0];
+        for (char c : in) {
+            if (c == prev) {
+                cnt++;
+            } else {
+                out += prev;
+                if (cnt < 10) {
+                    out += "00" + to_string(cnt);
+                } else if (cnt < 100) {
+                    out += "0" + to_string(cnt);
+                } else {
+                    out += to_string(cnt);
+                }
+                cnt = 1;
+                prev = c;
+            }
+        }
+        
+        out += prev;
+        if (cnt < 10) {
+            out += "00" + to_string(cnt);
+        } else if (cnt < 100) {
+            out += "0" + to_string(cnt);
+        } else {
+            out += to_string(cnt);
+        }
+        return out;
+    }
+    
+    bool isnum(char c) {
+        return c >= '0' && c <= '9';
+    }
+};
