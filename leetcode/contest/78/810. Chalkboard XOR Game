@@ -1,0 +1,13 @@
+class Solution {
+public:
+    bool xorGame(vector<int>& nums) {
+        int ans = 0;
+        for (int d : nums) {
+            ans ^= d;
+        }
+        
+        if (ans == 0) return true;
+        if (nums.size() % 2 == 0) return true;
+        return false;
+    }
+};
