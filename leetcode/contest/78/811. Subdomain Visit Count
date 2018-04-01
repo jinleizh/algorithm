@@ -1,0 +1,34 @@
+class Solution {
+public:
+    vector<string> subdomainVisits(vector<string>& cpdomains) {
+        unordered_map<string, int> cntMp;
+        for (string s : cpdomains) {
+            int bp = s.find(' ');
+            string left = s.substr(0, bp);
+            string right = s.substr(bp + 1);
+            //cout<<left<<" "<<right<<endl;
+            int cnt = stoi(left);
+            cntMp[right] += cnt;
+            int pos = right.find('.');
+            while (pos != string::npos) {
+                cout<<pos<<endl;
+                string tmp = right.substr(pos + 1);
+                if (cntMp.find(tmp) == cntMp.end()) {
+                    cntMp[tmp] = cnt;
+                } else {
+                    cntMp[tmp] += cnt;
+                }
+                pos = right.find('.', pos + 1);
+            }
+        }
+        
+        vector<string> ans;
+        for (auto& it : cntMp) { 
+            //cout<<it.first<<endl;
+            //cout<<it.second<<endl;
+            //cout<<tmp<<endl;
+            ans.push_back(to_string(it.second) + " " + it.first);
+        }
+        return ans;
+    }
+};
