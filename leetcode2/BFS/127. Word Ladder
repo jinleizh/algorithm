@@ -1,0 +1,49 @@
+//单向bfs
+class Solution {
+public:
+    //单向bfs查找最短路径
+    //需要保存已经走过的点,如果已经走过了,就不用再push进队列了
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        //标记是否已经访问过
+        unordered_map<string, bool> visited;
+        for (string s : wordList) {
+            visited[s] = false;
+        }
+        
+        queue<string> q;
+        q.push(beginWord);
+        visited[beginWord] = true;
+        int level = 1;
+        while (!q.empty()) {
+            int n = q.size();
+            for (int i = 1; i <=n; i++) {
+                string cur = q.front();
+                q.pop();
+                //cout<<"pop cur="<<cur<<" "<<cur.size()<<endl;
+                for (int j = 0; j < cur.size(); j++) {
+                    char old = cur[j];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        //cout<<"c="<<c<<" old="<<old<<endl;
+                        if (c == old) continue;
+                        cur[j] = c;
+                        //cout<<"cur="<<cur<<endl;
+                        if (visited.find(cur) == visited.end()) continue;
+                        if (visited[cur]) continue;
+                        if (cur == endWord) {
+                            //cout<<"cur="<<cur<<" encWord="<<endWord<<endl;
+                            return level + 1;
+                        }
+                        visited[cur] = true;
+                        q.push(cur);
+                        //cout<<"push="<<cur<<endl;
+                    }
+                    cur[j] = old;
+                }
+            }
+            
+            level++;
+        }
+        
+        return 0;
+    }
+};
