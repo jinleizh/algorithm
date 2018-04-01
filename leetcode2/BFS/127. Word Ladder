@@ -47,3 +47,49 @@ public:
         return 0;
     }
 };
+
+
+class Solution {
+public:
+    //双向bfs提升速度
+    //遍历长度短的一方
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        set<string> aQ;
+        set<string> bQ;
+        unordered_set<string> ust(wordList.begin(), wordList.end());
+        if (ust.find(endWord) == ust.end()) return false;
+        aQ.insert(beginWord);
+        ust.erase(beginWord);
+        bQ.insert(endWord);
+        ust.erase(endWord);
+        int level = 1;
+        while (!aQ.empty() && !bQ.empty()) {
+            if (aQ.size() > bQ.size()) {//每次都是遍历长度小的
+                swap(aQ, bQ);
+            }
+            int as = aQ.size();
+            int bs = bQ.size();
+            
+            set<string> nextQ;
+            for (string cur : aQ) {
+                for (int j = 0; j < cur.size(); j++) {
+                    char old = cur[j];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == old) continue;
+                        cur[j] = c;
+                        if (bQ.find(cur) != bQ.end()) return level + 1;
+                        if (ust.find(cur) == ust.end()) continue;
+                        ust.erase(cur);
+                        nextQ.insert(cur);
+                    }
+                    cur[j] = old;
+                }
+            }
+            
+            level++;
+            swap(aQ, nextQ);
+        }
+        
+        return 0;
+    }
+};
