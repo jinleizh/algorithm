@@ -1,0 +1,78 @@
+class Solution {
+public:
+    //单广
+    //本题套路模版:level order，遍历过的节点直接从set中删除掉
+    //然后查看当前节点所能转换为的邻接节点是否在剩余字典列表中
+    //如果存在，则加入队列，如果不存在则直接跳过，如果是计算所有的路径，则需要保存parent关系,
+    //同时要使用set来帮助去除重复的顶点，虽然顶点去重复了，但是parent数组中是有记录该节点父子关系
+    //只要保存了父子关系，最终进行dfs时，也就不会丢失路径了
+    //或者选择保存children数组
+    //这里需要注意的是，当前层有元素找到终点时，需要先标记找到了终点，但是当前层还是需要执行完，才可以退出
+    //因为这道题要求是输出所有路径，如果只是输出最短路径长度，那么是可以直接退出，返回结果的
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        //use single path bfs to create a graph
+        vector<vector<string>> ans = {};
+        unordered_map<string, vector<string>> children;
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        if (!dict.count(endWord)) return ans;
+        unordered_set<string> curSet;
+        curSet.insert(beginWord);
+        bool found = false;
+        while (!curSet.empty() && !found) {
+            for (string s : curSet) {
+                dict.erase(s);
+            }
+            
+            //保存下次遍历的set
+            unordered_set<string> nextSet;
+            for (string org : curSet) {
+                string cur = org;
+                for (int j = 0; j < cur.size(); j++) {
+                    char old = cur[j];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == old) continue;
+                        cur[j] = c;
+                        if (!dict.count(cur)) continue;
+                        if (cur == endWord) {
+                            found = true;
+                            children[org].push_back(cur);
+                        } else {
+                            nextSet.insert(cur);
+                            children[org].push_back(cur);
+                        }
+                    }
+                    cur[j] = old;
+                }
+            }
+            swap(curSet, nextSet);
+        }
+        
+        if (found) {
+            vector<string> path = {beginWord};
+            dfs(beginWord, endWord, wordList, children, path, ans);
+        }
+        
+        return ans;
+    }
+    
+    
+    void dfs(string beginWord, string endWord, 
+             const vector<string>& wordList, 
+             const unordered_map<string, vector<string>>& children,
+            vector<string>& path, vector<vector<string>>& ans) {
+        //cout<<" xxx="<<beginWord<<"=xxxx"<<endl;
+        if (beginWord == endWord) {
+            ans.push_back(path);
+            return;
+        }
+        
+        if (children.find(beginWord) == children.end()) return;
+        
+        for (string word : children.at(beginWord)) {
+            //cout<<" wxxx="<<word<<"=wxxxx"<<endl;
+            path.push_back(word);
+            dfs(word, endWord, wordList, children, path, ans);
+            path.pop_back();
+        }
+    }
+};
