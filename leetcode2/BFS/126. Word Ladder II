@@ -494,3 +494,135 @@ public:
         }
     }
 };
+
+class Solution {
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        Set<String> dict = new HashSet<>();
+        for (String s : wordList) {
+            dict.add(s);
+        }
+        
+        List<List<String>> ans = new ArrayList<>();
+        if (!dict.contains(endWord))  return ans;
+        
+        Map<String, List<String>> children = new HashMap<>();
+        Set<String> smallQ = new HashSet<>();
+        Set<String> bigQ = new HashSet<>();
+        smallQ.add(beginWord);
+        bigQ.add(endWord);
+        boolean find = false;
+        boolean leftToRight = true;
+        
+        while (!smallQ.isEmpty() && !bigQ.isEmpty() && !find) {
+            for (String s : smallQ) {
+                dict.remove(s);
+            }
+            
+            for (String s : bigQ) {
+                dict.remove(s);
+            }
+            
+            //System.out.println(smallQ.size() + " " + bigQ.size());
+            Set<String> nextQ = new HashSet<>();
+            Set<String> tmpQ;
+            if (smallQ.size() > bigQ.size()) {
+                tmpQ = smallQ;
+                smallQ = bigQ;
+                bigQ = tmpQ;
+                leftToRight = !leftToRight;
+            }
+            //System.out.println(smallQ.size() + " " + bigQ.size());
+            
+            for (String cur : smallQ) {
+                //System.out.println(cur);
+                char ch[] = cur.toCharArray();
+                for (int i = 0; i < cur.length(); i++) {
+                    char old = ch[i];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == old) continue;
+                        ch[i] = c;
+                        String t = new String(ch);
+                        if (bigQ.contains(t)) {
+                            find = true;
+                            if (leftToRight) {
+                                if (children.containsKey(cur)) {
+                                    children.get(cur).add(t);
+                                    children.put(cur, children.get(cur));
+                                } else {
+                                    List<String> ta = new ArrayList<>();
+                                    ta.add(t);
+                                    children.put(cur, ta);
+                                }
+                            } else {
+                                if (children.containsKey(t)) {
+                                    children.get(t).add(cur);
+                                    children.put(t, children.get(t));
+                                } else {
+                                    List<String> ta = new ArrayList<>();
+                                    ta.add(cur);
+                                    children.put(t, ta);
+                                }
+                            }
+                        } else {
+                            if (!dict.contains(t)) continue;
+                            nextQ.add(t);
+                            if (leftToRight) {
+                                if (children.containsKey(cur)) {
+                                    children.get(cur).add(t);
+                                    children.put(cur, children.get(cur));
+                                } else {
+                                    List<String> ta = new ArrayList<>();
+                                    ta.add(t);
+                                    children.put(cur, ta);
+                                }
+                            } else {
+                                if (children.containsKey(t)) {
+                                    children.get(t).add(cur);
+                                    children.put(t, children.get(t));
+                                } else {
+                                    List<String> ta = new ArrayList<>();
+                                    ta.add(cur);
+                                    children.put(t, ta);
+                                }
+                            }
+                        }
+                    }
+                    ch[i] = old;
+                }
+            }
+            
+            tmpQ = new HashSet<>();
+            tmpQ = smallQ;
+            smallQ = nextQ;
+            nextQ = tmpQ;
+        }
+        
+        List<String> path = new ArrayList<>();
+        path.add(beginWord);
+        dfs(beginWord, endWord, children, path, ans);
+        return ans;
+    }
+    
+    void dfs(String beginWord, String endWord, 
+            Map<String, List<String>> children,
+            List<String> path,
+            List<List<String>> ans) {
+        //System.out.println("begin=" + beginWord + " end=" + endWord);
+        if (beginWord.equals(endWord)) {
+            //System.out.println("add ans");
+            List<String> tmp = new ArrayList<>();
+            tmp.addAll(path);
+            ans.add(tmp);
+            return;
+        }
+        
+        if (!children.containsKey(beginWord)) return;
+        
+        for (String word : children.get(beginWord)) {
+            //System.out.println("dfs word=" + word);
+            path.add(word);
+            dfs(word, endWord, children, path, ans);
+            path.remove(path.size() - 1);
+        }
+    }
+}
