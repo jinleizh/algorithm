@@ -335,3 +335,74 @@ public:
         }
     }
 };
+
+
+class Solution {
+public:
+    //本题因为要输出结果，所以是需要建图的
+    //所以思路是使用bfs建图，再用dfs输出结果，建图我们构造children数组，本题先使用单向bfs，再使用双向bfs
+    //建图的技巧是使用set的insert来处理bfs每层的重复问题, 通过删除每一层bfs过的节点，来避免当前节点往回走的情况
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        vector<vector<string>> ans = {};
+        if (!dict.count(endWord)) return ans;
+        
+        unordered_map<string, vector<string>> children;
+        unordered_set<string> q;
+        q.insert(beginWord);
+        bool find = false;
+        
+        while(!q.empty() && !find) {
+            for (string s : q) {
+                dict.erase(s);
+            }
+            
+            int n = q.size();
+            unordered_set<string> nextQ;
+            for (string cur : q) {
+                string s = cur;
+                for (int i = 0; i < s.size(); i++) {
+                    char old = s[i];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == old) continue;
+                        s[i] = c;
+                        if (s == endWord) {
+                            find = true;
+                            children[cur].push_back(s);
+                        } else {
+                            if (!dict.count(s)) continue;
+                            children[cur].push_back(s);
+                            nextQ.insert(s);
+                        }
+                    }
+                    s[i] = old;
+                }
+            }
+            
+            swap(q, nextQ);
+        }
+        
+        //use dfs to find result
+        vector<string> path;
+        path.push_back(beginWord);
+        dfs(beginWord, endWord, children, path, ans);
+        return ans;
+    }
+    
+    void dfs(string beginWord, string endWord, 
+            const unordered_map<string, vector<string>>& children,
+            vector<string>& path,
+            vector<vector<string>>& ans) {
+        if (beginWord == endWord) {
+            ans.push_back(path);
+            return;
+        }
+        
+        if (children.find(beginWord) == children.end()) return;
+        for (string word : children.at(beginWord)) {
+            path.push_back(word);
+            dfs(word, endWord, children, path, ans);
+            path.pop_back();
+        }
+    }
+};
