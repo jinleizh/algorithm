@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        int ans = 0;
+        unordered_set<int> dict(nums.begin(), nums.end());
+        while(!dict.empty()) {
+            int d = *dict.begin();
+            dict.erase(d);
+            int r = d + 1, l = d - 1;
+            while (dict.count(l)) {
+                dict.erase(l);
+                --l;
+            }
+
+            while (dict.count(r)) {
+                dict.erase(r);
+                ++r;
+            }
+            
+            if (r - l - 1 > ans) {
+                ans = r - l - 1;
+            }
+        }
+        return ans;
+    }
+};
