@@ -26,3 +26,31 @@ class Solution {
         return ans;
     }
 }
+
+
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        int n = nums.size();
+        int l = 0, r = n - 1;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] > nums[r]) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        
+        int ans = INT_MAX;
+        if (l >= 0 && l < n) {
+            ans = min(ans, nums[l]);
+        }
+        
+        if (r >= 0 && r < n) {
+            ans = min(ans, nums[r]);
+        }
+        
+        return ans;
+    }
+};
