@@ -1,0 +1,28 @@
+class Solution {
+    public int findMin(int[] nums) {
+        //重复的时候，如果全部相同，则只能全部遍历一遍才知道结果
+        int n = nums.length;
+        int l = 0, r = n - 1;
+        int ans = Integer.MAX_VALUE;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] < nums[r]) {
+                r = mid;
+            } else if (nums[mid] > nums[r]) {
+                l = mid;
+            } else {
+                r--;
+            }
+        }
+        
+        if (l >= 0 && l < n) {
+            ans = Math.min(ans, nums[l]);
+        }
+        
+        if (r >= 0 && r < n) {
+            ans = Math.min(ans, nums[r]);
+        }
+        
+        return ans;
+    }
+}
