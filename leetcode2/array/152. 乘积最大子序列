@@ -1,0 +1,52 @@
+class Solution {
+public:
+    //double end product
+    //we want to build relastionship between i - 1 and i, and you know it a single direction relation
+    //but for this problem we need relationship between i, i + 1
+    //so i want to split the problem into two sub problems, left part and right part
+    //for each part, we want to get minProduct, maxProdcut
+    //leftPart * rightPart / nums[i], we can get the product contains i;
+    //get the bigest one from the n numbers
+    int maxProduct(vector<int>& nums) {
+        int n = nums.size();
+        if (1 == n) return nums[0];
+        int ans = 0;
+        vector<int> leftMinDp(n, 1), rightMinDp(n, 1), leftMaxDp(n, 1), rightMaxDp(n, 1);
+        //vector<vector<int>> pos(n, vector<int>(4, 0));
+        leftMinDp[0] = nums[0];
+        leftMaxDp[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            int la = nums[i] * leftMinDp[i - 1];
+            int lb = nums[i] * leftMaxDp[i - 1];
+            leftMinDp[i] = min(nums[i], min(la, lb));
+            leftMaxDp[i] = max(nums[i], max(la, lb));
+        }
+        
+        rightMinDp[n - 1] = nums[n - 1];
+        rightMaxDp[n - 1] = nums[n - 1];
+        //pos[n - 1][2] = n - 1;
+        //pos[n - 1][3] = n - 1;
+        for (int i = n - 2; i >= 0; i--) {
+            int ra = nums[i] * rightMinDp[i + 1];
+            int rb = nums[i] * rightMaxDp[i + 1];
+            rightMinDp[i] = min(nums[i], min(ra, rb));
+            rightMaxDp[i] = max(nums[i], max(ra, rb));
+        }
+        
+        for (int i = 0; i < n; i++) {
+            int t = 0;
+            if (nums[i] != 0) {
+                int a = leftMinDp[i] * rightMinDp[i] / nums[i];
+                int b = leftMinDp[i] * rightMaxDp[i] / nums[i];
+                int c = leftMaxDp[i] * rightMinDp[i] / nums[i];
+                int d = leftMaxDp[i] * rightMaxDp[i] / nums[i];
+                t = max(max(a, b), max(c, d));
+            }
+            
+            if (t > ans) {
+                ans = t;
+            }
+        }
+        return ans;
+    }
+};
