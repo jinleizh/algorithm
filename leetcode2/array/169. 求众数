@@ -26,3 +26,23 @@ class Solution {
         return prev;
     }
 }
+
+class Solution {
+    //bitcount method
+    public int majorityElement(int[] nums) {
+        int n = nums.length;
+        int ans = 0;
+        for (int k = 0; k < 32; k++) {
+            int mask = (1 << k);
+            int bitCnt = 0;
+            for (int i = 0; i < n; i++) {
+                if (0 != (nums[i] & mask)) bitCnt++;
+                if (bitCnt > n / 2) {
+                    ans |= mask;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+}
