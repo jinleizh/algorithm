@@ -1,0 +1,28 @@
+class Solution {
+    public int majorityElement(int[] nums) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        return nums[n / 2];
+    }
+}
+
+class Solution {
+    public int majorityElement(int[] nums) {
+        //顺序扫
+        int n = nums.length;
+        int count = 1;
+        int prev = nums[0];
+        for (int i = 1; i < n; i++) {
+            if (prev == nums[i]) {
+                count++;
+            } else {
+                count--;
+                if (0 == count) {
+                    count = 1;
+                    prev = nums[i];
+                }
+            }
+        }
+        return prev;
+    }
+}
