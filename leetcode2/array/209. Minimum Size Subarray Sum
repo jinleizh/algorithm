@@ -1,0 +1,63 @@
+class Solution {
+public:
+    //将问题分解成以i开头的和大于等于s的最短数组
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int ans = INT_MAX;
+        int n = nums.size();
+        if (0 == n) return 0;
+        int sum = 0, j = 0, i = 0;
+        while (j < n) {
+            sum += nums[j++];
+            
+            while (sum >= s) {
+                ans = min(ans, j - i);
+                sum -= nums[i++];
+            }
+        }
+        
+        if (ans == INT_MAX) return 0;
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //数组的妙用，前缀和是有序的，可以利用前缀和进行二分查找
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int n = nums.size();
+        vector<int> sum(n + 1, 0);
+        for (int i = 1; i <= n; i++) {
+            sum[i] = sum[i - 1] + nums[i - 1];
+        }
+        
+        int ans = INT_MAX;
+        for (int i = 1; i <= n; i++) {
+            //cout<<"i="<<i<<endl;
+            if (sum[i] - s < 0) continue;
+            int j = upBound(sum, i, sum[i] - s);
+            //cout<<"j="<<j<<endl;
+            if (ans > i + 1 - j) {
+                ans = i + 1 - j;
+            }
+        }
+        
+        if (ans == INT_MAX) ans = 0;
+        return ans;
+    }
+    
+    int upBound(vector<int>& sum, int k, int t) {
+        int l = 1, r = k;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (sum[mid] <= t) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+        
+        if (sum[l] > t) return l;
+        if (sum[r] > t) return r;
+        return r;
+    }
+};
