@@ -44,3 +44,32 @@ public:
         return root;
     }
 };
+
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+ //dfs通过带回返回值,帮助上层判断，所以利用dfs返回值，也是一个好的技巧
+class Solution {
+    public TreeNode pruneTree(TreeNode root) {
+        int res = dfs(root);
+        if (0 == res) return null;
+        return root;
+    }
+    
+    int dfs(TreeNode root) {
+        if (null == root) return 0;
+        int l = dfs(root.left);
+        int r = dfs(root.right);
+        int res = root.val | l | r;
+        if (l == 0) root.left = null;
+        if (r == 0) root.right = null;
+        return res;
+    }
+}
