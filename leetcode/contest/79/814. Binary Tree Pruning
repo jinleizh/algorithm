@@ -1,0 +1,46 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    unordered_map<TreeNode*, bool> dp;
+    TreeNode* pruneTree(TreeNode* root) {
+        if (nullptr == root) return nullptr;
+        dfs(root);
+        travel(root);
+        return root;
+    }
+    
+    bool dfs(TreeNode* root) {
+        if (nullptr == root) return true;
+        if (root->val == 1) {
+            dp[root] = false;
+            dfs(root->left);
+            dfs(root->right);
+            return false;
+        }
+        
+        bool la = dfs(root->left);
+        bool lb = dfs(root->right);
+        dp[root] = la && lb;
+        return dp[root];
+    }
+    
+    TreeNode* travel(TreeNode* root) {
+        if (nullptr == root) return nullptr;
+        if (dp[root]) return nullptr;
+        if (root->left != nullptr) {
+            root->left = travel(root->left);
+        }
+        if (root->right != nullptr) {
+            root->right = travel(root->right);
+        }
+        return root;
+    }
+};
