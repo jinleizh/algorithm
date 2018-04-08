@@ -1,0 +1,27 @@
+class Solution {
+public:
+    vector<vector<int>> ans;
+    vector<int> path;
+    vector<vector<int>> combinationSum3(int k, int n) {
+        dfs(1, 0, k, n);
+        return ans;
+    }
+    
+    void dfs(int start, int level, int maxLevel, int target) {
+        if (level > maxLevel) return;
+        if (target < 0) {
+            return;
+        } else if (target == 0 && level == maxLevel) {
+            ans.push_back(path);
+            return;
+        } else {
+            if (level == maxLevel) return;
+        }
+        
+        for (int i = start; i <= 9 && i <= target; i++) {
+            path.push_back(i);
+            dfs(i + 1, level + 1, maxLevel, target - i);
+            path.pop_back();
+        }
+    }
+};
