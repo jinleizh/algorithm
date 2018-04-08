@@ -73,3 +73,31 @@ class Solution {
         return res;
     }
 }
+
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode pruneTree(TreeNode root) {
+        return dfs(root);
+    }
+    
+    TreeNode dfs(TreeNode root) {
+        if (null == root) return null;
+        TreeNode l = dfs(root.left);
+        TreeNode r = dfs(root.right);
+        root.left = l;
+        root.right = r;
+        if (l != null) return root;
+        if (r != null) return root;
+        if (root.val != 0) return root;
+        return null;
+    }
+}
