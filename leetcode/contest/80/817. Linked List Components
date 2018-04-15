@@ -1,0 +1,40 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int numComponents(ListNode* head, vector<int>& G) {
+        unordered_map<int, int> parent;
+        parent[head->val] = head->val;
+        ListNode* prev = head;
+        ListNode* cur = prev->next;
+        while (cur != nullptr) {
+            parent[cur->val] = prev->val;
+            prev = cur;
+            cur = cur->next;
+        }
+        
+        unordered_map<int, int> cntMp;
+        for (int d : G) {
+            cntMp[d]++;
+        }
+        
+        int ans = 0;
+        for (int d : G) {
+            int pa = parent[d];
+            cout<<pa<<" "<<d<<endl;
+            if (cntMp.find(pa) == cntMp.end()) {
+                ans++;
+            } else if (pa == d) {
+                ans++;
+            }
+        }
+        
+        return ans;
+    }
+};
