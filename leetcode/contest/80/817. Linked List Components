@@ -38,3 +38,33 @@ public:
         return ans;
     }
 };
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int numComponents(ListNode* head, vector<int>& G) {
+        set<int> st(G.begin(), G.end());
+        int find = 0;
+        int ans = 0;
+        while (head != nullptr) {
+            if (!st.count(head->val)) {
+                find = 0;
+            } else {
+                if (find == 0) {
+                    find = 1;
+                    ans++;
+                }
+            }
+            
+            head = head->next;
+        }
+        return ans;
+    }
+};
