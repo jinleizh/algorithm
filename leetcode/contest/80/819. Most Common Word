@@ -1,0 +1,40 @@
+class Solution {
+public:
+    string mostCommonWord(string paragraph, vector<string>& banned) {
+        unordered_map<string, int> cntMp;
+        unordered_map<string, int> banMp;
+        for (string b : banned) {
+            banMp[b] = 1;
+        }
+        
+        string ans = "";
+        istringstream is(paragraph);
+        string s;
+        while (is >> s) {
+            string tmp = trim(s);
+            if (banMp.find(tmp) != banMp.end()) continue;
+            cntMp[tmp]++;
+        }
+        
+        int maxCnt = 0;
+        for (auto& it : cntMp) {
+            if (it.second > maxCnt) {
+                ans = it.first;
+                maxCnt = it.second;
+            }
+        }
+        
+        return ans;
+    }
+    
+    string trim(string s) {
+        string ts = "";
+        for (char c : s) {
+            char t = tolower(c);
+            if (isalpha(t)) {
+                ts += t;
+            }
+        }
+        return ts;
+    }
+};
