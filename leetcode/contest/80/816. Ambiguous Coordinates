@@ -1,0 +1,61 @@
+class Solution {
+public:
+    vector<string> ambiguousCoordinates(string S) {
+        string tmp = "";
+        for (int i = 1; i < S.length() - 1; i++) {
+            tmp += S[i];
+        }
+        
+        vector<string> ans;
+        int n = tmp.length();
+        for (int k = 0; k <= n - 2; k++) {
+            string left = tmp.substr(0, k + 1);
+            string right = tmp.substr(k + 1);
+            vector<string> la = getPointSet(left);
+            vector<string> ra = getPointSet(right);
+            for (string ls : la) {
+                for (string rs : ra) {
+                    ans.push_back("(" + ls + ", " + rs + ")");
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+    vector<string> getPointSet(string input) {
+        
+        vector<string> ans;
+        if (isValidLeft(input)) {
+            ans.push_back(input);
+        }
+        int n = input.length();
+
+        for (int k = 0; k <= n - 2; k++) {
+            string left = input.substr(0, k + 1);
+            if (!isValidLeft(left)) continue;
+            string right = input.substr(k + 1);
+            if (!isValidRight(right)) continue;
+            if (left == "0" && right == "0") continue;
+            cout<<left<<"&&&&"<<right<<"=="<<endl;
+            ans.push_back(left + "." + right);
+        }
+        
+        return ans;
+    }
+    
+    //0001
+    bool isValidLeft(string s) {
+        int n = s.length();
+        if (1 == n) return true;
+        if (s[0] == '0') return false;
+        return true;
+    }
+    
+    //1000
+    bool isValidRight(string s) {
+        int n = s.length();        
+        if (s[n - 1] == '0') return false;
+        return true;
+    }
+};
