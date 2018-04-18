@@ -59,3 +59,75 @@ public:
     }
 };
 
+struct Node {
+    public:
+        int pos;
+        int speed;
+    
+    public:
+        Node(int p, int s) {
+            pos = p;
+            speed = s;
+        }
+    
+        bool operator < (const Node& l) const {
+            return pos < l.pos || (pos == l.pos && speed < l.speed);
+        }
+};
+
+// 利用剪枝 进行优化
+class Solution {
+public:
+    //bfs 空间复杂度太高
+    int racecar(int target) {
+        int pos = 0;
+        int ans = 0;
+        int speed = 1;
+        queue<Node> q;
+        set<Node> st;
+        Node nodeA(pos, speed);
+        if (!st.count(nodeA)) {
+            q.push(nodeA);
+            st.insert(nodeA);
+        }
+
+        while (!q.empty()) {
+            int n = q.size();
+            for (int i = 0; i < n; i++) {
+                Node tmp = q.front();
+                q.pop();
+                
+                if (tmp.pos == target) {
+                    return ans;
+                }
+                
+                //加速
+                Node tmpA(tmp.pos + tmp.speed, tmp.speed * 2);
+                if (st.find(tmpA) == st.end() && abs(tmp.pos) < 2 * target && abs(tmp.speed) < 2 * target) {
+                    q.push(tmpA);
+                    st.insert(tmpA);
+                }
+                
+                //调头
+                if (tmp.speed > 0) {
+                    Node tmpR(tmp.pos, -1);
+                    if (!st.count(tmpR)) {
+                        q.push(tmpR);
+                        st.insert(tmpR);
+                    }
+                } else if (tmp.speed < 0) {
+                    Node tmpR(tmp.pos, 1);
+                    if (st.find(tmpR) == st.end()) {
+                        q.push(tmpR);
+                        st.insert(tmpR);
+                    }
+                }
+            }
+            
+            ++ans;
+        }
+        
+        return ans;
+    }
+};
+
