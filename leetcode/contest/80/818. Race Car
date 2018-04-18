@@ -1,0 +1,61 @@
+struct Node {
+    public:
+        int pos;
+        int speed;
+    
+    public:
+        Node(int p, int s) {
+            pos = p;
+            speed = s;
+        }
+};
+
+class Solution {
+public:
+    //bfs 空间复杂度太高
+    int racecar(int target) {
+        int pos = 0;
+        int ans = 0;
+        int speed = 1;
+        if (pos == target) return ans;
+        
+        queue<Node> q;
+        ++ans;
+        //加速
+        Node nodeA(pos + speed, speed * 2);
+        q.push(nodeA);
+        
+        //调头
+        Node nodeR(pos, -1);
+        q.push(nodeR);
+        while (!q.empty()) {
+            int n = q.size();
+            for (int i = 0; i < n; i++) {
+                Node tmp = q.front();
+                q.pop();
+                
+                if (tmp.pos == target) {
+                    return ans;
+                }
+                
+                //加速
+                Node tmpA(tmp.pos + tmp.speed, tmp.speed * 2);
+                q.push(tmpA);
+                
+                //调头
+                if (tmp.speed > 0) {
+                    Node tmpR(tmp.pos, -1);
+                    q.push(tmpR);
+                } else if (tmp.speed < 0) {
+                    Node tmpR(tmp.pos, 1);
+                    q.push(tmpR);
+                }
+            }
+            
+            ++ans;
+        }
+        
+        return ans;
+    }
+};
+
