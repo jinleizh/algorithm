@@ -25,3 +25,32 @@ public:
         }
     }
 };
+
+class Solution {
+    //dfs
+    private List<List<Integer>> ans = new ArrayList<>();
+    private List<Integer> path = new ArrayList<>();
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        int level = 0;
+        dfs(1, level, k, n);
+        return ans;
+    }
+    
+    void dfs(int start, int level, int k, int nextFind) {
+        if (level == k) {
+            if (0 == nextFind) {
+                List<Integer> tmp = new ArrayList<>(path);
+                ans.add(tmp);
+                return;
+            }
+            
+            return;
+        }
+        
+        for (int i = start; i <= 9; i++) {
+            path.add(i);
+            dfs(i + 1, level + 1, k, nextFind - i);
+            path.remove(path.size() - 1);
+        }
+    }
+}
