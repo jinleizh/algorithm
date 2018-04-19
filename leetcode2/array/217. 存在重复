@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        unordered_map<int, int> cntMp;
+		for (int d : nums) {
+			if (cntMp.find(d) != cntMp.end()) {
+				return true;
+			}
+			
+			cntMp[d]++;
+		}
+		
+		return false;
+    }
+};
+
+class Solution {
+    public boolean containsDuplicate(int[] nums) {
+        Set<Integer> st = new HashSet<>();
+		for (int d : nums) {
+			if (st.contains(d)) {
+				return true;
+			}
+			
+			st.add(d);
+		}
+		return false;
+    }
+}
