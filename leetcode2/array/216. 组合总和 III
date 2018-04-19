@@ -54,3 +54,35 @@ class Solution {
         }
     }
 }
+
+import java.util.concurrent.CopyOnWriteArrayList;
+class Solution {
+    //brute forcre -- 2的9次种可能，把他们全部输出出来，取结果符合的
+    private List<List<Integer>> ans = new ArrayList<>();
+    private CopyOnWriteArrayList<List<Integer>> all = new CopyOnWriteArrayList<>();
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        all.add(new ArrayList<>());
+        for (int i = 1; i <= 9; i++) {
+            for (List<Integer> t : all) {
+                List<Integer> tmp = new ArrayList<>(t);
+                tmp.add(i);
+                all.add(tmp);
+            }
+        }
+        
+        for (List<Integer> t : all) {
+            //System.out.println(t.size());
+            if (t.size() == k) {
+                int sum = 0;
+                for (int d : t) {
+                    sum += d;
+                }
+                if (sum == n) {
+                    ans.add(t);
+                } 
+            }
+        }
+        
+        return ans;
+    }
+}
