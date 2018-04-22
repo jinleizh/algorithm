@@ -1,0 +1,38 @@
+class Solution {
+public:
+    //发现共性的部分，尾部相同或者头部相同，则可以利用排序的性质，简化问题
+    //尾部排序的字符串，可以reverse过来，然后sort
+    //或者暴力枚举，使用set，把字串从set中全部删除掉
+    int minimumLengthEncoding(vector<string>& words) {
+        for (string& s : words) {
+            reverse(s.begin(), s.end());
+        }
+        
+        sort(words.begin(), words.end());
+        
+        int ans = 0;
+        int n = words.size();
+        string res = "";
+        for (int i = 1; i < n; i++) {
+            if (words[i].length() < words[i - 1].length()) {
+                ans += words[i - 1].length() + 1;
+                res += words[i - 1] + "#";
+                continue;
+            }
+            
+            if (words[i] == words[i - 1]) continue;
+            
+            if (words[i - 1] == words[i].substr(0, words[i - 1].length())) {
+                continue;
+            }
+            
+            res += words[i - 1] + "#";
+            ans += words[i - 1].length() + 1;
+            //cout<<words[i - 1]<<" "<<ans<<" "<<res<<endl;
+        }
+        
+        res += words[n - 1] + "#";
+        ans += words[n - 1].length() + 1;
+        return ans;
+    }
+};
