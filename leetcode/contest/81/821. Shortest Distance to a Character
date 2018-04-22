@@ -1,0 +1,65 @@
+//暴力枚举，时间复杂度o(nk) 空间复杂度o(k)
+class Solution {
+public:
+    vector<int> shortestToChar(string S, char C) {
+        vector<int> pos;
+        for (int i = 0; i < S.size(); i++) {
+            if (C == S[i]) {
+                pos.push_back(i);
+            }
+        }
+        
+        vector<int> ans;
+        for (int i = 0; i < S.size(); i++) {
+            int left = -100000;
+            int right = 100000;
+            for (int j = 0; j < pos.size(); j++) {
+                if (pos[j] < i) {
+                    left = pos[j];
+                } else {
+                    right = pos[j];
+                    break;
+                }
+            }
+            
+            ans.push_back(min(abs(i - left), abs(i - right)));
+        }
+        
+        return ans;
+    }
+};
+
+思路二：计算左右两侧的最值数组
+时间复杂度o(n) 空间复杂度o(n)
+class Solution {
+public:
+    vector<int> shortestToChar(string S, char C) {
+        int prev = -10001;
+        int last = 10001;
+        int n = S.length();
+        
+        vector<int> ans;
+        
+        //go through from left
+        for (int i = 0; i < n; i++) {
+            if (C == S[i]) {
+                ans.push_back(0);
+                prev = i;
+            } else {
+                ans.push_back(i - prev);
+            }
+        }
+        
+        //go through from right
+        for (int i = n - 1; i >= 0; i--) {
+            if (C == S[i]) {
+                last = i;
+                ans[i] = 0;
+            } else {
+                ans[i] = min(ans[i], last - i);
+            }
+        }
+        
+        return ans;
+    }
+};
