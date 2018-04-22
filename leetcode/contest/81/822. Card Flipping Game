@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int flipgame(vector<int>& fronts, vector<int>& backs) {
+        int ans = INT_MAX;
+        int n = fronts.size();
+        set<int> result;
+        set<int> wrong;
+        for (int i = 0; i < n; i++) {
+            if (fronts[i] == backs[i]) {
+                wrong.insert(fronts[i]);
+            } else {
+                result.insert(fronts[i]);
+                result.insert(backs[i]);
+            }
+        }
+        
+        for (int d : result) {
+            if (wrong.count(d) > 0) continue;
+            ans = min(ans, d);
+        }
+        
+        return ans == INT_MAX ? 0 : ans;
+    }
+};
