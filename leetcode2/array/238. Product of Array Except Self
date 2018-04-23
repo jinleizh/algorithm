@@ -1,0 +1,65 @@
+class Solution {
+public:
+    //go through twice
+    vector<int> productExceptSelf(vector<int>& nums) {
+        vector<int> ans;
+        int n = nums.size();
+        if (0 == n) return ans;
+        
+        vector<int> left, right;
+        int base = 1;
+        for (int i = 0; i < n; i++) {
+            if (0 == i) {
+                left.push_back(base);
+            } else {
+                base *= nums[i - 1];
+                left.push_back(base);
+            }
+        }
+        base = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (n - 1 == i) {
+                right.push_back(base);
+            } else {
+                base *= nums[i + 1];
+                right.push_back(base);
+            }
+        }
+        
+        reverse(right.begin(), right.end());
+        
+        for (int i = 0; i < n; i++) {
+            ans.push_back(left[i] * right[i]);
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[n];
+        int base = 1;
+        for (int i = 0; i < n; i++) {
+            if (0 == i) {
+                ans[i] = base;
+            } else {
+                base *= nums[i - 1];
+                ans[i] = base;
+            }
+        }
+        
+        base = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (n - 1 == i) {
+                ans[i] *= base;
+            } else {
+                base *= nums[i + 1];
+                ans[i] *= base;
+            }
+        }
+        
+        return ans;
+    }
+}
