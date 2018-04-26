@@ -1,0 +1,86 @@
+class Node {
+    public int val;
+    public int id;
+    
+    public int getVal() {
+        return val;
+    }
+    
+    public void setVal(int val) {
+        this.val = val;
+    }
+    
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+}
+
+public class RandomizedCollection {
+    private Random rand;
+    private List<Node> arr;
+    private Map<Integer, List<Integer>> mp;
+    
+    /** Initialize your data structure here. */
+    public RandomizedCollection() {
+        rand = new Random();
+        arr = new ArrayList<>();
+        mp = new HashMap<>();
+    }
+    
+    /** Inserts a value to the collection. Returns true if the collection did not already contain the specified element. */
+    public boolean insert(int val) {
+        if (!mp.containsKey(val)) {
+            List<Integer> myList = new ArrayList<>();
+            myList.add(arr.size());
+            mp.put(val, myList);
+            Node node = new Node();
+            node.setVal(val);
+            node.setId(myList.size() - 1);
+            arr.add(node);
+        } else {
+            List<Integer> myList = mp.get(val);
+            myList.add(arr.size());
+            Node node = new Node();
+            node.setVal(val);
+            node.setId(myList.size() - 1);
+            arr.add(node);
+        }
+                       
+        return true;
+    }
+    
+    /** Removes a value from the collection. Returns true if the collection contained the specified element. */
+    public boolean remove(int val) {
+        if (!mp.containsKey(val)) return false;
+        List<Integer> myList = mp.get(val);
+        int delPos = myList.get(myList.size() - 1);
+        Node lastNode = arr.get(arr.size() - 1);
+        List<Integer> curList = mp.get(lastNode.val);
+        curList.set(lastNode.id, delPos);
+        arr.set(delPos, lastNode);
+        arr.remove(arr.size() - 1);
+        myList.remove(myList.size() - 1);
+        if (myList.isEmpty()) {
+            mp.remove(val);
+        }
+        return true;
+    }
+    
+    /** Get a random element from the collection. */
+    public int getRandom() {
+        int pos = rand.nextInt(arr.size());
+        return arr.get(pos).val;
+    }
+}
+
+/**
+ * Your RandomizedCollection object will be instantiated and called as such:
+ * RandomizedCollection obj = new RandomizedCollection();
+ * boolean param_1 = obj.insert(val);
+ * boolean param_2 = obj.remove(val);
+ * int param_3 = obj.getRandom();
+ */
