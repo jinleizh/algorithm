@@ -1,0 +1,52 @@
+class Solution {
+    //reencode board
+    public void gameOfLife(int[][] board) {
+        //edge case
+        int row = board.length;
+        if (0 == row) return;
+        int col = board[0].length;
+        if (0 == col) return;
+        
+        //general case
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                process(board, i, j, row, col);
+            }
+        }
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                transform(board, i, j);
+            }
+        }
+    }
+    
+    void process(int[][] board, int x, int y, int row, int col) {
+        int dx[] = {1, 1, 1, 0, 0, -1, -1, -1};
+        int dy[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+        
+        int nx, ny, live = 0;
+        for (int k = 0; k < 8; k++) {
+            nx = x + dx[k];
+            ny = y + dy[k];
+            if (nx < 0 || ny < 0 || nx >= row || ny >= col) continue;
+            if (1 == (board[nx][ny] & 0x1)) {
+                live++;
+            }
+        }
+        
+        if ((board[x][y] & 0x1) == 1) {
+            if (live == 2 || live == 3) {
+                board[x][y] |= 0x2;    
+            }   
+        } else {
+            if (live == 3) {
+                board[x][y] |= 0x2;
+            }
+        }
+    }
+    
+    void transform(int[][] board, int x, int y) {
+        board[x][y] >>= 1;
+    }
+}
