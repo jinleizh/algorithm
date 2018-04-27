@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int thirdMax(vector<int>& nums) {
+		set<int> top;
+		for (int d : nums) {
+			top.insert(d);
+			if (top.size() > 3) {
+				top.erase(top.begin());
+			}
+		}
+		
+		return top.size() == 3 ? *top.begin() : *top.rbegin();
+    }
+};
+
+class Solution {
+public:
+    int thirdMax(vector<int>& nums) {
+        long first = LONG_MIN, sec = LONG_MIN, trd = LONG_MIN;
+		for (int d : nums) {
+			if (d == first || d == sec || d == trd) continue;
+			if (d > first) {
+				trd = sec;
+				sec = first;
+				first = d;
+			} else if (d > sec) {
+				trd = sec;
+				sec = d;
+			} else if (d > trd) {
+				trd = d;
+			}
+		}
+		
+		if (trd == LONG_MIN) return first;
+		return trd; 
+    }
+};
