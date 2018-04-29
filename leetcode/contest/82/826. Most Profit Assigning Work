@@ -1,0 +1,65 @@
+class Solution {
+    public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+        //maintain hard->maxprofit map
+        //than,we can use binary search to find lower bound
+        Map<Integer, Integer> hard2MaxP = new HashMap<>();
+        List<Integer> hardList = new ArrayList<>();
+    
+        int n = difficulty.length;
+        for (int i = 0; i < n; i++) {
+            int hard = difficulty[i];
+            if (hard2MaxP.containsKey(hard)) {
+                if (hard2MaxP.get(hard) < profit[i]) {
+                    hard2MaxP.put(hard, profit[i]);
+                }
+            } else {
+                hard2MaxP.put(hard, profit[i]);
+            }
+        }
+        
+        Set<Integer> hardSet = hard2MaxP.keySet();
+        hardList.addAll(hardSet);
+        Collections.sort(hardList);
+        
+        //update maxProfit
+        int curMax = 0;
+        for (int d : hardList) {
+            if (hard2MaxP.get(d) < curMax) {
+                hard2MaxP.put(d, curMax);
+            } else {
+                curMax = hard2MaxP.get(d);
+            }
+        }
+        
+        //binary search max profit
+        int ans = 0;
+        for (int ab : worker) {
+            int pos = search(hardList, ab);
+            if (pos < 0) continue;
+            //System.out.println("pos=" + pos);
+            ans += hard2MaxP.get(hardList.get(pos));
+        }
+        
+        return ans;
+    }
+    
+    int search(List<Integer> hardList, int ab) {
+        int l = 0, r = hardList.size() - 1;
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (hardList.get(mid) == ab) {
+                r = mid;
+            } else if (hardList.get(mid) > ab) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        
+        //find <=
+        if (hardList.get(l) > ab) return -1;
+        if (hardList.get(l) == ab) return l;
+        if (hardList.get(r) > ab) return l;
+        return r;
+    }
+}
