@@ -1,0 +1,97 @@
+public class Solution {
+    public int largestIsland(int[][] grid) {
+        int n = grid.length;
+        int ans = getAns(grid);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {      
+                if (grid[i][j] == 0) {
+                    //re init
+                    for (int p = 0; p < n; p++) {
+                        for (int q = 0; q < n; q++) {
+                            if (grid[p][q] == 2) {
+                                grid[p][q] = 1;
+                            }
+                        }
+                    }
+                    
+                    int val = bfs(grid, i, j);
+                    if (val > ans) {
+                        ans = val;
+                    }
+                    grid[i][j] = 0;
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+    public int getAns(int[][] grid) {
+        int ans = 0;
+        int n = grid.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    int ret = bfs(grid, i, j);
+                    if (ret > ans) {
+                        ans = ret;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+    
+    private int bfs(int[][] grid, int x, int y) {
+        grid[x][y] = 2;
+        int[] dx = {1, -1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
+        List<Node> queue = new ArrayList<>();
+        Node node = new Node(x, y);
+        queue.add(node);
+        int cnt = 0;
+        while (!queue.isEmpty()) {
+            //System.out.println(queue.size());
+            int n = queue.size();
+            cnt += n;
+            List<Node> nextQ = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                Node cur = queue.get(i);
+                int cx = cur.x;
+                int cy = cur.y;
+                for (int k = 0; k < 4; k++) {
+                    int nx = cx + dx[k];
+                    int ny = cy + dy[k];
+                    if (isInGrid(nx, ny, grid.length)) {
+                        if (grid[nx][ny] == 1) {
+                            grid[nx][ny] = 2;
+                            Node nextNode = new Node(nx, ny);
+                            nextQ.add(nextNode);
+                        }
+                    }
+                }
+            }
+            
+            queue.clear();
+            //System.out.println("after clear" + queue.size());
+            queue = nextQ;
+            //System.out.println("nextQ=" + queue.size());
+        }
+        
+        return cnt;
+    }
+    
+    private boolean isInGrid(int x, int y, int n) {
+        //System.out.println("x=" + x + " y=" + y);
+        return !(x < 0 || y < 0 || x >= n || y >= n);
+    }
+}
+
+class Node {
+    public int x;
+    public int y;
+    Node(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
