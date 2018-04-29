@@ -63,3 +63,25 @@ class Solution {
         return r;
     }
 }
+
+class Solution {
+public:
+    int maxProfitAssignment(vector<int>& difficulty, vector<int>& profit, vector<int>& worker) {
+        int dp[100001] = {0};
+        int n = profit.size();
+        for (int i = 0; i < n; i++) {
+            dp[difficulty[i]] = max(dp[difficulty[i]], profit[i]);
+        }
+        
+        for (int i = 2; i <= 100000; i++) {
+            dp[i] = max(dp[i - 1], dp[i]);
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < worker.size(); i++) {
+            ans += dp[worker[i]];
+        }
+        
+        return ans;
+    }
+};
