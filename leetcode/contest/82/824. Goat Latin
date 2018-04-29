@@ -1,0 +1,46 @@
+class Solution {
+    public String toGoatLatin(String S) {
+        String[] words = S.split(" ");
+        StringBuilder sb = new StringBuilder();
+        String tail = "a";
+        boolean start = true;
+        for (String word : words) {
+            String tmp = checkAndTrans(word);
+            //System.out.println(tmp);
+            if (start) {
+                start = false;
+            } else {
+                sb.append(" ");
+            }
+            sb.append(tmp);
+            sb.append("ma");
+            sb.append(tail);
+            tail += "a";
+        }
+        return sb.toString();
+    }
+    
+    String checkAndTrans(String word) {
+        if (word.charAt(0) == 'a' 
+           || word.charAt(0) == 'e'
+           || word.charAt(0) == 'i'
+           || word.charAt(0) == 'o'
+           || word.charAt(0) == 'u'
+           || word.charAt(0) == 'A' 
+           || word.charAt(0) == 'E'
+           || word.charAt(0) == 'I'
+           || word.charAt(0) == 'O'
+           || word.charAt(0) == 'U') {
+            return word;
+        }
+        
+        char[] arr = word.toCharArray();
+        char tmp = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            arr[i - 1] = arr[i];
+        }
+        arr[arr.length - 1] = tmp;
+        
+        return new String(arr);
+    }
+}
