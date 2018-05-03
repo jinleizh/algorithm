@@ -100,3 +100,69 @@ class Solution {
         return ans;
     }
 }
+
+class Solution {
+   public int findPairs(int[] nums, int k) {
+       if (k < 0) return 0;
+        Map<Integer, Integer> dataMp = new HashMap<>();
+        for (int d : nums) {
+            dataMp.put(d, dataMp.getOrDefault(d, 0) +1);
+        }
+        
+        int ans = 0;
+        Set<Map.Entry<Integer, Integer>> entrySets = dataMp.entrySet();
+        if (k == 0) {
+            for (Map.Entry<Integer, Integer> entry : entrySets) {
+                if (entry.getValue() >= 2) {
+                    ans++;
+                }
+            }
+        } else {
+            for (Map.Entry<Integer, Integer> entry : entrySets) {
+                int t = entry.getKey();
+                if (dataMp.containsKey(t + k)) {
+                    ans++;
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
+
+
+class Solution {
+    public int findPairs(int[] nums, int k) {
+        //edge case
+        if (null == nums || nums.length <= 1 || k < 0) return 0;
+        
+        //general case
+        int ans = 0;
+        Arrays.sort(nums);
+        int end = 1;
+        int start = 0;
+        while (start < nums.length - 1) {
+            while (end < nums.length && nums[end] < nums[start] + k) {
+                end++;
+            }
+            
+            if (end == nums.length) break;
+            
+            if (nums[end] == nums[start] + k) {
+                //System.out.println(start + " " + end);
+                ans++;
+                while (start + 1 < nums.length && nums[start] == nums[start + 1]) {
+                   start++;
+                }
+                if (start +1 == nums.length) break;
+                start++;
+            } else {
+                start++;
+            }
+            
+            end = start + 1;
+        }
+        
+        return ans;
+    }
+}
