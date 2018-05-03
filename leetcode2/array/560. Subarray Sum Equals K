@@ -1,0 +1,48 @@
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        //edge case
+        if (null == nums) return 0; 
+        
+        //general case
+        int[] sumArr = new int[nums.length];
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            sumArr[i] = sum;
+        }
+        
+        int ans = 0;
+        for (int d : sumArr) {
+            if (d == k) {
+                ans++;
+            }
+        }
+        
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (sumArr[j] - sumArr[i] == k) {
+                    ans++;
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
+
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        Map<Integer, Integer> sumMp = new HashMap<>();
+        int sum = 0;
+        int ans = 0;
+        sumMp.put(0, 1);
+        for (int d : nums) {
+            sum += d;
+            if (sumMp.containsKey(sum - k)) {
+                ans += sumMp.get(sum - k);
+            }
+            sumMp.put(sum, sumMp.getOrDefault(sum, 0) + 1);
+        }
+        return ans;
+    }
+}
