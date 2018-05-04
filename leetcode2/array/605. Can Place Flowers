@@ -1,0 +1,48 @@
+class Solution {
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        //zeros between two ones, (zero cnt - 2) 为偶数则 / 2, 为奇数则 (cnt + 1) / 2
+        //left part 1, right part 1, (zero cnt - 1) 为偶数则 / 2, 为奇数则 (cnt + 1) / 2
+        int leftZ = 0;
+        int len = flowerbed.length;
+        int cnt = 0;
+        int i = 0;
+        if (flowerbed[0] == 0) {
+            while (i < len && flowerbed[i] == 0) {
+                leftZ++;
+                i++;
+            }
+
+            if (i == len) {
+                cnt += getNum(len);
+                return cnt >= n;
+            }
+                
+            cnt += getNum(leftZ - 1);
+        }
+
+        while (i < len) {
+            int j = i + 1;
+            while (j < len && flowerbed[j] != 1) {
+                j++;
+            }
+
+            if (j == len) {
+                cnt += getNum(len - i - 2);
+            } else {
+                cnt += getNum(j - i - 3);
+            }
+
+            i = j;
+        }
+
+        return cnt >= n;
+    }
+
+    public int getNum(int n) {
+        if (n % 2 == 0) {
+            return n / 2;
+        }
+
+        return (n + 1) / 2;
+    }
+}
