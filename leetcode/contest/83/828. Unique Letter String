@@ -1,0 +1,46 @@
+class Solution {
+public:
+    int uniqueLetterString(string S) {
+        int mod = 1e9 + 7;
+        int ans = 0;
+        int n = S.length();
+        for (int i = 0; i < n; i++) {
+            unordered_map<char, int> cnt;
+            for (int j = i; j < n; j++) {
+                cnt[S[j]]++;
+                for (auto& it : cnt) {
+                    if (it.second == 1) {
+                        ans = (ans + 1) % mod;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int uniqueLetterString(string S) {
+        int n = S.length();
+        vector<int> prev(256, -1);
+        vector<int> next(256, n);
+        vector<int> A(n, 0), B(n, 0);
+        for (int i = 0; i < n; i++) {
+            A[i] = prev[S[i]];
+            prev[S[i]] = i;
+        }
+        
+        for (int i = n - 1; i >= 0; i--) {
+            B[i] = next[S[i]];
+            next[S[i]] = i;
+        }
+        
+        long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += (i - A[i]) * (B[i] - i);
+        }
+        int mod = 1e9 + 7;
+        return ans % mod;
+    }
+};
