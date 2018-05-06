@@ -31,3 +31,27 @@ public:
         return ans;
     }
 };
+
+//此处的优化点是，利用了i和nums[i]相等时，循环终止
+//没有使用额外的标记数组，巧妙的利用了函数的退出条件
+class Solution {
+public:
+    int arrayNesting(vector<int>& nums) {
+        int n = nums.size();
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            int tmp = 1;
+            while (nums[i] != i) {
+                int tp = nums[i];
+                nums[i] = nums[tp];
+                nums[tp] = tp;
+                tmp++;
+            }
+            
+            if (ans < tmp) {
+                ans = tmp;
+            }
+        }
+        return ans;
+    }
+};
