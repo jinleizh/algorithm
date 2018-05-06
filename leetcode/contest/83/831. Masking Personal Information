@@ -1,0 +1,62 @@
+class Solution {
+public:
+    string maskPII(string S) {
+        //edge case
+        if (S.length() > 40) return "";
+        
+        if (S.length() < 8) return "";
+        if (isEmail(S)) {
+            return maskEmail(S);
+        }
+        
+        if (S.length() < 10) return "";
+        return maskPhone(S);
+    }
+    
+    bool isEmail(string input) {
+        if (string::npos == input.find('@')) return false;
+        return true;
+    }
+    
+    string maskEmail(string s) {
+        string tmp;
+        for (char c : s) {
+            tmp += tolower(c);
+        }
+        
+        int pos = tmp.find('@');
+        //cout<<tmp<<" "pos<<endl;
+        string name1 = tmp.substr(0, pos);
+        string f = name1.substr(0, 1);
+        string l = name1.substr(pos - 1, 1);
+        
+        return f + "*****" + l + "@" + tmp.substr(pos + 1);
+    }
+    
+    string maskPhone(string s) {
+        string tmp;
+        for (char c : s) {
+            if (c >= '0' && c <= '9') {
+                tmp += c;
+            }
+        }
+        
+        bool hasCountry = false;
+        if (tmp.length() > 10) {
+            hasCountry = true;
+        }
+        
+        int n = tmp.length();
+        string local = "";
+        string country = "";
+        int cl = n - 10;
+        for (int i = 0; i < cl; i++) {
+            country += "*";
+        }
+        if (cl > 0) {
+            return "+" + country + "-" + "***-***-" + tmp.substr(cl + 6);;
+        } else {
+            return "***-***-" + tmp.substr(6);
+        }
+    }
+};
