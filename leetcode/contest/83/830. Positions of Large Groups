@@ -1,0 +1,38 @@
+class Solution {
+public:
+    vector<vector<int>> largeGroupPositions(string S) {
+        int n = S.length();
+        vector<vector<int>> ans;
+        if (n <= 2) return ans;
+        
+        int i = 0, cnt = 0, start = 0;
+        char cur = S[0];
+        while (i < n) {
+            if (S[i] == cur) {
+                cnt++;
+            } else {
+                if (cnt >= 3) {
+                    vector<int> t;
+                    t.push_back(start);
+                    t.push_back(i - 1);
+                    ans.push_back(t);
+                }
+                
+                cur = S[i];
+                start = i;
+                cnt = 1;
+            }
+            
+            ++i;
+        }
+        
+        if (cnt >= 3) {
+            vector<int> t;
+            t.push_back(start);
+            t.push_back(i - 1);
+            ans.push_back(t);
+        }
+        
+        return ans;
+    }
+};
