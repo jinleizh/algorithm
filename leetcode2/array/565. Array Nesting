@@ -1,0 +1,33 @@
+class Solution {
+public:
+    //use visited array
+    int arrayNesting(vector<int>& nums) {
+        int n = nums.size();
+        int i = 0;
+        int ans = 0;
+        set<int> st;
+        vector<int> visited(n, 0);
+        while (i < n) {
+            int j = i;
+            if (visited[j]) {
+                i++;
+                continue;
+            }
+            
+            while (1) {
+                pair<set<int>::iterator, bool> ret = st.insert(j);
+                if (!ret.second) break;
+                visited[j] = 1;
+                j = nums[j];
+            }
+            
+            if (st.size() > ans) {
+                ans = st.size();
+            }
+            st.clear();
+            i++;
+        }
+        
+        return ans;
+    }
+};
