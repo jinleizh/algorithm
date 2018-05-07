@@ -1,0 +1,15 @@
+class Solution {
+    public int[][] matrixReshape(int[][] nums, int r, int c) {
+        int row = nums.length;
+        if (row == 0) return null;
+        int col = nums[0].length;
+        if (col == 0) return null;
+        if (r * c != row * col) return nums;
+        
+        int[][] ans = new int[r][c];
+        for (int i = 0; i < r * c; i++) {
+            ans[i / c][i % c] = nums[i / col][i % col];
+        }
+        return ans;
+    }
+}
