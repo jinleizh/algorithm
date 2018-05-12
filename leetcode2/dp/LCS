@@ -1,0 +1,111 @@
+#include <vector>
+#include <iostream>
+#include <set>
+using namespace std;
+
+class Solution {
+	public:
+		vector<string> ans;
+		vector<string> get(const string& left, const string& right) {
+			int row = left.length();
+			int col = right.length();
+			vector<vector<int> > dp(row + 1, vector<int>(col + 1, 0));
+			//vector<vector<int> > path(row + 1, vector<int>(col + 1, 0));
+			for (int i = 1; i <= row; i++) {
+				for (int j = 1; j <= col; j++) {
+					if (left[i - 1] == right[j - 1]) {
+						dp[i][j] = dp[i - 1][j - 1] + 1;
+						//path[i][j] = 1;
+					} else {
+						if (dp[i - 1][j] > dp[i][j - 1]) {
+							dp[i][j] = dp[i - 1][j];
+							//path[i][j] = 2;
+						} else {
+							dp[i][j] = dp[i][j - 1];
+							//path[i][j] = 3;
+						}
+					}
+				}
+			}
+
+			/*
+			int m = row, n = col;
+			string ret = "";
+			while (m > 0 && n > 0) {
+				if (left[m - 1] == right[n - 1]) {
+					ret += left[m - 1];
+					--m;
+					--n;
+				} else if (dp[m - 1][n] > dp[m][n - 1]) {
+					--m;
+				} else {
+					--n;
+				}
+			}
+
+			reverse(ret.begin(), ret.end());
+			ans.push_back(ret);
+			*/
+
+			for (auto v: dp) {
+				for (int d : v) {
+					cout<<d<<" ";
+				}
+				cout<<endl;
+			}
+
+			string ret = "";
+			backtrace(row, col, ret, dp, left, right);
+			return ans;
+		}
+
+		void backtrace(int i, int j, string ret, vector<vector<int>>& dp, const string& left, const string& right) {
+			if (i == 0 || j == 0 || dp[i][j] == 0) {
+				ans.push_back(ret);
+				return;
+			}
+
+			if (left[i - 1] == right[j - 1]) {
+				ret += left[i - 1];
+				backtrace(i - 1, j - 1, ret, dp, left, right);
+				return;
+			}
+
+			if (dp[i - 1][j] > dp[i][j - 1]) {
+				backtrace(i - 1, j, ret, dp, left, right);
+				return;
+			}
+
+			if (dp[i - 1][j] < dp[i][j - 1]) {
+				backtrace(i, j - 1, ret, dp, left, right);
+				return;
+			} 
+
+			if (dp[i - 1][j] > 0) {
+				backtrace(i - 1, j, ret, dp, left, right);
+			}
+
+			if (dp[i][j - 1] > 0) {
+				backtrace(i, j - 1, ret, dp, left, right);
+			}
+		}
+};
+
+int main() {
+	Solution s;
+	string a = "abcdefg";
+	string b = "bafg";
+	cout<<a<<endl;
+	cout<<b<<endl;
+	vector<string> result = s.get(a, b);
+	set<string> myset(result.begin(), result.end());
+	for (string s : result) {
+		cout<<"str="<<s<<endl;
+	}
+
+	for (string s : myset) {
+		reverse(s.begin(), s.end());
+		cout<<"s="<<s<<endl;
+	}
+	return 0;
+}
