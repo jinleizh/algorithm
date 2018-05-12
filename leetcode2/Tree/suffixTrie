@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+class Treenode {
+public:
+	Treenode(char c) {
+		this->c = c;
+	}
+
+
+	unordered_map<char, Treenode*> children;
+	vector<int> starter;
+	char c;
+};
+
+class SuffixTrie {
+public:
+	SuffixTrie() {
+		root = new Treenode(0);
+	}
+
+	void insert(string word, int index) {
+		Treenode* ptr = root;
+		cout<<"insert word="<<word<<endl;
+		for (char c : word) {
+			if (ptr->children.find(c) == ptr->children.end()) {
+				ptr->children[c] = new Treenode(c);
+			}
+
+			ptr->starter.push_back(index);
+			ptr = ptr->children[c];
+		}
+
+		ptr->starter.push_back(index);
+	}
+
+	vector<int> search(string word) {
+		vector<int> ans;
+		Treenode* ptr = root;
+		for (char c : word) {
+			//cout<<"word="<<c<<endl;
+			if (ptr->children.find(c) == ptr->children.end()) return ans;
+			ptr = ptr->children[c];
+		}
+
+		return ptr->starter;
+	}
+
+private:
+	Treenode* root;
+};
+
+int main() {
+	SuffixTrie suff;
+	string input = "abcabcabc";
+	int len = input.length();
+	for (int i = 0; i < len; i++) {
+		suff.insert(input.substr(i), i);
+		//cout<<"insert="<<i<<endl;
+	}
+
+	vector<int> ret = suff.search("bcabc");
+	cout<<"size="<<ret.size()<<endl;
+	for (int d : ret) {
+		cout<<d<<" ";
+	}
+	cout<<endl;
+	return 0;
+}
