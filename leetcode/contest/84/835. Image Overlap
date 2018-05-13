@@ -1,0 +1,87 @@
+class Solution {
+public:
+    //unordered_map<vector<vector<int>>, int> mp;
+    int largestOverlap(vector<vector<int>>& A, vector<vector<int>>& B) {
+        vector<vector<int>> old(A.size(), vector<int>(A.size(), 0));
+        for (int i = 0; i < A.size(); i++) {
+            for (int j = 0; j < A[0].size(); j++) {
+                old[i][j] = A[i][j];
+            }
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < A.size(); i++) {
+            for (int j = 0; j < A.size(); j++) {
+                //if (mp.find(A) != mp.end()) continue;
+                A = old;
+                change(A, i, j);
+                int ret = getOne(A, B);
+                
+                for (vector<int> v : A) {
+                    for (int d : v) {
+                        cout<<d<<" ";
+                    }
+                    cout<<endl;
+                }
+                cout<<ret<<endl;
+                
+                //mp[A] = ret;
+                if (ret > ans) {
+                    ans = ret;
+                }
+            }
+        }
+        return ans;
+    }
+    
+    void change(vector<vector<int>>& A, int i, int j) {
+        int n = A.size();
+        for (int k = 0; k < n; k++) {
+            reverse(A[k].begin(), A[k].begin() + n - i);
+            reverse(A[k].begin() + n - i, A[k].end());
+            reverse(A[k].begin(), A[k].end()); 
+        }
+
+        for (int k = 0; k < n; k++) {
+            int l = 0, r = n - j - 1;
+            while (l < r) {
+                int tmp = A[l][k];
+                A[l][k] = A[r][k];
+                A[r][k] = tmp;
+                l++;
+                r--;
+            }
+
+            l = n - j;
+            r = n - 1;
+            while (l < r) {
+                int tmp = A[l][k];
+                A[l][k] = A[r][k];
+                A[r][k] = tmp;
+                l++;
+                r--;
+            }
+
+            l = 0, r = n - 1;
+            while (l < r) {
+                int tmp = A[l][k];
+                A[l][k] = A[r][k];
+                A[r][k] = tmp;
+                l++;
+                r--;
+            }
+        }
+    }
+    
+    int getOne(vector<vector<int>>& A, vector<vector<int>>& B) {
+        int ans = 0;
+        for (int i = 0; i < A.size(); i++) {
+            for (int j = 0; j < A.size(); j++) {
+                if (1 == A[i][j] && 1 == B[i][j]) {
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
+};
