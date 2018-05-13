@@ -1,0 +1,45 @@
+class Solution {
+public:
+    //根据边可以构造图
+    //dfs该图，注意parent的情况, 自底向上求解
+    //求出最终ans
+    vector<int> sumOfDistancesInTree(int N, vector<vector<int>>& edges) {
+        vector<int> ans(N, 0);
+        vector<vector<int>> children(N, vector<int>());
+        vector<int> sonNum(N, 0);
+        vector<int> sonDist(N, 0);
+        for (vector<int> v : edges) {
+            children[v[0]].push_back(v[1]);
+            children[v[1]].push_back(v[0]);
+        }
+        
+        dfs(0, -1,  children, sonNum, sonDist);
+        getAns(0, -1, children, sonNum, sonDist, ans);
+        return ans;
+    }
+    
+    //求出子节点个数，当前节点和子节点的距离总和, 递归
+    void dfs(int root, int father, vector<vector<int>>& children, vector<int>& sonNum, vector<int>& sonDist) {
+        sonNum[root]++;
+        sonDist[root] = 0;
+        for (int d : children[root]) {
+            if (d == father) continue;
+            dfs(d, root, children, sonNum, sonDist);
+            sonNum[root] += sonNum[d];
+            sonDist[root] += sonDist[d] + sonNum[d];
+        }
+    }
+    
+    void getAns(int root, int father, vector<vector<int>>& children, vector<int>& sonNum, vector<int>& sonDist, vector<int>& ans) {
+        if (father == -1) {
+            ans[root] = sonDist[root];
+        } else {
+            ans[root] = ans[father] + sonNum.size() - 2 * sonNum[root];
+        }
+        
+        for (int d : children[root]) {
+            if (d == father) continue;
+            getAns(d, root, children, sonNum, sonDist, ans);
+        }
+    }
+};
