@@ -1,0 +1,19 @@
+class Solution {
+public:
+    vector<vector<int>> flipAndInvertImage(vector<vector<int>>& A) {
+        int row = A.size();
+        int col = A[0].size();
+        for (auto& v : A) {
+            reverse(v.begin(), v.end());
+            for (auto& d : v) {
+                if (d == 0) {
+                    d = 1;
+                } else {
+                    d = 0;
+                }
+            }
+        }
+        
+        return A;
+    }
+};
