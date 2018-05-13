@@ -1,0 +1,49 @@
+struct Node {
+   public:
+        int idx;
+        int pos;
+    
+        Node(int idx, int p) {
+            this->idx = idx;
+            this->pos = p;
+        }
+    
+        bool operator < (const Node& r) {
+            return this->idx < r.idx;
+        }
+};
+
+class Solution {
+public:
+    string findReplaceString(string S, vector<int>& indexes, vector<string>& sources, vector<string>& targets) {
+        vector<Node> p;
+        for (int i = 0; i < indexes.size(); i++) {
+            Node node(indexes[i], i);
+            p.push_back(node);
+        }
+        sort(p.begin(), p.end());
+        
+        int n = S.length();
+        int num = indexes.size();
+        int cur = 0;
+        string ret = "";
+        for (int i = 0; i < p.size(); i++) {
+            int pos = p[i].pos;
+            int idx = p[i].idx;
+            ret += S.substr(cur, idx - cur);
+            string source = sources[pos];
+            string target = targets[pos];
+            int len = source.length();
+            if (S.substr(idx, len) == source) {
+                ret += target;
+            } else {
+                ret += S.substr(idx, len);
+            }
+            
+            cur = idx + len;
+        }
+        
+        ret += S.substr(cur);
+        return ret;
+    }
+};
