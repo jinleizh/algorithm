@@ -85,3 +85,29 @@ public:
         return ans;
     }
 };
+
+
+class Solution {
+public:
+    //数组覆盖的问题，记住需要考虑起点的覆盖
+    int largestOverlap(vector<vector<int>>& A, vector<vector<int>>& B) {
+        int ans = 0;
+        int n = A.size();
+        for (int x = 1 - n; x <= n - 1; x++) {
+            for (int y = 1 - n; y <= n - 1; y++) {
+                int ret = 0;
+                for (int i = max(x, 0); i < min(x + n, n); i++) {
+                    for (int j = max(y, 0); j < min(y + n, n); j++) {
+                        if (B[i][j] == 1 && A[i - x][j - y] == 1) {
+                            ret++;
+                        }
+                    }
+                }
+                if (ret > ans) {
+                    ans = ret;
+                }
+            }
+        }
+        return ans;
+    }
+};
