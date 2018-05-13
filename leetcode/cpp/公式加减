@@ -1,0 +1,104 @@
+#include <iostream>
+#include <vector>
+#include <set>
+using namespace std;
+
+struct Node {
+	public:
+		string expr;
+		int result;
+		Node(string expr, int result) {
+			this->expr = expr;
+			this->result = result;
+		}
+};
+
+class Solution {
+	public:
+		//输出最终结果
+		//左右两个部分 - 加减得到符合条件的，输出符合条件的结果集合
+		//求出各个部分所有可能的组合结果
+		set<string> getAns(vector<int>& input, int target) {
+			vector<string> ans;
+			int n = input.size();
+			for (int i = 0; i < n - 1; i++) {
+				//cout<<"loop i="<<i<<endl;
+				vector<Node> leftPart = getNode(input, 0, i);
+				for (Node node : leftPart) {
+					//cout<<"leftPart="<<node.expr<<" "<<node.result<<endl;
+				}
+				vector<Node> rightPart = getNode(input, i + 1, n - 1);
+				for (Node node : leftPart) {
+					//cout<<"rightPart="<<node.expr<<" "<<node.result<<endl;
+				}
+				for (Node lnode : leftPart) {
+					string lexpr = lnode.expr;
+					int lret = lnode.result;
+					for (Node rnode : rightPart) {
+						int rret = rnode.result;
+						string rexpr = rnode.expr;
+						if (lret + rret == target) {
+							ans.push_back("(" + lexpr + "+" + rexpr + ")");
+							cout<<lret<<" "<<lexpr<<" "<<rret<<" "<<rexpr<<" "<<target<<endl;
+						} else if (lret - rret == target) {
+							ans.push_back("(" + lexpr + "-" + rexpr + ")");
+							cout<<lret<<" "<<lexpr<<" "<<rret<<" "<<rexpr<<" "<<target<<endl;
+						}
+					}
+				}
+			}
+
+			set<string> ansSet(ans.begin(), ans.end());
+			return ansSet;
+
+		}
+
+		vector<Node> getNode(vector<int>& input, int l, int r) {
+			vector<Node> ans;
+			if (l == r) {
+				//cout<<"l=r expr="<<to_string(input[l])<<endl;
+				Node node(to_string(input[l]), input[l]);
+				ans.push_back(node);
+				return ans;
+			}
+
+			for (int i = l; i < r; i++) {
+				//cout<<l<<" "<<r<<" i="<<i<<endl;
+				vector<Node> leftPart = getNode(input, l, i);
+				//cout<<"getNode leftPart"<<endl;
+				vector<Node> rightPart = getNode(input, i + 1, r);
+				//cout<<"getNode rightPart"<<endl;
+				for (Node lnode : leftPart) {
+					string lexpr = lnode.expr;
+					int lret = lnode.result;
+					for (Node rnode : rightPart) {
+						string rexpr = rnode.expr;
+						int rret = rnode.result;
+						string addExpr = "(" + lexpr + "+" + rexpr + ")";
+						int addResult = lret + rret;
+						Node addNode(addExpr, addResult);
+						ans.push_back(addNode);
+
+						string subExpr = "(" + lexpr + "-" + rexpr + ")";
+						int subResult = lret - rret;
+						Node subNode(subExpr, subResult);
+						ans.push_back(subNode);
+					}
+				}
+			}
+
+			return ans;
+		}
+};
+
+int main() {
+	cout<<"begin"<<endl;
+	Solution s;
+	vector<int> input = {1, 2, 3, 4};
+	int target = 6;
+	set<string> ans = s.getAns(input, target);
+	for (string s : ans) {
+		cout<<s<<endl;
+	}
+	cout<<"end"<<endl;
+}
