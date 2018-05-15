@@ -58,3 +58,116 @@ int main() {
     cout<<endl;
     return 0;
 }
+
+package cn.webank.ctrl.learn.lecture.lecture.list;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 区间数-查找某个区间的最小值
+ * @author ctrlzhang on 2018/5/15.
+ */
+public class SegmentTree {
+    private List<Integer> data = new ArrayList<>();
+
+    public SegmentTree(List<Integer> data) {
+        this.data = data;
+    }
+
+    /**
+     * 线段树中存储的是 原始数组的元素下标
+     * 注意返回的是树 原始数组的下标
+     */
+    public int constructTree(List<Integer> data, List<Integer> tree, int l, int r, int idx) {
+        //System.out.println("idx=" + idx);
+        if (l > r) return -1;
+        if (l == r) {
+            System.out.println("l == r " + l + " " + idx);
+            tree.set(idx, l);
+            return l;
+        }
+
+        int mid = l + (r - l) / 2;
+        int minPos = getMin(data, constructTree(data, tree, l, mid, 2 * idx +1), constructTree(data, tree, mid +1,
+                r, 2 * idx +2));
+        tree.set(idx, minPos);
+        return minPos;
+    }
+
+    int getMin(List<Integer> data, int l, int r) {
+        if (l == -1) return r;
+        if (r == -1) return l;
+        return data.get(l) > data.get(r) ? l : r;
+    }
+
+    /**
+     * 开始查找 - 查找过程也是递归的查找 - 查找到某一个区间内的最小值
+     * (ss-se)同pos是一一对应的
+     */
+    int search(List<Integer> data, List<Integer> tree, int ss, int se, int fs, int fe, int pos) {
+        System.out.print(ss + " ");
+        System.out.print(se + " ");
+        System.out.print(fs + " ");
+        System.out.print(fe + " ");
+        System.out.println(pos);
+        //非相交区间
+        if (ss > se || fs > fe || ss > fe || se < fs) return -1;
+
+        //查找区间覆盖了 线段树区间
+        if (fs <= ss && fe >= se) {
+            return tree.get(pos);
+        }
+
+        //相交的情况
+        int mid = ss + (se - ss) / 2;
+        int findAns = getMin(data,
+                search(data, tree, ss, mid, fs, fe, 2 * pos +1), //下标索引
+                search(data, tree, mid + 1, se, fs, fe, 2 * pos +2));//下标索引
+        if (-1 != findAns) {
+            System.out.println("findAns=" + findAns + " " + data.get(findAns));
+        }
+        return findAns;
+    }
+
+    public static void main(String[] args) {
+        List<Integer> input = new ArrayList<>();
+        input.add(1);
+        input.add(2);
+        input.add(3);
+        input.add(9);
+        input.add(11);
+        input.add(13);
+        SegmentTree tree = new SegmentTree(input);
+        int num = input.size();
+        int k = (int) (Math.ceil(Math.log(num) / Math.log(2)) + 1);
+        int initSize = (int) (Math.pow(2, k) - 1);
+        //System.out.println(k);
+        //System.out.println(num);
+        //System.out.println(initSize);
+        List<Integer> segTree = new ArrayList<Integer>(initSize);
+        for (int i = 0; i < initSize; i++) {
+            segTree.add(-1);
+        }
+
+        int pos = tree.constructTree(input, segTree, 0, input.size() - 1, 0);
+        /*
+        System.out.println(pos);
+
+        System.out.println("=====");
+        for (int d : segTree) {
+            System.out.println(d);
+        }
+        System.out.println("=====");
+        */
+
+        int ans = tree.search(input, segTree, 0, input.size() - 1, 0, 4, 0);
+        if (-1 == ans) {
+            System.out.println("not found");
+            return;
+        }
+        System.out.println(ans);
+        System.out.println(input.get(ans));
+    }
+}
+
