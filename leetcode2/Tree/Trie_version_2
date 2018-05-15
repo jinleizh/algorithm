@@ -1,0 +1,124 @@
+package cn.webank.ctrl.learn.lecture.lecture.list;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author ctrlzhang on 2018/5/15.
+ */
+public class Trie {
+    private class TrieNode {
+        private TrieNode[] children = new TrieNode[26];
+        private List<Integer> pos = new ArrayList<>();
+        private char c;
+        boolean isEnd = false;
+
+        TrieNode(char c) {
+            this.c = c;
+        }
+
+        void insert(String word) {
+            TrieNode cur = root;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                if (cur.children[c - 'a'] == null) {
+                    cur.children[c - 'a'] = new TrieNode(c);
+                }
+
+                cur = cur.children[c - 'a'];
+            }
+
+            cur.isEnd = true;
+        }
+
+        void insert(String word, int index) {
+            TrieNode cur = root;
+            cur.pos.add(index);
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                if (cur.children[c - 'a'] == null) {
+                    cur.children[c - 'a'] = new TrieNode(c);
+                }
+
+                cur = cur.children[c - 'a'];
+                cur.pos.add(index);
+            }
+        }
+
+        boolean search(String word) {
+            TrieNode cur = root;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                if (cur.children[c - 'a'] == null) return false;
+                cur = cur.children[c - 'a'];
+            }
+
+            return cur.isEnd;
+        }
+
+        boolean startWith(String word) {
+            TrieNode cur = root;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                if (cur.children[c - 'a'] == null) {
+                    return false;
+                }
+
+                cur = cur.children[c - 'a'];
+            }
+
+            return true;
+        }
+
+        List<Integer> searchPos(String word) {
+            TrieNode cur = root;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                if (cur.children[c - 'a'] == null) return null;
+                cur = cur.children[c - 'a'];
+            }
+
+            return cur.pos;
+        }
+    }
+
+    public void insert(String word) {
+        root.insert(word);
+    }
+
+    public void insert(String word, int index) {
+        root.insert(word, index);
+    }
+
+    public boolean search(String word) {
+        return root.search(word);
+    }
+
+    public List<Integer> searchPos(String word) {
+        return root.searchPos(word);
+    }
+
+    private TrieNode root;
+
+    Trie() {
+        root = new TrieNode('#');
+    }
+
+    public static void main(String[] args) {
+        Trie t = new Trie();
+        String word = "abcabcabc";
+        t.insert(word);
+        t.insert("abc");
+        boolean ret = t.search("abc");
+        System.out.println("ret=" + ret);
+
+        Trie suffix = new Trie();
+        for (int i = 0; i < word.length(); i++) {
+            String tmp = word.substring(i);
+            suffix.insert(tmp, i);
+        }
+
+        List<Integer> retList = suffix.searchPos("abc");
+        System.out.println("retList=" + retList);
+    }
+}
