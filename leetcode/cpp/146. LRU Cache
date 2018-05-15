@@ -1,0 +1,73 @@
+struct Node {
+    int key;
+    int value;
+};
+
+class LRUCache {
+public:
+    list<Node> cacheList;
+    unordered_map<int, list<Node>::iterator> mp; 
+    int capacity;
+    
+    LRUCache(int capacity) {
+        this->capacity = capacity;  
+    }
+    
+    int get(int key) {
+        //find
+        if (mp.find(key) != mp.end()) {
+            list<Node>::iterator it = mp[key];
+            int val = it->value;
+            cacheList.erase(it);
+            Node head;
+            head.key = key;
+            head.value = val;
+            cacheList.push_front(head);
+            mp[key] = cacheList.begin();
+            return val;
+        }
+        
+        //not find
+        return -1;
+    }
+    
+    void put(int key, int value) {
+        //find
+        if (mp.find(key) != mp.end()) {
+            list<Node>::iterator it = mp[key];
+            cacheList.erase(it);
+            Node head;
+            head.key = key;
+            head.value = value;
+            cacheList.push_front(head);
+            mp[key] = cacheList.begin();
+        } 
+        //not find
+        else {
+            //consider cache size
+            if (cacheList.size() == this->capacity) {
+                int delKey = cacheList.back().key;
+                mp.erase(delKey);
+                cacheList.pop_back();
+                Node head;
+                head.key = key;
+                head.value = value;
+                cacheList.push_front(head);
+                mp[key] = cacheList.begin();
+            } else {
+                Node head;
+                head.key = key;
+                head.value =value;
+                cacheList.push_front(head);
+                mp[key] = cacheList.begin();
+            }
+        }
+    }
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
