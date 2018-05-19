@@ -1,0 +1,46 @@
+class Solution {
+public:
+    void gameOfLife(vector<vector<int>>& board) {
+        int row = board.size();
+        if (0 == row) return;
+        int col = board[0].size();
+        if (0 == col) return;
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                int liveNum = getLiveNum(board, i, j, row, col);
+                if (0 == board[i][j]) {
+                    if (liveNum == 3) {
+                        board[i][j] |= 2;
+                    }
+                } else {
+                    if (liveNum == 2 || liveNum == 3) {
+                        board[i][j] |= 2;
+                    }
+                }
+            }
+        }
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                board[i][j] >>= 1;
+            }
+        }
+    }
+    
+    int getLiveNum(vector<vector<int>>& board, int i, int j, int row, int col) {
+        int dx[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int dy[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+        int ans = 0;
+        for (int k = 0; k < 8; k++) {
+            int nx = i + dx[k];
+            int ny = j + dy[k];
+            if (nx >= 0 && ny >= 0 && nx < row && ny < col) {
+                if (board[nx][ny] & 1) {
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
+};
