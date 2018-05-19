@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int ans = 0;
+        //edge case
+        if (height.empty()) return ans;
+        
+        //general case
+        int l = 0, r = height.size() - 1;
+        while (l < r) {
+            int h = min(height[l], height[r]);
+            int w = r - l;
+            if (ans < w * h) {
+                ans = w * h;
+            }
+            
+            //find next l, r
+            if (height[l] <= height[r]) {
+                int t = height[l];
+                while (l < r && height[l] <= t) {
+                    l++;
+                }
+            } else {
+                int t = height[r];
+                while (l < r && height[r] <= t) {
+                    r--;
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
