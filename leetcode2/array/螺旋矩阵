@@ -1,0 +1,46 @@
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> ans;
+        
+        //edge case
+        int row = matrix.size();
+        if (0 == row) return ans;
+        int col = matrix[0].size();
+        if (0 == col) return ans;
+        
+        //general case
+        int top = 0, bottom = row - 1, left = 0, right = col - 1;
+        while (top <= bottom && left <= right) {
+            //output top row
+            for (int j = left; j <= right; j++) {
+                ans.push_back(matrix[top][j]);
+            }
+            //output right col
+            if (top + 1 < bottom) {
+                for (int i = top + 1; i <= bottom - 1; i++) {
+                    ans.push_back(matrix[i][right]);
+                }
+            }
+            //output bottom row
+            if (top < bottom) {
+                for (int j = right; j >= left; j--) {
+                    ans.push_back(matrix[bottom][j]);
+                }
+            }
+            //output left col
+            if (left < right && bottom - 1 > top) {
+                for (int i = bottom - 1; i >= top + 1; i--) {
+                    ans.push_back(matrix[i][left]);
+                }
+            }
+            
+            ++left;
+            --right;
+            ++top;
+            --bottom;
+        }
+        
+        return ans;
+    }
+};
