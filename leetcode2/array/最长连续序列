@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        unordered_map<int, int> dataMap;
+        for (int d : nums) {
+            dataMap[d]++;
+        }
+        
+        int ans = 0;
+        for (int d : nums) {
+            if (dataMap.find(d - 1) == dataMap.end()) {
+                int length = 1;
+                while (dataMap.find(++d) != dataMap.end()) {
+                    ++length;
+                }
+                
+                ans = max(ans, length);
+            }
+        }
+        
+        return ans;
+    }
+};
