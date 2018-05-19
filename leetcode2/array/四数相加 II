@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
+        int lenA = A.size();
+        int lenB = B.size();
+        int lenC = C.size();
+        int lenD = D.size();
+        int ans = 0;
+        //edge case
+        if (lenA == 0 || lenB == 0 || lenC == 0 || lenD == 0) return ans;
+        
+        unordered_map<int, int> sumAB;
+        for (int i = 0; i < lenA; i++) {
+            for (int j = 0; j < lenB; j++) {
+                sumAB[A[i] + B[j]]++;
+            }
+        }
+        
+        for (int i = 0; i < lenC; i++) {
+            for (int j = 0; j < lenD; j++) {
+                int sum = C[i] + D[j];
+                if (sumAB.find(-sum) != sumAB.end()) {
+                    ans += sumAB[-sum];
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
