@@ -29,3 +29,27 @@ public:
 };
 
 //optimize
+//该方法关键的地方是 edge case k==0 以及指定了max=K + W - 1, 所以使得 if (i > k) 时的逻辑有意义
+//每次总是可以正确的删除大于k的情况
+class Solution {
+public:
+    double new21Game(int N, int K, int W) {
+        if (K == 0) return 1;
+        int max = K - 1 + W;
+        vector<double> sum(max + 1, 0.0);
+        sum[0] = 1.0;
+        for (int i = 1; i <= max; i++) {
+            if (i <= W) {
+                sum[i] = sum[i - 1] + sum[i - 1] / W;
+            } else {
+                sum[i] = sum[i - 1] + (sum[i - 1] - sum[i - W - 1]) / W;
+            }
+            
+            if (i > K) {
+                sum[i] -= (sum[i - 1] - sum[K - 1]) / W;
+            }
+        }
+        
+        return (sum[N] - sum[K - 1]) / (sum[max] - sum[K - 1]);
+    }
+};
