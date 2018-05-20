@@ -1,0 +1,31 @@
+//TLE
+class Solution {
+public:
+    //dp问题 每次经过1-w步可以到达下一点
+    //计算到达时的概率问题
+    double new21Game(int N, int K, int W) {
+        int max = K - 1 + W;
+        vector<double> dp(max + 1, 0.0);
+        dp[0] = 1;
+        for (int i = 1; i <= max; i++) {
+            for (int j = 1; j <= W; j++) {
+                if (i - j >= 0 && i - j < K) {
+                    dp[i] += dp[i - j] / W;
+                }
+            }
+        }
+        
+        double less = 0.0, total = 0.0;
+        for (int i = K; i <= max; i++) {
+            if (i <= N) {
+                less += dp[i];
+            }
+            
+            total += dp[i];
+        }
+        
+        return less / total;
+    }
+};
+
+//optimize
