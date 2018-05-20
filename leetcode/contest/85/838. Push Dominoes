@@ -1,0 +1,38 @@
+class Solution {
+public:
+    string pushDominoes(string dominoes) {
+        string data = "L" + dominoes + "R";
+        int n = data.length() - 2;
+        for (int i = 1; i <= n; i++) {
+            if (data[i] == '.') {
+                int j = i;
+                while (data[j + 1] == '.') {
+                    j++;
+                }
+                
+                if (data[i - 1] == 'L' && data[j + 1] == 'L') {
+                    for (int k = i; k <= j; k++) {
+                        data[k] = 'L';
+                    }
+                } else if (data[i - 1] == 'R' && data[j + 1] == 'R') {
+                    for (int k = i; k <= j; k++) {
+                        data[k] = 'R';
+                    }
+                } else if (data[i - 1] == 'R' && data[j + 1] == 'L'){
+                    int a = i;
+                    int b = j;
+                    while (a < b) {
+                        data[a] = 'R';
+                        data[b] = 'L';
+                        ++a;
+                        --b;
+                    }
+                }
+                
+                j = i;
+            }
+        }
+        
+        return data.substr(1, n);
+    }
+};
