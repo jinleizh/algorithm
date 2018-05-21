@@ -1,0 +1,39 @@
+class Solution {
+public:
+    //使用queue和set过滤
+    int numSimilarGroups(vector<string>& A) {
+        //edge case
+        int n = A.size();
+        if (0 == n) return 0;
+        
+        //general case
+        int ans = 0;
+        queue<string> q;
+        set<string> st(A.begin(), A.end());
+        while (!st.empty()) {
+            ++ans;
+            q.push(*st.begin());
+            st.erase(st.begin());
+            while (!q.empty()) {
+                string tmp = q.front();
+                q.pop();
+                vector<string> vs(st.begin(), st.end());
+                for (string t : vs) {
+                    int diff = 0;
+                    for (int i = 0; i < t.length(); i++) {
+                        if (t[i] != tmp[i]) {
+                            diff++;
+                        }
+                    }
+
+                    if (diff == 2) {
+                        q.push(t);
+                        st.erase(t);
+                    }
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
