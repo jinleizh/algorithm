@@ -37,3 +37,104 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    //dfs
+    int numSimilarGroups(vector<string>& A) {
+        int n = A.size();
+        if (n == 0) return 0;
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (A[i].empty()) continue;
+            ++ans;
+            string src = A[i];
+            A[i] = "";
+            findGroup(src, A);
+        }
+        
+        return ans;
+    }
+    
+    void findGroup(string src, vector<string>& A) {
+        int n = A.size();
+        for (int i = 0; i < n; i++) {
+            if (A[i].empty()) continue;
+            bool ret = needFind(src, A[i]);
+            if (ret) {
+                string tmp = A[i];
+                A[i] = "";
+                findGroup(tmp , A);
+            }
+        }
+    }
+    
+    bool needFind(string l, string r) {
+        int diff = 0;
+        for (int i = 0; i < l.length(); i++) {
+            if (l[i] != r[i]) {
+                ++diff;
+                if (diff > 2) return false;
+            }
+        }
+        
+        return 2 == diff;
+    }
+};
+
+class Solution {
+public:
+    //bfs - 
+    int numSimilarGroups(vector<string>& A) {
+        int n = A.size();
+        if (0 == n) return 0;
+        
+        int ans = 0;
+        queue<string> q;
+        while (1) {
+            bool finish = true;
+            for (int i = 0; i < n; i++) {
+                if (!A[i].empty()) {
+                    q.push(A[i]);
+                    A[i] = "";
+                    finish = false;
+                    break;
+                }
+            }
+            if (finish) break;
+            ++ans;
+            while (!q.empty()) {
+                int qs = q.size();
+                queue<string> nextQ;
+                for (int i = 0; i < qs; i++) {
+                    string tmp = q.front();
+                    q.pop();
+                    for (int i = 0; i < n; i++) {
+                        if (A[i].empty()) continue;
+                        bool needEnter = getDiff(tmp, A[i]);
+                        if (needEnter) {
+                            nextQ.push(A[i]);
+                            A[i] = "";
+                        }
+                    }
+                }
+                
+                q = nextQ;
+            }
+        }
+        
+        return ans;
+    }
+    
+    bool getDiff(string l, string r) {
+        int diff = 0;
+        for (int i = 0; i < l.length(); i++) {
+            if (l[i] != r[i]) {
+                ++diff;
+                if (diff > 2) return false;
+            }
+        }
+        
+        return 2 == diff;
+    }
+};
