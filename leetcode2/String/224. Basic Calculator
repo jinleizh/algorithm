@@ -1,0 +1,61 @@
+class Solution {
+public:
+    int calculate(string s) {
+        stack<char> op;
+        stack<int> data;
+        int number = 0;
+        int n = s.length();
+        int i = 0;
+        while (i < n) {
+            if (s[i] == ' ') {
+                ++i;
+                continue;
+            }
+            if (isdigit(s[i])) {
+                number = 0;
+                while (isdigit(s[i])) {
+                    number = number * 10 + s[i] - '0';
+                    ++i;
+                }
+
+                if (!op.empty()) {
+                    if ('+' == op.top()) {
+                        int cur = data.top();
+                        data.pop();
+                        data.push(cur + number);
+                        op.pop();
+                    } else if ('-' == op.top()) {
+                        int cur = data.top();
+                        data.pop();
+                        data.push(cur - number);
+                        op.pop();
+                    } else {
+                        data.push(number);
+                    }
+                } else {
+                    data.push(number);
+                }
+            } else if (s[i] != ')') {
+                op.push(s[i]);
+                ++i;
+            } else {
+                op.pop();
+                if (!op.empty() && ('+' == op.top() || '-' == op.top())) {
+                    int right = data.top();
+                    data.pop();
+                    int left = data.top();
+                    data.pop();
+                    if ('+' == op.top()) {
+                        data.push(left + right); 
+                    } else {
+                        data.push(left - right);
+                    }
+                    op.pop();
+                }
+                ++i;
+            }
+        }
+        
+        return data.top();
+    }
+};
