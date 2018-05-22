@@ -1,0 +1,136 @@
+//支持加减乘除以及括号
+//本题目是从不含括号和含有括号不含有乘除的逻辑转变而来,思路如下
+
+//我所使用的方法都是基于stack来处理的
+//对于不包含括号的 加减乘除运算器，我们知道乘除的优先级较高，所以遇到乘除马上计算结果，然后再放回原stack中,继续参与后面的
+//运算，
+//第一个需要注意的点, 只要遇到乘法和除法就优先计算
+//第二个需要注意的点，我们把表达式拆分为 运算符 和 数值 两部分组成的
+//第三个注意点，对于减法运算，我们把它转换为加法，把值当作负数整体push进堆栈中, 这样就只需要考虑加法了.
+//第四个注意点，我们需要先考虑符号，后考虑数值， 因为乘除是二元运算符，必须得到第二个值后，才可以计算结果，所以先考虑运算符
+
+//第一种情况: 不含括号的加减乘除运算器
+//解题思路: 
+//a.初始，设置结果为0，运算符号为+
+//b.i从0开始到n-1,如果遇到空格，跳过继续, if (isdigit(s[i])) number = s[i] - '0'; while(i < n && isdigit(s[i + 1])) { number = number * 10 + s[i] - '0'; ++i;}
+//注意这里找数字的方法，先检查了i + 1是不是数字
+//c.当遇到+时，直接push当前数值到堆栈，用于将来最终求和用
+//当遇到-时, 直接push当前数值的相反数到堆栈，同样用于后面求和
+//当遇到*时，用当前数值 *栈顶元素，然后pop栈顶元素，把刚才的乘法运算结果push到栈顶 (因为乘法的运算优先级比加法和减法高)
+//当遇到/时，用当前数值 /栈顶元素，然后pop栈顶元素，把刚才的除法运算结果push到栈顶 (因为除法的运算优先级比加法和减法高)
+//d.最后所有字符遍历完成后，把堆栈中的所有元素求和，即可得到运算结果
+
+//时间复杂度: o(n) - 每个元素入一次堆栈
+
+//第二种情况：带括号的加减计算器
+//解题思路: 我们还是希望把运算表达式按运算符和值拆分，这里引入了括号， 括号中的运算表达式相当于是一个子问题
+//a.初始化当前层的result = 0; sign = 1, 因为只有加减, 可以用1 和 -1 分别表示加法 减法，方便后面使用
+//b.遇到空格，跳过，遇到数字获取数值, 当前层的result += number * sign
+//c.当遇到 + -时，设置sign为1 和 -1
+//d.当遇到 ( 时，表示要进入到下一层，即需要先把括号内的result算出来，当将来遇到）时，把结果返回到 （）的上一层去.
+//这意味着，我们需要保存上一层的临时result结果, 它在将来遇到它这一层的)时，也需要把结果返回到最上层去.
+//所以我们使用stack<int> data, 在遇到(时，保存当前层的临时result, 同时我们还需要把(前的sign保存下来, 这样当子层返回时
+//可以求出上层的result, 原理就是这样逐层往外返回， 加减运算是同级的，但是需要按顺序处理
+//每一层遇到(，进入下一层前，需要保存当前层的状态，即result值，以及进入前的sign，保存之后，需要把子层的result初始化为0
+//sign初始化为'+'或者1, 这样开始子层的计算. 类似dfs
+//时间复杂度o(n)
+
+//第三种情况: 带括号的加减乘除计算器
+//解题思路: 这道题目是第一种和第二种情况的结合，我们还是希望按运算符和运算值拆分表达式
+//由于在第一种方法中，我们知道需要使用stack保存局部值，最后求和，才可以返回整个表达式的结果
+//我们又知道第二种方法处理括号时，我们需要保存当前层处理的状态和sign，然后再计算子层，等子层返回到当前层，再继续后面的处理
+//所以结合两种情况，我们需要使用stack<int> 来保存每一层的处理结果(由第一种情形可知)
+//我们需要使用stack<stack<int>> 保存所有层的处理结果, 用于子层返回结果时，查找到当前层以及sign.
+//我们知道sign有四种，所以子层返回时，需要根据sign的类型，做不同的处理, 处理思路和第一种情形相同.
+//为了方便，在进入下一层前，我们使用stack<int> result，保存了sign， (result保存了本层的局部值，这些局部值最终会求和，以得到当前层的计算结果.)
+//所以,当遇到(时, 先保存当前层处理结果 result.push(sign); data.push(result); 
+//然后初始化子层的result 以及 sign = 1 或 '+', 子层还是按照第一种情况的方式, 当遇到)时，子层把该层的表达式计算结果求出.
+//然后查找到上一层的result结果和sign，根据sign的类型，如果是+，则直接push到上一层结果集合中，
+如果是-，则push相反数，如果为*，则跟上一层栈顶元素相乘，再pop掉栈顶，再插入乘积结果到栈顶，如果为/，跟上一层元素相除,
+再pop栈顶，再插入除法结果到栈顶.
+//最后子层的处理结果，都会总在最高一层的result里，对全部取和即可.
+//所以第一种和第三种，最终的思路都是把乘法 除法 减法 全部转换成加法来做. 乘除都是立即处理.
+class Solution {
+	//include () + - / *
+	//(a * c + b + (a + c * (e / f) + d - e * (l + m)))
+	public int getAns(string s) {
+		stack<stack<int>> data;
+		stack<int> resultSK;
+		int ans = 0;
+		/+=1 -=-1 *=2 /=3
+		int sign = 1;
+		int n = s.length();
+		int num = 0;
+		for (int i = 0; i < n; i++) {
+			if (s[i] == ' ') continue;
+			if (isdigit(s[i])) {
+				num = s[i] - '0';
+				while (i + 1 < n && isdigit(s[i + 1])) {
+					num = num * 10 + s[i + 1] - '0';
+					++i;
+				}
+				
+				if (sign == 1) {
+					resultSK.push(num);
+				} else if (sign == -1) {
+					resultSK.push(-num);
+				} else if (sign == 2) {
+					int val = resultSK.top();
+					resultSK.pop();
+					resultSK.push(val * num);
+				} else {
+					int val = resultSK.top();
+					resultSK.pop();
+					resultSK.push(val / num);
+				}
+			} else if (s[i] == '+') {
+				sign = 1;
+			} else if (s[i] == '-') {
+				sign = -1;
+			} else if (s[i] == '*') {
+				sign = 2;
+			} else if (s[i] == '/') {
+				sign = 3;
+			} else if (s[i] == '(') {
+				//reserve old sign
+				resultSK.push(sign);
+				data.push(resultSK);
+				resultSK.clear();
+				sign = 1;
+			} else if (s[i] == ')') {
+				//求出当前子集的和
+				ans = 0;
+				while (!resultSK.empty()) {
+					ans += resultSK.top();
+					resultSK.pop();
+				}
+				
+				//恢复到上一层的结果集合中
+				resultSK = data.top();
+				data.pop();
+				sign = resultSK.top();
+				resultSK.pop();
+				if (sign == 1) {
+					resultSK.push(tmp);
+				} else if (sign == -1) {
+					resultSK.push(-tmp);
+				} else if (sign == 2) {
+					int val = resultSK.top();
+					resultSK.pop();
+					resultSK.push(val * tmp);
+				} else {
+					int val = resultSK.top();
+					resultSK.pop();
+					resultSK.push(val / tmp);
+				}
+			}
+		}
+		
+		ans = 0;
+		while (!resultSK.empty()) {
+			ans += resultSK.top();
+			resultSK.pop();
+		}
+		return ans;
+	}
+};
