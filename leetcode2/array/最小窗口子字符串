@@ -1,0 +1,37 @@
+class Solution {
+public:
+    //o(n)
+    //cntMap[i] 表示还需要几个i元素
+    string minWindow(string s, string t) {
+        string ans = "";
+        if (t.length() > s.length()) return ans;
+        
+        unordered_map<char, int> cntMap;
+        for (int i = 0; i < t.length(); i++) {
+            ++cntMap[t[i]];
+        }
+        
+        int left = 0, count = 0, minLen = INT_MAX;
+        string res = "";
+        for (int i = 0; i < s.length(); i++) {
+            if (cntMap.find(s[i]) != cntMap.end()) {
+                --cntMap[s[i]];
+                if (cntMap[s[i]] >= 0) ++count;
+                while (count == t.length()) {
+                    if (minLen > i - left + 1) {
+                        minLen = i - left + 1;
+                        res = s.substr(left, minLen);
+                    }
+                    
+                    if (cntMap.find(s[left]) != cntMap.end()) {
+                        ++cntMap[s[left]];
+                        if (cntMap[s[left]] > 0) --count;
+                    }
+                    
+                    ++left;
+                }
+            }
+        }
+        return res;
+    }
+};
