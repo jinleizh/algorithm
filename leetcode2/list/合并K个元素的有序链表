@@ -1,0 +1,45 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //k merge does not need to care tail pointer
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        //edge case
+        if (lists.empty()) return nullptr;
+        if (lists.size() == 1) return lists[0];
+        
+        int n = lists.size();
+        return merge(lists, 0, n - 1);
+    }
+    
+    ListNode* merge(vector<ListNode*>& lists, int left, int right) {
+        //edge case
+        if (left > right) return nullptr;
+        if (left == right) return lists[left];
+        
+        int mid = left + (right - left) / 2;
+        ListNode* leftHead = merge(lists, left, mid);
+        ListNode* rightHead = merge(lists, mid + 1, right);
+        return merge(leftHead, rightHead);
+    }
+    
+    ListNode* merge(ListNode* leftHead, ListNode* rightHead) {
+        //edge case
+        if (nullptr == leftHead) return rightHead;
+        if (nullptr == rightHead) return leftHead;
+        
+        if (leftHead->val <= rightHead->val) {
+            leftHead->next = merge(leftHead->next, rightHead);
+            return leftHead;
+        }
+        
+        rightHead->next = merge(rightHead->next, leftHead);
+        return rightHead;
+    }
+};
