@@ -1,0 +1,74 @@
+class Solution {
+public:
+    //bfs
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        int n = rooms.size();
+        vector<bool> visited(n, false);
+        visited[0] = true;
+        queue<int> q;
+        q.push(0);
+        while (!q.empty()) {
+            queue<int> nextQ;
+            int qsize = q.size();
+            for (int k = 0; k < qsize; k++) {
+                int curRoom = q.front();
+                q.pop();
+                int keysNum = rooms[curRoom].size();
+                //cout<<"keysNum="<<keysNum<<endl;
+                for (int i = 0; i < keysNum; i++) {
+                    int key = rooms[curRoom][i];
+                    //cout<<"key "<<key<<endl;
+                    if (visited[key]) continue;
+                    visited[key] = true;
+                    //cout<<"b1"<<endl;
+                    nextQ.push(key);
+                    //cout<<"b2"<<endl;
+                }
+            }
+            
+            q = nextQ;
+        }
+        
+        for (int i = 0; i < n; i++) {
+            if (visited[i] == false) return false;
+        }
+    
+        return true;
+    }
+};
+
+class Solution {
+public:
+    //bfs
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        int n = rooms.size();
+        vector<bool> visited(n, false);
+        visited[0] = true;
+        queue<int> q;
+        q.push(0);
+        while (!q.empty()) {
+            int qsize = q.size();
+            for (int k = 0; k < qsize; k++) {
+                int curRoom = q.front();
+                q.pop();
+                int keysNum = rooms[curRoom].size();
+                //cout<<"keysNum="<<keysNum<<endl;
+                for (int i = 0; i < keysNum; i++) {
+                    int key = rooms[curRoom][i];
+                    //cout<<"key "<<key<<endl;
+                    if (visited[key]) continue;
+                    visited[key] = true;
+                    //cout<<"b1"<<endl;
+                    q.push(key);
+                    //cout<<"b2"<<endl;
+                }
+            }
+        }
+        
+        for (int i = 0; i < n; i++) {
+            if (visited[i] == false) return false;
+        }
+    
+        return true;
+    }
+};
