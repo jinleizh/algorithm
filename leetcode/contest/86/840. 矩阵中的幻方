@@ -1,0 +1,56 @@
+class Solution {
+public:
+    int numMagicSquaresInside(vector<vector<int>>& grid) {
+        int row = grid.size();
+        if (0 == row) return 0;
+        int col = grid[0].size();
+        if (0 == col) return 0;
+    
+        int ans = 0;
+        for (int i = 0; i <= row - 3; i++) {
+            for (int j = 0; j <= col - 3; j++) {
+                if (check(grid, i, j) && isTrue(grid, i, j)) {
+                    ++ans;
+                }
+            }
+        }
+        return ans;
+    }
+    
+    bool isTrue(vector<vector<int>>& grid, int x, int y) {
+        int sum = 0, curSum = 0;
+        //row sum
+        for (int i = x; i <= x + 2; i++) {
+            curSum = grid[i][y] + grid[i][y + 1] + grid[i][y + 2];
+            if (sum == 0) {
+                sum = curSum;
+            }
+            
+            if (sum != curSum) return false;
+        }
+        
+        //col sum
+        for (int i = y; i <= y + 2; i++) {
+            curSum = grid[x][i] + grid[x + 1][i] + grid[x + 2][i];       
+            if (sum != curSum) return false;
+        }
+        
+        //two lines
+        curSum = grid[x][y] + grid[x + 1][y + 1] + grid[x + 2][y + 2];
+        if (sum != curSum) return false;
+        curSum = grid[x][y + 2] + grid[x + 1][y + 1] + grid[x + 2][y];
+        if (sum != curSum) return false;
+        
+        return true;
+    }
+    
+    bool check(vector<vector<int>>& grid, int x, int y) {
+        //val check
+        for (int i = x; i <= x + 2; i++) {
+            for (int j = y; j <= y + 2; j++) {
+                if (grid[i][j] <= 0 || grid[i][j] > 9) return false;
+            }
+        }
+        return true;
+    }
+};
