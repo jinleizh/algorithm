@@ -1,0 +1,72 @@
+class Solution {
+public:
+    //顺序解决 a + b + c + d + e + f + ... 
+    //题目要求只要找到一个解即可
+    vector<int> splitIntoFibonacci(string S) {
+        vector<int> ans;
+        int n = S.length();
+        unsigned int maxNum = (2 << 31 - 1);
+        cout<<"maxNum="<<maxNum<<endl;
+        for (int i = 0; i < 10 && i <= n - 3; i++) {
+            string first = S.substr(0, i + 1);
+            long firstNum = stol(first);
+            cout<<"first="<<first<<" "<<"firstNum="<<firstNum<<endl;
+            if (first[0] == '0' && firstNum != 0) continue;
+            if (firstNum > maxNum) continue;
+            for (int j = i + 1; j <= i + 10 && j <= n - 2; j++) {
+                string second = S.substr(i + 1, j - i);
+                long secondNum = stol(second);
+                cout<<"second="<<second<<" "<<"secondNum="<<secondNum<<endl;
+                if (second[0] == '0' && secondNum != 0) continue;
+                if (secondNum > maxNum) continue;
+                
+                int ret = find(S, firstNum, secondNum, j + 1);
+                if (ret > 0) {
+                    ans.push_back(firstNum);
+                    ans.push_back(secondNum);
+                    for (int i = 1; i <= ret; i++) {
+                        int nextVal = firstNum + secondNum;
+                        ans.push_back(nextVal);
+                        firstNum = secondNum;
+                        secondNum = nextVal;
+                    }
+                    
+                    return ans;
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+    int find(string S, int x, int y, int start) {
+        cout<<S<<" "<<x<<" "<<y<<endl;
+        int ans = 0;
+        while (start < S.length()) {
+            int target = x + y;
+            long num = 0;
+            int len = 0;
+            char c = S[start];
+            while (start < S.length()) {
+                num = num * 10 + S[start] - '0';
+                ++start;
+                ++len;
+                
+                if (len > 10) return 0;
+                if (c == '0' && num != 0) return 0;
+                if (num == target) {
+                    x = y;
+                    y = num;
+                    ++ans;
+                    break;
+                }
+                
+                if (num > target) return 0;
+            }
+            
+            if (num != target) return 0;
+        }
+        
+        return ans;
+    }
+};
