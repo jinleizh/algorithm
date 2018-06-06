@@ -1,0 +1,118 @@
+//bfs题目解法，需要注意bfs是当前横纵坐标不要搞错了
+//curX curY
+class Solution {
+public:
+    void solve(vector<vector<char>>& board) {
+        //bfs
+        int row = board.size();
+        if (0 == row) return;
+        int col = board[0].size();
+        if (0 == col) return;
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (0 == i || row - 1 == i || 0 == j || col - 1 == j) {
+                    if (board[i][j] == 'O') bfs(board, i, j, row, col);
+                }
+            }
+        }
+        
+        //update
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                //cout<<board[i][j]<<" ";
+                if (board[i][j] == 'O') board[i][j] = 'X';
+                if (board[i][j] == 'C') board[i][j] = 'O';
+            }
+           // cout<<endl;
+        }
+    }
+    
+    void bfs(vector<vector<char>>& board, int x, int y, int row, int col) {
+        if (isNotValid(x, y, row, col)) return;
+        int dx[4] = {0, 0, -1, 1};
+        int dy[4] = {1, -1, 0, 0};
+        queue<pair<int, int>> q;
+        pair<int, int> node(x, y);
+        q.push(node);
+        board[x][y] = 'C';
+        while (!q.empty()) {
+            int n = q.size();
+            for (int k = 0; k < n; k++) {
+                pair<int, int> cur = q.front();
+                q.pop();
+                int curX = cur.first;
+                int curY = cur.second;
+                for (int m = 0; m < 4; m++) {
+                    int nx = curX + dx[m];
+                    int ny = curY + dy[m];
+                    if (isValid(nx, ny, row, col) && board[nx][ny] == 'O') {
+                        pair<int, int> next(nx, ny);
+                        q.push(next);
+                        board[nx][ny] = 'C';
+                    }
+                }
+            }
+        }
+    }
+    
+    bool isValid(int x, int y, int row, int col) {
+        return x >= 0 && x < row && y >= 0 && y < col;
+    }
+    
+    bool isNotValid(int x, int y, int row, int col) {
+        return !isValid(x, y, row, col);
+    }
+};
+
+//dfs解法
+class Solution {
+public:
+    //dfs 本题目还可以使用dfs解法，使用dfs解法的好处是不需要额外的空间复杂度
+    void solve(vector<vector<char>>& board) {
+        int row = board.size();
+        if (0 == row) return;
+        int col = board[0].size();
+        if (0 == col) return;
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (0 == i || row - 1 == i || 0 == j || col - 1 == j) {
+                    if (board[i][j] == 'O') {
+                        dfs(board, i, j, row, col);
+                    }
+                }
+            }
+        }
+        
+        //update
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (board[i][j] == 'O') board[i][j] = 'X';
+                if (board[i][j] == 'C') board[i][j] = 'O';
+            }
+        }
+    }
+    
+    void dfs(vector<vector<char>>& board, int x, int y, int row, int col) {
+        if (isNotValid(x, y, row, col)) return;
+        board[x][y] = 'C';
+        int dx[4] = {0, 0, 1, -1};
+        int dy[4] = {1, -1, 0, 0};
+        for (int k = 0; k < 4; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            if (isValid(nx, ny, row, col) && board[nx][ny] == 'O') {
+                dfs(board, nx, ny, row, col);
+            }
+        }
+    }
+    
+    bool isValid(int x, int y, int row, int col) {
+        return x >= 0 && x < row && y >= 0 && y < col;
+    }
+    
+    bool isNotValid(int x, int y, int row, int col) {
+        return !isValid(x, y, row, col);
+    }
+};
