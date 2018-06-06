@@ -1,0 +1,59 @@
+struct Result {
+	public:
+		int maxPathSum;
+		int singlePathSum;
+		
+		Result() {
+			maxPathSum = INT_MIN;
+			singlePathSum = 0;
+		}
+};
+
+class Solution {
+public:
+    int maxPathSum(TreeNode* root) {
+		//corner case
+		if (nullptr == root) return 0;
+    
+		Result ans = getPathSum(root);
+		return ans.maxPathSum;
+	}
+	
+	Result getPathSum(TreeNode* root) {
+		Result ans;
+		if (nullptr == root) return ans;
+		
+		Result leftAns = getPathSum(root->left);
+		Result rightAns = getPathSum(root->right);
+		int leftSinglePathSum = max(0, leftAns.singlePathSum);
+		int rightSinglePathSum = max(0, rightAns.singlePathSum);
+		int maxSinglePathSum = root->val + max(leftSinglePathSum, rightSinglePathSum);
+		int tmpMaxPathSum = max(leftAns.maxPathSum, rightAns.maxPathSum);
+		int maxPathSum = max(tmpMaxPathSum, root->val + leftSinglePathSum + rightSinglePathSum);
+		ans.singlePathSum = maxSinglePathSum;
+		ans.maxPathSum = maxPathSum;
+		return ans;
+	}
+};
+
+class Solution {
+public:
+    int maxPathSum(TreeNode* root) {
+		//corner case
+		if (nullptr == root) return 0;
+		int ans = INT_MIN;
+		getPathSum(root, ans);
+		return ans;
+	}
+	
+	int getPathSum(TreeNode* root, int& maxSum) {
+		if (nullptr == root) return 0;
+		int leftPath = getPathSum(root->left, maxSum);
+		int rightPath = getPathSum(root->right, maxSum);
+		leftPath = max(0, leftPath);
+		rightPath = max(0, rightPath);
+		int ans = root->val + max(leftPath, rightPath);
+		maxSum = max(maxSum, root->val + leftPath + rightPath);
+		return ans;
+	}
+};
