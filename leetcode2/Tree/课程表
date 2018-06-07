@@ -47,3 +47,52 @@ public:
 		return true;
 	}
 };
+
+//dfs判断是否有环，这里使用的技巧是扩展了visited的含义
+class Solution {
+public:
+	//dfs - 这里使用了技巧, 扩展了visited[i]取值元素的范围
+	//之前都是两个取值 取和不取, 现在将其扩展为三个取值 0 -1 1
+	//0-表示未访问过 1-表示访问过, 无环 -1-表示正在访问,尚未确认有无环
+	//遇到visited[i] = 0时，继续dfs; 如果visited[i] = -1 表示形成了环，需要直接返回; 如果visited[i] = 1表示没有环，直接跳过该点
+    bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+		//edge case
+		if (numCourses <= 0) return false;
+		if (prerequisites.empty()) return true;
+		
+		vector<int> visited(numCourses, 0);
+		vector<vector<int>> graph(numCourses, vector<int>(numCourses, 0));
+		for (pair<int, int> p : prerequisites) {
+			graph[p.second][p.first] = 1;
+		}
+		
+		for (int i = 0; i < numCourses; i++) {
+			if (hasCircle(graph, visited, i, numCourses)) return false;
+		}
+		
+		return true;
+	}
+	
+	bool hasCircle(vector<vector<int>>& graph, vector<int>& visited, int idx, int numCourses) {
+		if (visited[idx] == 1) return false;
+		
+		//处理中
+		visited[idx] = -1;
+		for (int i = 0; i < numCourses; i++) {
+			if (graph[idx][i] == 1) {
+				//访问到了之前的元素，表示有环
+				if (visited[i] == -1) return true;
+				
+				//访问到了没环的元素, 跳过
+				if (visited[i] == 1) continue;
+				
+				if (visited[i] == 0) {
+					if (hasCircle(graph, visited, i, numCourses)) return true;
+				}
+			}
+		}
+		
+		visited[idx] = 1;
+		return false;
+	}
+};
