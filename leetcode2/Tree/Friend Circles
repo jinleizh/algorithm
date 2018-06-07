@@ -1,0 +1,34 @@
+//dfs
+class Solution {
+public:
+    //recursive
+    int findCircleNum(vector<vector<int>>& M) {
+        //edge case
+		int row = M.size();
+		if (0 == row) return 0;
+		int col = M[0].size();
+		if (0 == col) return 0;
+		
+		vector<int> visited(row, 0);
+		int ans = 0;
+		for (int i = 0; i < row; i++) {
+			if (visited[i]) continue;
+			++ans;
+			dfs(M, visited, i);
+		}
+		return ans;
+    }
+	
+	void dfs(vector<vector<int>>& M, vector<int>& visited, int idx) {
+		visited[idx] = 1;
+		int row = M.size();
+		for (int i = 0; i < row; i++) {
+			if (visited[i]) continue;
+			if (M[idx][i] == 1) {
+				dfs(M, visited, i);
+			}
+		}
+	}
+};
+
+//bfs
