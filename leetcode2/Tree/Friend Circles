@@ -71,3 +71,57 @@ public:
 	}
 };
 
+//并查集
+class Solution {
+public:
+	//union find
+    int findCircleNum(vector<vector<int>>& M) {
+        //edge case
+		int row = M.size();
+		if (0 == row) return 0;
+		int col = M[0].size();
+		if (0 == col) return 0;
+		
+		vector<int> parent(row, 0);
+		for (int i = 0; i < row; i++) {
+			parent[i] = i;
+		}
+		
+		for (int i = 0; i < row; i++) {
+			for (int j = i + 1; j < row; j++) {
+				if (1 == M[i][j]) {
+					unionFind(parent, i, j);
+				}
+			}
+		}
+		
+		int ans = 0;
+		for (int i = 0; i < row; i++) {
+			if (i == findParent(parent, i)) ++ans;
+		}
+		
+		return ans;
+    }
+	
+	void unionFind(vector<int>& parent, int p, int c) {
+		int lp = findParent(parent, p);
+		int rp = findParent(parent, c);
+		parent[rp] = lp;
+	}
+	
+	int findParent(vector<int>& parent, int idx) {
+		int tmp = idx;
+		while (tmp != parent[tmp]) {
+			tmp = parent[tmp];
+		}
+		
+		//path compress
+		while (idx != parent[idx]) {
+			int nextIdx = parent[idx];
+			parent[idx] = tmp;
+			idx = nextIdx;
+		}
+		
+		return tmp;
+	}
+};
