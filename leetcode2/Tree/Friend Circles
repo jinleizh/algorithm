@@ -32,3 +32,42 @@ public:
 };
 
 //bfs
+class Solution {
+public:
+    int findCircleNum(vector<vector<int>>& M) {
+        //edge case
+		int row = M.size();
+		if (0 == row) return 0;
+		int col = M[0].size();
+		if (0 == col) return 0;
+		
+		vector<int> visited(row, 0);
+		int ans = 0;
+		for (int i = 0; i < row; i++) {
+			if (visited[i]) continue;
+			++ans;
+			bfs(M, visited, i);
+		}
+		return ans;
+    }
+	
+	void bfs(vector<vector<int>>& M, vector<int>& visited, int idx) {
+		visited[idx] = 1;
+		queue<int> q;
+		q.push(idx);
+		while (!q.empty()) {
+			int n = q.size();
+			for (int k = 0; k < n; k++) {
+				int curId = q.front();
+				q.pop();
+				for (int i = 0; i < M.size(); i++) {
+					if (visited[i] == 0 && M[curId][i] == 1) {
+						visited[i] = 1;
+						q.push(i);
+					}
+				}
+			}
+		}
+	}
+};
+
