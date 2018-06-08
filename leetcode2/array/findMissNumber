@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Solution {
+    public:
+        int findMiss(vector<int> nums) {
+            int n = nums.size();
+            int l = 0, r = n - 1, direct = 0;
+            while (l + 1 < r) {
+                int mid = l + (r - l) / 2;
+                if (nums[mid] == mid) {
+                    direct = 1;
+                    l = mid;
+                } else {
+                    direct = -1;
+                    r = mid;
+                }
+
+                cout<<l<<" "<<r<<" "<<direct<<endl;
+            }
+            
+            if (nums[l] + 1 == nums[r]) {
+                if (1 == direct) return nums[r] + 1;
+                if (-1 == direct) return nums[l] - 1;
+            }
+            
+            return nums[l] + 1;
+        }
+};
+
+int main() {
+    vector<int> data = {1,2,3,4,5,6};
+    Solution s;
+    int ans = s.findMiss(data);
+    cout<<ans<<endl;
+    return 0;
+}
