@@ -1,0 +1,67 @@
+class Solution {
+public:
+    int maxDistToClosest(vector<int>& seats) {
+        //edge case
+        if (seats.size() < 2) return 0;
+        
+        int n = seats.size();
+        vector<int> left(n, 0);
+        vector<int> right(n, n);
+        
+        int prevOne = -30000;
+        for (int i = 0; i < n; i++) {
+            if (seats[i] == 1) {
+                prevOne = i;
+            }
+            
+            left[i] = prevOne;
+        }
+        
+        int nextOne = 50000;
+        for (int i = n - 1; i >= 0; i--) {
+            if (seats[i] == 1) {
+                nextOne = i;
+            }
+            
+            right[i] = nextOne;
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (seats[i] == 0) {
+                int tmp = min(i - left[i], right[i] - i);
+                ans = max(ans, tmp);
+            }
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //one time
+    int maxDistToClosest(vector<int>& seats) {
+        //edge case
+        if (seats.size() < 2) return 0;
+        int n = seats.size();
+        int ans = 0;
+        for (int i = 0, j = 0; i < n; i = j) {
+            //find first zero
+            while (i < n && 1 == seats[i]) ++i;
+            if (n == i) break;
+            
+            //find first one
+            j = i + 1;
+            while (j < n && 0 == seats[j]) ++j;
+            int len = j - i;
+            if (i == 0 || j == n) {
+                ans = max(ans, len);
+            } else {
+                ans = max(ans, (len - 1) / 2 + 1);
+            }
+        }
+        return ans;
+    }
+};
+
