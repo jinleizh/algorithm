@@ -78,3 +78,56 @@ public:
         return path;
     }
 };
+
+
+class Solution {
+public:
+    //bfs
+    //graph may exist circle, so i need to use visited array to prevent infinite loop
+    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
+        int n = quiet.size();
+        vector<int> ans(n, 0);
+        for (int i = 0; i < n; i++) {
+            ans[i] = i;
+        }
+        
+        vector<int> visited(n, 0);
+        vector<vector<int>> graph(n, vector<int>());
+        for (vector<int> v : richer) {
+            graph[v[1]].push_back(v[0]);
+        }
+        
+        for (int i = 0; i < n; i++) {
+            //make sure in each loop, we don't visite nodes repeatedly!
+            for (int i = 0; i < n; i++) {
+                visited[i] = 0;
+            }
+            
+            queue<int> q;
+            visited[i] = 1;
+            q.push(i);
+            //cout<<"begin i="<<i<<endl;
+            while (!q.empty()) {
+                int num = q.size();
+                for (int k = 0; k < num; k++) {
+                    int cur = q.front();
+                    q.pop();
+                    //cout<<cur<<" "<<quiet[cur]<<endl;
+                    for (int d : graph[cur]) {
+                        if (0 == visited[d]) {
+                            visited[d] = 1;
+                            q.push(d);
+                            int tmp = quiet[d];
+                            if (tmp < quiet[ans[i]]) {
+                                ans[i] = d;
+                            }
+                        }
+                    }
+                }
+            }
+            //cout<<"end i="<<i<<endl;
+        }
+        
+        return ans;
+    }
+};
