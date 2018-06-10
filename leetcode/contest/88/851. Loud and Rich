@@ -1,3 +1,14 @@
+//for this problem,you must care that
+//we use dfs to find all of nodes which are richer than orginal
+//you must care that you should use visited arry, in order to prevent loop in graph
+//when you use visited, that means it not easy for you to solve sub problems
+//because graph of this problem contains circle, child should consider parent's value
+//but if you use visited, when you reach out to child, child couldn't visit parent
+//that means, child current result is not contains parent, so we shouldn't cache it.
+//this is a very important details. because, if graph don't exist circle,
+//we know that we can solve sub problem and cache the result for example think it as a tree
+//but graph is more complicate than tree
+//that means when we need to clear visited array, every time we need to calculate next ans.
 class Node {
     public:
         int id;
@@ -19,18 +30,51 @@ public:
     //use map, and priority_queue
     typedef priority_queue<Node, vector<Node>, myComp> pq;
     vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
-        unordered_map<int, pq> data;
+        int n = quiet.size();
+        vector<vector<int>> graph(n, vector<int>(n, 0));
         for (vector<int> v : richer) {
-            int quietNum = quiet[v[1]];
-            Node tmp(v[0], quietNum);
-            data[v[1]].push(tmp);
+            graph[v[1]][v[0]] = 1;
         }
         
         vector<int> ans;
-        for (int i = 0; i < quiet.size(); i++) {
-            Node cur = data[i].top();
-            ans.push_back(cur.id);
+        unordered_map<int, pq> data;
+        vector<int> visited(n, 0);
+        for (int i = 0; i < n; i++) {
+            for (int i = 0; i < n; i++) {
+                visited[i] = 0;
+            }
+            vector<int> result = dfs(i, graph, visited);
+            for (int d : result) {
+                int quietNum = quiet[d];
+                Node tmp(d, quietNum);
+                data[i].push(tmp);
+            }
         }
+        
+        for (int i = 0; i < n; i++) {
+            if (data[i].empty()) {
+                ans.push_back(i);
+            } else {
+                ans.push_back(data[i].top().id);
+            }
+        }
+        
         return ans;
+    }
+    
+    vector<int> dfs(int idx, vector<vector<int>>& graph, vector<int>& visited) {
+        visited[idx] = 1;
+        vector<int> path;
+        path.push_back(idx);
+        int n = graph.size();
+        for (int i = 0; i < n; i++) {
+            if (graph[idx][i] == 1 && visited[i] == 0) {
+                vector<int> tmpResult = dfs(i, graph, visited);
+                for (int d : tmpResult) {
+                    path.push_back(d);
+                }
+            }
+        }
+        return path;
     }
 };
