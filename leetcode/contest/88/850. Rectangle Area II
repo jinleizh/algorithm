@@ -1,0 +1,99 @@
+class Solution {
+public:
+    //split rectangles
+    int rectangleArea(vector<vector<int>>& rectangles) {
+        if (rectangles.empty()) return 0;
+        int row = rectangles.size();
+        if (0 == row) return 0;
+        int col = rectangles[0].size();
+        if (0 == col) return 0;
+        
+        int mod = 1e9 + 7;
+        vector<int> X;
+        vector<int> Y;
+        for (vector<int> v : rectangles) {
+            X.push_back(v[0]);
+            X.push_back(v[2]);
+            Y.push_back(v[1]);
+            Y.push_back(v[3]);
+        }
+        
+        sort(X.begin(), X.end());
+        X.erase(unique(X.begin(), X.end()), X.end());
+        
+        sort(Y.begin(), Y.end());
+        Y.erase(unique(Y.begin(), Y.end()), Y.end());
+        
+        //notice, use low_bound to find block numbers
+        //excellent
+        vector<vector<int>> visited(X.size(), vector<int>(Y.size(), 0));
+        for (vector<int> v : rectangles) {
+            int x1 = lower_bound(X.begin(), X.end(), v[0]) - X.begin();
+            int x2 = lower_bound(X.begin(), X.end(), v[2]) - X.begin();
+            int y1 = lower_bound(Y.begin(), Y.end(), v[1]) - Y.begin();
+            int y2 = lower_bound(Y.begin(), Y.end(), v[3]) - Y.begin();
+            
+            for (int i = x1; i < x2; i++) {
+                for (int j = y1; j < y2; j++) {
+                    visited[i][j] = true;
+                }
+            }
+        }
+        
+        int area = 0;
+        for (int u = 0; u < X.size(); u++) {
+            for (int v = 0; v < Y.size(); v++) {
+                if (visited[u][v]) {
+                    area = (area + (long long)(X[u + 1] - X[u]) * (Y[v + 1] - Y[v])) % mod;
+                }
+            }
+        }
+        
+        return area;
+    }
+};
+
+/*
+typedef long long int64;
+const int MOD = 1e9 + 7;
+
+class Solution {
+public:
+    int rectangleArea(vector<vector<int>>& a) {
+        int n = a.size();
+        vector<int> X, Y;
+        for (int i = 0; i < n; ++i) {
+            X.push_back(a[i][0]);
+            X.push_back(a[i][2]);
+            Y.push_back(a[i][1]);
+            Y.push_back(a[i][3]);
+        }
+        sort(X.begin(), X.end());
+        X.erase(unique(X.begin(), X.end()), X.end());
+        sort(Y.begin(), Y.end());
+        Y.erase(unique(Y.begin(), Y.end()), Y.end());
+        vector<vector<bool>> visit(X.size(), vector<bool>(Y.size()));
+        for (int i = 0; i < n; ++i) {
+            int x1 = lower_bound(X.begin(), X.end(), a[i][0]) - X.begin();
+            int x2 = lower_bound(X.begin(), X.end(), a[i][2]) - X.begin();
+            int y1 = lower_bound(Y.begin(), Y.end(), a[i][1]) - Y.begin();
+            int y2 = lower_bound(Y.begin(), Y.end(), a[i][3]) - Y.begin();
+            for (int u = x1; u < x2; ++u) {
+                for (int v = y1; v < y2; ++v) {
+                    visit[u][v] = true;
+                }
+            }
+        }
+        int ret = 0;
+        for (int i = 0; i < X.size(); ++i) {
+            for (int j = 0; j < Y.size(); ++j) {
+                if (visit[i][j]) {
+                    ret = (ret + (int64)(X[i + 1] - X[i]) * (Y[j + 1] - Y[j])) % MOD;
+                }
+            }
+        }
+        return ret;
+
+    }
+};
+*/
