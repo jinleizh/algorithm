@@ -1,0 +1,53 @@
+class Solution {
+public:
+	//toplogical order
+    vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+        vector<int> ans;
+		
+		//edge case
+		if (numCourses < 0) return ans;
+		if (prerequisites.empty()) {
+			for (int i = 0; i < numCourses; i++) {
+				ans.push_back(i);
+			}
+			return ans;
+		}
+		
+		//build graph
+		vector<vector<int>> graph(numCourses, vector<int>());
+		vector<int> inDegree(numCourses, 0);
+		for (pair<int, int> p : prerequisites) {
+			graph[p.second].push_back(p.first);;
+			++inDegree[p.first];
+		}
+		
+		//toplogical
+		queue<int> q;
+		for (int i = 0; i < numCourses; i++) {
+			if (0 == inDegree[i]) {
+				q.push(i);
+			}
+		}
+		
+		while (!q.empty()) {
+			int curId = q.front();
+			q.pop();
+			ans.push_back(curId);
+			for (int d : graph[curId]) {
+				--inDegree[d];
+				if (inDegree[d] == 0) {
+					q.push(d);
+				}
+			}
+		}
+		
+		//check circle
+		for (int d : inDegree) {
+			if (d != 0) {
+				return vector<int>();
+			}
+		}
+		
+		return ans;
+    }
+};
