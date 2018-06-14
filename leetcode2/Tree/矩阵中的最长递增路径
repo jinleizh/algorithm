@@ -1,0 +1,49 @@
+class Solution {
+public:
+    //dynamic dp[i][j] = {four direction max} + 1 (dp[i][j] > one of four direction)
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        //edge case
+        int row = matrix.size();
+        if (0 == row) return 0;
+        int col = matrix[0].size();
+        if (0 == col) return 0;
+        
+        vector<vector<int>> dp(row, vector<int>(col, -1));
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                dfs(dp, matrix, i, j, row, col);
+            }
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                ans = max(ans, dp[i][j]);
+            }
+        }
+        
+        return ans;
+    }
+    
+    int dfs(vector<vector<int>>& dp, vector<vector<int>>& matrix, int i, int j, int row, int col) {
+        if (dp[i][j] != -1) return dp[i][j];
+        int dx[4] = {0, 0, 1, -1};
+        int dy[4] = {1, -1, 0, 0};
+        int nx = 0, ny = 0, ans = 0;
+        for (int k = 0; k < 4; k++) {
+            nx = i + dx[k];
+            ny = j + dy[k];
+            if (isInGrid(nx, ny, row, col) && matrix[i][j] < matrix[nx][ny]) {
+                int len = dfs(dp, matrix, nx, ny, row, col);
+                ans = max(ans, len);
+            }
+        }
+        
+        dp[i][j] = 1 + ans;
+        return dp[i][j];
+    }
+    
+    bool isInGrid(int x, int y, int row, int col) {
+        return x >= 0 && y >= 0 && x < row && y < col;
+    }
+};
