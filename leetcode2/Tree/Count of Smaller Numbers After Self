@@ -1,0 +1,119 @@
+//这道题目就是求逆序对, 常规思路是使用归并排序
+//暴力解法是n平方，所以优化时，首先想nlogN的,自然考虑排序，归并比较合适，需要注意的是，merge生成的数组保存的是元素的下表
+//另一种更好的方法是维护一颗二叉查找树
+//每个节点维护-当前节点出现的次数dupNum，以及比当前节点值小的元素smallNum
+//好处是-求逆序对时，如果当前元素小于根节点，则根节点smallNum++, 继续走左侧进行统计
+//如果当前元素大于根节点，则当前元素大于root->smallNum + root->dupNum个值, 继续比较root->left，都统计完可以得到最终结果.
+//如果当前元素等于root值，则root->dup++, 并且直接返回root->smallNum即可.
+//如果遇到空节点，则新建节点，并初始化节点
+class Solution {
+public:
+    //merge sort, compute reverse pair
+    vector<int> countSmaller(vector<int>& nums) {
+		//edge case
+        int n = nums.size();
+        vector<int> ans(n, 0);
+        if (nums.empty()) return ans;
+		merge(nums, ans, 0, n - 1);
+		return ans;
+    }
+	
+	vector<int> merge(vector<int>& nums, vector<int>& ans, int l, int r) {
+		vector<int> result;
+		if (l == r) {
+			result.push_back(l);
+			return result;
+		}
+		
+		int mid = l + (r - l) / 2;
+		vector<int> left = merge(nums, ans, l, mid);
+		vector<int> right = merge(nums, ans, mid + 1, r);
+		int i = 0, j = 0;
+		while (i < left.size() && j < right.size()) {
+			if (nums[left[i]] > nums[right[j]]) {
+				ans[left[i]] += right.size() - j;
+				result.push_back(left[i]);
+				++i;
+			} else {
+				result.push_back(right[j]);
+				++j;
+			}
+		}
+		
+		while (i < left.size()) {
+			result.push_back(left[i]);
+			++i;
+		}
+		
+		while (j < right.size()) {
+			result.push_back(right[j]);
+			++j;
+		}
+		
+		return result;
+	}
+};
+
+//维护了二叉查找数 binary search tree
+//每个节点维护的内容有
+//a.当前节点重复出现的次数
+//b.当前节点所在的分支中比它小的节点个数，这里不要维护全局比他小的
+class Node {
+    public:
+        int dup;
+        int smallNum;
+        int val;
+        Node* left;
+        Node* right;
+        Node(int value) : val(value), dup(1), smallNum(0), left(nullptr), right(nullptr) {
+            
+        }
+};
+
+class Solution {
+public:
+    vector<int> countSmaller(vector<int>& nums) {
+        int n = nums.size();
+        if (0 == n) return {};
+        vector<int> ans(n, 0);
+        Node* root = new Node(nums.back());
+        int result = 0;
+        for (int i = n - 2; i >= 0; i--) {
+            result = insertToBSTree(nums[i], root);
+            ans[i] = result;
+        }
+        return ans;
+    }
+    
+    int insertToBSTree(int val, Node* root) {
+        if (nullptr == root) return 0;
+        int ans = 0;
+        while (root) {
+            if (val == root->val) {
+                root->dup++;
+                ans += root->smallNum;
+                return ans;
+            }
+            
+            if (val > root->val) {
+                ans += root->dup + root->smallNum;
+                if (nullptr == root->right) {
+                    root->right = new Node(val);
+                    return ans;
+                }
+                
+                root = root->right;
+            } else {
+                ++root->smallNum;
+                if (nullptr == root->left) {
+                    root->left = new Node(val);
+                    return ans;
+                }
+                
+                root = root->left;
+            }
+        }
+        
+        return ans;
+    }
+};
