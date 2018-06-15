@@ -1,0 +1,59 @@
+class Solution {
+public:
+    //all
+    vector<vector<string>> partition(string s) {
+        int n = s.length();
+        if (0 == n) return {};
+        vector<vector<string>> ans = helper(s);
+        for (auto& v : ans) {
+            reverse(v.begin(), v.end());
+        }
+        return ans;
+    }
+    
+    vector<vector<string>> helper(string s) {
+        vector<vector<string>> ans;
+        int n = s.length();
+        if (s.empty()) return ans;
+        if (s.length() == 1) {
+            vector<string> tmp;
+            tmp.push_back(s);
+            ans.push_back(tmp);
+            return ans;
+        };
+    
+        for (int i = 0; i <= n - 1; i++) {
+            string left = s.substr(0, i + 1);
+            if (!isValid(left)) continue;
+            //cout<<"left="<<left<<endl;
+            string right = s.substr(i + 1, n - i - 1);
+            //cout<<"right="<<right<<endl;
+            vector<vector<string>> tmp = helper(right);
+            for (auto& v : tmp) {
+                v.push_back(left);
+            }
+            
+            if (tmp.empty()) {
+                vector<string> tv;
+                tv.push_back(left);
+                tmp.push_back(tv);
+            }
+            
+            ans.insert(ans.end(), tmp.begin(), tmp.end());
+        }
+        
+        return ans;
+    }
+    
+    bool isValid(string s) {
+        int n = s.length();
+        if (n <= 1) return true;
+        int l = 0, r = n - 1;
+        while (l < r) {
+            if (s[l] != s[r]) return false;
+            ++l;
+            --r;
+        }
+        return true;
+    }
+};
