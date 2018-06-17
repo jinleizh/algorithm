@@ -1,0 +1,89 @@
+class TrieNode {
+    public:
+        TrieNode* children[26];
+        string word;
+};
+
+class Trie {
+    public:
+        TrieNode* root;
+        Trie() {
+            root = new TrieNode();
+        }
+    
+        ~Trie() {
+            delete root;
+            root = nullptr;
+        }
+    
+        void insert(string word) {
+            TrieNode* p = root;
+            for (char c : word) {
+                //cout<<"build="<<c<<endl;
+                if (p->children[c - 'a'] == nullptr) {
+                    p->children[c - 'a'] = new TrieNode();
+                }
+                p = p->children[c - 'a'];
+            }
+            p->word = word;
+        }
+    
+        void build(vector<string>& words) {
+            for (string word : words) {
+                insert(word);
+            }
+        }
+};
+
+int dx[4] = {0, 0, 1, -1};
+int dy[4] = {1, -1, 0, 0};
+        
+class Solution {
+public:
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        vector<string> ans;
+        //edge case
+        if (words.empty()) return ans;
+        int row = board.size();
+        if (0 == row) return ans;
+        int col = board[0].size();
+        if (0 == col) return ans;
+        
+        Trie tree;
+        tree.build(words);
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                //cout<<"for loop="<<i<<" "<<j<<endl;
+                dfs(board, ans, i, j, "", tree.root);
+            }
+        }
+        
+        return ans;
+    }
+    
+    void dfs(vector<vector<char>>& board, vector<string>& ans, int i, int j, string s, TrieNode* root) {
+        //cout<<"dfs="<<i<<" "<<j<<endl;
+        char c = board[i][j];
+        if (root->children[c - 'a'] == nullptr) return;
+        root = root->children[c - 'a'];
+        s += c;
+        //cout<<s<<endl;
+        if (!root->word.empty()) {
+            ans.push_back(s);
+            root->word = "";
+        }
+        board[i][j] = '#';
+        int nx = 0, ny = 0;
+        
+        for (int k = 0; k < 4; k++) {
+            nx = i + dx[k];
+            ny = j + dy[k];
+            //cout<<i<<" "<<j<<" k="<<k<<" board[nx][ny]="<<board[nx][ny]<<endl;
+            if (nx >= 0 && ny >= 0 && nx < board.size() && ny < board[0].size() && board[nx][ny] != '#') {
+                dfs(board, ans, nx, ny, s, root);
+            }
+        }
+        board[i][j] = c;
+    }
+};
