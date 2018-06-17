@@ -1,0 +1,40 @@
+class Car {
+    public:
+        int position;
+        int speed;
+        Car(int p, int s) : position(p), speed(s) {}
+        bool operator < (const Car& other) {
+            return position < other.position;
+        }
+};
+
+class Solution {
+public:
+    int carFleet(int target, vector<int>& position, vector<int>& speed) {
+        int n = speed.size();
+        vector<Car> carArray;
+        for (int i = 0; i < n; i++) {
+            Car tmp(position[i], speed[i]);
+            carArray.push_back(tmp);
+        }
+        sort(carArray.begin(), carArray.end());
+        int i = n - 1;
+        int ans = 0;
+        while (i >= 0) {
+            ++ans;
+            Car captain = carArray[i];
+            double captainTime = (double)(target - captain.position) / captain.speed;  
+            --i;
+            while (i >= 0) {
+                Car tmp = carArray[i];
+                double tmpTime = (double)(target - tmp.position) / tmp.speed;
+                if (tmpTime - captainTime <= 1e-6) {
+                    --i;
+                } else {
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+};
