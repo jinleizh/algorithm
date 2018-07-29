@@ -1,0 +1,35 @@
+class Solution {
+public:
+    //搜索问题 - 可以往二分查找的方向靠拢, 这个题是一个求上下界的问题，因为有多个数可以满足N,
+    //需要求出第一个，所以是二分查找中的求下界
+    int nthMagicalNumber(int N, int A, int B) {
+        int mod = 1e9 + 7;
+        long right = 40001 * 1e9;
+        long left = 1;
+        long mid = 0;
+        int div = A * B / gcd(A, B);
+        //cout<<"div="<<div<<endl;
+        long cnt = 0;
+        while (left + 1 < right) {
+            mid = left + (right - left) / 2;
+            cnt = mid / A + mid / B - mid / div;
+            //cout<<"mid="<<mid<<" cnt="<<cnt<<endl;
+            if (cnt >= N) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        
+        if (N == left / A + left / B - left / div) return left % mod;
+        return right % mod;
+    }
+    
+    int gcd(int a, int b) {
+        if (0 == b) return a;
+        int c = b;
+        b = a % b;
+        a = c;
+        return gcd(a, b);
+    }
+};
