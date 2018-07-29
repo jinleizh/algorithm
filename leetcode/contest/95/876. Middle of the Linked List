@@ -1,0 +1,57 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        if (head->next == nullptr) return head;
+        ListNode* slow = head;
+        ListNode* fast = head->next;
+        while (nullptr != fast && nullptr != fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        if (nullptr == fast) return slow;
+        return slow->next;
+    }
+};
+
+//更优的版本，即首先求出总长度，然后总长度／2，然后再往前走一步即为所求
+//例如，长度为6，则除以2，得到3，往前一步为4，为所求
+//例如，长度为5，则除以2，得到2，往前一步为3，为所求
+//简单清晰
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        int total = 0;
+        ListNode* tmp = head;
+        while (tmp) {
+            total++;
+            tmp = tmp->next;
+        }
+        
+        int mid = total / 2;
+        ListNode* result = head;
+        int idx = 0;
+        while (result) {
+            if (idx == mid) break;
+            ++idx;
+            result = result->next;
+        }
+        return result;
+    }
+};
