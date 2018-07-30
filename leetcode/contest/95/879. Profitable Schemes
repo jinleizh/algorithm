@@ -1,0 +1,39 @@
+//这道题目以前有类似的题
+//思路本质上是逐个引入新的选项，在之前的选择基础上，继续扩展，进而求出最新的结果
+//这里的技巧之一是把超出p的部分，当作p统一处理
+//另外，需要注意的是，for的顺序，从下往上遍历
+class Solution {
+public:
+    //每新增一组选择时，在已有的结果集上进行更新，更新符合条件的结果
+    int profitableSchemes(int G, int P, vector<int>& group, vector<int>& profit) {
+        int gs = group.size();
+        int mod = 1e9 + 7;
+        vector<vector<int>> dp(G + 1, vector<int>(P + 1, 0));
+        dp[0][0] = 1;
+        
+        for (int i = 0; i < gs; i++) {
+            int gv = group[i];
+            int pv = profit[i];
+            vector<vector<int>> ndp(G + 1, vector<int>(P + 1, 0));
+            for (int j = G; j >= 0; j--) {
+                for (int k = P; k >= 0; k--) {
+                    ndp[j][k] = dp[j][k] % mod;
+                    int ng = j + gv;
+                    int np = min(P, k + pv);
+                    if (ng <= G) {
+                        ndp[ng][np] += ndp[j][k];
+                        ndp[ng][np] %= mod;
+                    }
+                }
+            }
+            
+            dp = ndp;
+        }
+        
+        int ans = 0;
+        for (int j = 0; j <= G; j++) {
+            ans = (ans + dp[j][P]) % mod;
+        }
+        return ans;
+    }
+};
