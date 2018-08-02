@@ -1,0 +1,117 @@
+//第一种解法，排序后，从大到小依次insert
+//利用了最大元素一定在最开头,次小元素的位置，取决于第二个值
+//依次类推，遍历集合一遍，可得到最终结果
+bool cmpFunc(const pair<int, int>& l, const pair<int, int>& r) {
+    if (r.first == l.first) return l.second < r.second;
+    return r.first < l.first;
+}
+
+class Solution {
+public:
+    vector<pair<int, int>> reconstructQueue(vector<pair<int, int>>& people) {
+        sort(people.begin(), people.end(), cmpFunc);
+        vector<pair<int, int>> ans;
+        for (auto& p : people) {
+            ans.insert(ans.begin() + p.second, p);
+        }
+        return ans;
+    }
+};
+
+//第二种解法使用BIT 二叉索引树或者叫 fenwick tree
+class BIT {
+    private:
+        vector<int> data;
+
+    public:
+        BIT(int n, int val) {
+            for (int i = 0; i <= n; i++) {
+                data.push_back(0);
+            }
+            
+            for (int i = 1; i <= n; i++) {
+                update(i, val);
+            }
+        }
+    
+        int getSize() {
+            return data.size() - 1;        
+        }
+    
+        //idx start from 1
+        void update(int x, int value) {
+            int i = x;
+            while (i <= data.size() - 1) {
+                data[i] += value;
+                i += lowbit(i);
+            }
+        }
+    
+        int lowbit(int x) {
+            return x & (-x);
+        }
+    
+        int getSum(int x) {
+            int i = x;
+            int sum = 0;
+            while (i >= 1) {
+                sum += data[i];
+                i -= lowbit(i);
+            }
+            return sum;
+        }
+};
+
+bool myCmp(const pair<int, int>& l, const pair<int, int>& r) {
+    if (l.first == r.first) return l.second < r.second;
+    return l.first < r.first;
+}
+
+class Solution {
+public:
+    //使用二叉索引树求解
+    vector<pair<int, int>> reconstructQueue(vector<pair<int, int>>& people) {
+        BIT bitTree(people.size(), 1);
+        sort(people.begin(), people.end(), myCmp);
+        int prev = -1;
+        vector<int> prevIdx;
+        vector<pair<int, int>> ans(people.size(), pair<int, int>());
+        for (int i = 0; i < people.size(); i++) {
+            //cout<<"people_i="<<i<<endl;
+            if (people[i].first != prev) {
+                for (int k : prevIdx) {
+                    //cout<<"update"<<endl;
+                    bitTree.update(k, -1);
+                }
+                prevIdx.clear();
+            }
+            
+            prev = people[i].first;
+            int pos = findPos(bitTree, people[i].second + 1);
+            //cout<<"pos="<<pos<<endl;
+            prevIdx.push_back(pos);
+            ans[pos - 1] = people[i];
+        }
+        return ans;
+    }
+    
+    //二分查找到符合条件的位置
+    int findPos(BIT& tree, int sum) {
+        int l = 1, r = tree.getSize();
+        //cout<<"r="<<r<<endl;
+        while (l + 1 < r) {
+            //cout<<"l="<<l<<" "<<r<<endl;
+            int mid = l + (r - l) / 2;
+            if (tree.getSum(mid) >= sum) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        
+        //cout<<"findPos"<<endl;
+        if (tree.getSum(l) == sum) return l;
+        if (tree.getSum(r) == sum) return r;
+        return -1;
+    }
+};
