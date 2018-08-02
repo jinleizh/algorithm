@@ -1,0 +1,73 @@
+class Solution {
+public:
+    //o(n^2) 需要优化
+    int largestRectangleArea(vector<int>& heights) {
+        int n = heights.size();
+        if (0 == n) return 0;
+        
+        vector<int> leftSmall(n, -1);
+        vector<int> rightSmall(n, n);
+        
+        for (int i = 0; i < n; i++) {
+            //left
+            for (int j = i - 1; j >= 0; j--) {
+                if (heights[j] >= heights[i]) continue;
+                leftSmall[i] = j;
+                break;
+            }
+            
+            //right
+            for (int j = i + 1; j < n; j++) {
+                if (heights[j] >= heights[i]) continue;
+                rightSmall[i] = j;
+                break;
+            }
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans = max(ans, heights[i] * (rightSmall[i] - leftSmall[i] - 1));
+        }
+        
+        return ans;
+    }
+};
+
+//优化版本 -- 复杂度介于o(n) - o(n^2)
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length;
+        if (0 == n) return 0;
+        
+        int[] left = new int[n];
+        int[] right = new int[n];
+        for (int i = 0; i < n; i++) {
+            left[i] = -1;
+            right[i] = n;
+        }
+        
+        for (int i = 0; i < n; i++) {
+            int j = i - 1;
+            while (j >= 0 && heights[j] >= heights[i]) {
+                j = left[j];
+            }
+            
+            left[i] = j;
+        }
+        
+        for (int i = n - 1; i >= 0; i--) {
+            int j = i + 1;
+            while (j < n && heights[j] >= heights[i]) {
+                j = right[j];
+            }
+            
+            right[i] = j;
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans = Math.max(ans, heights[i] * (right[i] - left[i] - 1));
+        }
+        return ans;
+    }
+}
