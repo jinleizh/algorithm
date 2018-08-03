@@ -1,0 +1,94 @@
+bool myCmp(const pair<int, int>& l, const pair<int, int>& r) {
+    if (l.first != r.first) return l.first < r.first;
+    return l.second < r.second;
+}
+
+class Solution {
+public:
+    //解题报告：
+    //skyline需要先找出某个坐标对应的最高高度，然后考虑如何输出符合条件的点
+    //维护最高点，数据结构可以使用堆或者优先队列，因为除了最高点，还需要维护后面的点
+    //只有这样，当最高点退出时，我们才知道接下来的最高点是哪个，默认最高点是0，即
+    //初始化时，需要先把0放入优先队列中，同时也意味着我们需要区分出哪些是入点，哪些是出点
+    //边界的处理，当遇到边界处有多个点时，需要优先考虑入点，如果有入点，则只考虑最高的入点
+    //其它的节点无论出入都不是希望输出的，如果没有入点，都是出点，则需要先把低的出点排除掉，
+    //因为如果先排除最高的出点，则会引起高度变化，根据已有的实现, 会输出不符合条件的值，所以
+    //边界点的处理需要注意顺序
+    //a)入点优先出点 b)入点从大到小 c)出点从小到大 根据b和c，我们对入点的值取反，即可以保证
+    //入点和出点的判断顺序一致，同时优先考虑负数，又保证了先考虑入点
+    //所以先对节点预处理，然后使用优先队列，在java中优先队列可以按值删除元素，但是在c++中没有
+    //所以这里我们使用set来实现, 因为set是有序的
+    //使用set的问题是无法处理重复值，所以此处使用了multiset, 并使用了multiset的find去寻找符合条件的值
+    //使用erase进行删除
+    vector<pair<int, int>> getSkyline(vector<vector<int>>& buildings) {
+        vector<pair<int, int>> ans;
+        vector<pair<int, int>> points;
+        for (auto& it : buildings) {
+            pair<int, int> left(it[0], -it[2]);
+            pair<int, int> right(it[1], it[2]);
+            points.push_back(left);
+            points.push_back(right);
+        }
+        
+        sort(points.begin(), points.end(), myCmp);
+        multiset<int> mSet;
+        mSet.insert(0);
+        int prev = 0;
+        
+        for (auto& it : points) {
+            int height = it.second;
+            if (height < 0) {
+                mSet.insert(-height);
+            } else {
+                multiset<int>::iterator mit = mSet.find(height);
+                mSet.erase(mit);
+            }
+            
+            int cur = *mSet.rbegin();
+            if (prev != cur) {
+                ans.push_back(pair<int, int>(it.first, cur));
+                prev = cur;
+            }
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+    //java使用优先队列可以轻松解决, c++需要使用multiset, 以及查找
+    public List<int[]> getSkyline(int[][] buildings) {        
+        //注意这里的先后次序, 起点优先于终点，起点高的优于起点低的，终点低的优先于终点高的，
+        //为了一次排序搞定起点和终点, 对起点高度取负，则起点高的变成了最小，跟终点的排序规则保持了一致
+        List<int[]> points = new ArrayList<>();
+        for (int[] d : buildings) {
+            points.add(new int[] {d[0], -d[2]});
+            points.add(new int[] {d[1], d[2]});
+        }
+        
+        Collections.sort(points, (a, b) -> {
+            if (a[0] == b[0]) return a[1] - b[1];
+            return a[0] - b[0];
+        });
+        
+        List<int[]> ans = new ArrayList<>();
+        Queue<Integer> queue = new PriorityQueue<>((a, b) -> (b - a));
+        queue.offer(0);
+        int prev = 0;
+        for (int[] d : points) {
+            if (d[1] < 0) {
+                queue.offer(-d[1]);
+            } else {
+                queue.remove(d[1]);
+            }
+            
+            int cur = queue.peek();
+            if (prev != cur) {
+                ans.add(new int[] {d[0], cur});
+                prev = cur;
+            }
+        }
+        
+        return ans;
+    }
+}
