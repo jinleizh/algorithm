@@ -1,0 +1,80 @@
+/**
+ * Definition for a point.
+ * struct Point {
+ *     int x;
+ *     int y;
+ *     Point() : x(0), y(0) {}
+ *     Point(int a, int b) : x(a), y(b) {}
+ * };
+ */
+//map<key, value>
+//map<pair<int, int>, value>
+/*
+struct Node {
+    public:
+        int x;
+        int y;
+        Node
+}
+*/
+class Solution {
+public:
+    //map<int, map<int, int>> dx, dy, num
+    int maxPoints(vector<Point>& points) {
+        //edge case
+        if (points.empty()) return 0;
+        
+        //使用map来统计
+        int ans = 0;
+        int n = points.size();
+        for (int i = 0; i < n; i++) {
+            unordered_map<int, unordered_map<int, int>> dp;
+            int duplicate = 0;
+            int tmpAns = 0;
+            for (int j = i + 1; j < n; j++) {
+                if (points[i].x == points[j].x && points[i].y == points[j].y) {
+                    ++duplicate;
+                    continue;
+                }
+                
+                int dx = points[i].x - points[j].x;
+                int dy = points[i].y - points[j].y;
+                int x = 0, y = 0;
+                if (dx != 0 && dy != 0) {
+                    int div = gcd(dx, dy);
+                    x = dx / div;
+                    y = dy / div;
+                } else if (dx == 0) {
+                    x = points[i].x;
+                    y = INT_MAX;
+                } else {
+                    x = INT_MAX;
+                    y = points[i].y;
+                }
+                
+                if (dp.find(x) == dp.end()) {
+                    unordered_map<int, int> tMap;
+                    tMap[y] = 1;
+                    dp[x] = tMap;
+                } else {
+                    if (dp[x].find(y) == dp[x].end()) {
+                        dp[x][y] = 1;
+                    } else {
+                        dp[x][y] += 1;
+                    }
+                }
+                
+                tmpAns = max(tmpAns, dp[x][y]);
+            }
+            
+            ans = max(ans, tmpAns + duplicate + 1);
+        }
+        
+        return ans;
+    }
+    
+    int gcd(int a, int b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+};
