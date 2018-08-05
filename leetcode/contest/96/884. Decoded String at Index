@@ -1,0 +1,43 @@
+class Solution {
+public:
+    //递归解法
+    //遇到数字时，字符串长度=长度*倍数，然后跟k比较，如果大于k则直接对新的串直接取余即可
+    //问题是新的串会非常长，其实问题等价于在这个串中，找 (k - 1) % newLen + 1个元素
+    //所以子问题得到简化，同时节省了存储空间
+    //当新字符串长度小于K时，则继续解析，等于K时也是递归求解, 目的都是避免构造出新串，以避免空间溢出
+    string decodeAtIndex(string S, int K) {
+        long len = 0;
+        int i = 0;
+        for (char c : S) {
+            ++i;
+            if (isDigit(c)) {
+                len *= c - '0'; 
+                //cout<<"len="<<len<<endl;
+                if (len >= K) {
+                    string nextS = S.substr(0, i);
+                    int nextK = (K - 1) % (len / (c - '0')) + 1;
+                    return decodeAtIndex(nextS, nextK);
+                }
+            } else {
+                ++len;
+                if (len == K) {
+                    //return "" + c;
+                    //cout<<"K="<<K<<endl;
+                    string ret = "a";
+                    ret[0] = c;
+                    return ret;
+                }
+            }
+        }
+        
+        return "";
+    }
+    
+    bool isDigit(char c) {
+        return (c >= '2' && c <= '9');
+    }
+    
+    bool isNotDigit(char c) {
+        return !isDigit(c);
+    }
+};
