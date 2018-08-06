@@ -41,3 +41,66 @@ public:
         return !isDigit(c);
     }
 };
+
+class Solution {
+    //record current result
+    public String decodeAtIndex(String S, int K) {
+        String ans = "";
+        long current = 0;
+        long num = K;
+        int i = 0;
+        while (i < S.length()) {
+            char c = S.charAt(i);
+            //System.out.println(c);
+            if (c >= '2' && c <= '9') {
+                int d = c - '0';
+                if (current * d >= num) {
+                    num = num % current;
+                    i = -1;
+                    current = 0;
+                } else {
+                    current *= d;
+                }
+            } else {
+                ++current;
+                ans = "" + c;
+            }
+            
+            ++i;
+            if (0 == num || current == num) break;
+            //System.out.println(i);
+        }
+        return ans;
+    }
+}
+
+class Solution {
+public:
+    string decodeAtIndex(string S, int K) {
+        string ans = "a";
+        long current = 0;
+        long num = K;
+        int i = 0;
+        while (i < S.length()) {
+            char c = S.at(i);
+            if (c >= '2' && c <= '9') {
+                int d = c - '0';
+                if (current * d >= num) {
+                    num %= current;
+                    current = 0;
+                    i = -1;
+                } else {
+                    current *= d;
+                }
+            } else {
+                ++current;
+                ans[0] = c;
+            }
+            
+            if (num == 0 || num == current) break;
+            ++i;
+        }
+        
+        return ans;
+    }
+};
