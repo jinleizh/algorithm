@@ -1,0 +1,58 @@
+class Solution {
+public:
+    //2个鸡蛋扔n层时
+    //第一个鸡蛋从i层扔，如果碎了，则最坏需要扔 1 + （i - 1）次.
+    //如果第一个鸡蛋没碎，则还需要用两个鸡蛋解决 n - i层的最优次数
+    //所以解为dp[n] = min {1 + max{i - 1, dp[n - i]} i = 1..n}
+    //m个鸡蛋扔n层时
+    //dp[m][n] 表示m个鸡蛋n层时的最优解
+    //第1个鸡蛋从第i层扔时，如果碎了，则总次数为 1 + dp[m - 1][i - 1]
+    //如果第i层时没有碎，则总次数为 1 + dp[m][n - i]
+    //i范围为1..n
+    //dp[m][n] = min{1 + max(dp[m - 1][i - 1], dp[m][n - i]) i = 1..n}
+    //最优解为min(dp[i][j] i=1..m j=1..n)
+    int superEggDrop(int K, int N) {
+        vector<vector<int>> dp(K + 1, vector<int>(N + 1, N));
+        //1个鸡蛋时,最坏的次数就是层高
+        for (int h = 1; h <= N; h++) {
+            dp[1][h] = h;
+        }
+        
+        //1层时，扔1次即可
+        for (int m = 1; m <= K; m++) {
+            dp[m][1] = 1;
+            dp[m][0] = 0;
+        }
+        
+        //dp[i][j] = min{max(1 + (dp[i - 1][k - 1], dp[i][j - k]))} k = 1..j
+        for (int i = 2; i <= K; i++) {
+            for (int j = 2; j <= N; j++) {
+                //throw egg at the kth level
+                for (int k = 1; k <= j; k++) {
+                    int tmp = 1 + max(dp[i - 1][k - 1], dp[i][j - k]);
+                    dp[i][j] = min(dp[i][j], tmp);
+                }
+            }
+        }
+        
+        return dp[K][N];
+    }
+};
+
+class Solution {
+public:
+    int superEggDrop(int K, int N) {
+        vector<vector<int>> dp(N + 1, vector<int>(K + 1, 0));
+        //dp[M][K] = 1 + dp[M - 1][K - 1] + dp[M - 1][K]
+        //跟层高无关了，鸡蛋move 1次之后，两个方向
+        int m = 0;
+        while (dp[m][K] < N) {
+            ++m;
+            for (int k = 1; k <= K; k++) {
+                dp[m][k] = 1 + dp[m - 1][k - 1] + dp[m - 1][k];
+            }
+        }
+        
+        return m;
+    }
+};
