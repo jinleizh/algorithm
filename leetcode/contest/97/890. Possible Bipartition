@@ -1,0 +1,47 @@
+class Solution {
+public:
+    //color 0 - undefined. 1 - black -1 white
+    bool possibleBipartition(int N, vector<vector<int>>& dislikes) {
+        vector<int> color(N, 0);
+        queue<int> q;
+        unordered_map<int, unordered_map<int, int>> graph;
+        for (auto& it : dislikes) {
+            graph[it[0] - 1][it[1] - 1] = 1;
+            graph[it[1] - 1][it[0] - 1] = 1;
+        }
+        
+        //bfs
+        int cnt = N, i = 0;
+        while (!q.empty() || i < cnt) {
+            if (q.empty()) {
+                for (int k = 0; k < N; k++) {
+                    if (color[k] == 0) {
+                        q.push(k);
+                        color[k] = -1;
+                        ++i;
+                        break;
+                    }
+                }
+            } else {
+                int size = q.size();
+                for (int k = 0; k < size; k++) {
+                    int cur = q.front();
+                    q.pop();
+                    int curColor = color[cur];
+                    for (auto& it : graph[cur]) {
+                        int j = it.first;
+                        if (color[j] == 0) {
+                            color[j] = -curColor;
+                            q.push(j);
+                            ++i;
+                        } else {
+                            if (color[j] == color[cur]) return false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return true;
+    }
+};
