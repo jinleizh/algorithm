@@ -53,3 +53,53 @@ public:
         //return true;
     }
 };
+
+
+class Solution {
+public:
+    //optimize
+    vector<vector<int>> spiralMatrixIII(int R, int C, int r0, int c0) {
+        int cnt = 0;
+        vector<vector<int>> ans;
+        ans.push_back({r0, c0});
+        ++cnt;
+        if (R * C == cnt) return ans;
+        int dx[4] = {0, 1, 0, -1};
+        int dy[4] = {1, 0, -1, 0};
+        int curX = r0, curY = c0;
+        int d = -1;
+        for (int k = 1; ; k++) {
+            d = (d + 1) % 4;
+            for (int step = 1; step <= k; step++) {
+                curX = curX + dx[d];
+                curY = curY + dy[d];
+                if (isInGrid(curX, curY, R, C)) {
+                    ans.push_back({curX, curY});
+                    ++cnt;
+                    if (cnt == R * C) {
+                        return ans;
+                    }
+                }
+            }
+            
+            d = (d + 1) % 4;
+            for (int step = 1; step <= k; step++) {
+                curX = curX + dx[d];
+                curY = curY + dy[d];
+                if (isInGrid(curX, curY, R, C)) {
+                    ans.push_back({curX, curY});
+                    ++cnt;
+                    if (cnt == R * C) {
+                        return ans;
+                    }
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+    bool isInGrid(int x, int y, int R, int C) {
+        return x >= 0 && x < R && y >= 0 && y < C;
+    }
+};
