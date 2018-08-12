@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<string> uncommonFromSentences(string A, string B) {
+        unordered_map<string, int> mapA, mapB;
+        istringstream is(A);
+        string s;
+        while (is >> s) {
+            mapA[s]++;
+        }
+        
+        istringstream bs(B);
+        while (bs >> s) {
+            mapB[s]++;
+        }
+        
+        vector<string> result;
+        for (auto& it : mapA) {
+            if(mapB.find(it.first) == mapB.end() && it.second == 1) {
+                result.push_back(it.first);
+            }
+        }
+        
+        for (auto& it : mapB) {
+            if (mapA.find(it.first) == mapA.end() && it.second == 1) {
+                result.push_back(it.first);
+            }
+        }
+        
+        return result;
+    }
+};
