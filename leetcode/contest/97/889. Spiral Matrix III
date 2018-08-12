@@ -1,0 +1,55 @@
+class Solution {
+public:
+    vector<vector<int>> spiralMatrixIII(int R, int C, int r0, int c0) {
+        vector<vector<int>> visited(301, vector<int>(301, 0));
+        vector<vector<int>> ans(R * C, vector<int>(2, 0));
+        int cnt = R * C;
+        ans[0] = {r0, c0};
+        visited[r0 + 100][c0 + 100] = 1;
+        int i = 1;
+        int dx[4] = {0, 1, 0, -1};
+        int dy[4] = {1, 0, -1, 0};
+        int curD = -1;
+        int curX = r0 + 100;
+        int curY = c0 + 100;
+        int nextX = 0, nextY = 0;
+        
+        while (i < cnt) {
+            int nextD = (curD + 1) % 4;
+            nextX = curX + dx[nextD];
+            nextY = curY + dy[nextD];
+            //cout<<curD<<" "<<nextD<<endl;
+            //cout<<"input="<<nextX<<" "<<nextY<<endl;
+            if (visited[nextX][nextY]) {
+                nextD = curD;
+                nextX = curX + dx[curD];
+                nextY = curY + dy[curD];
+                visited[nextX][nextY] = 1;
+                curX = nextX;
+                curY = nextY;
+            } else {
+                curD = nextD;
+                visited[nextX][nextY] = 1;
+                curX = nextX;
+                curY = nextY;
+            }
+            
+            //cout<<nextX<<" "<<nextY<<endl;
+            if (isInGrid(nextX - 100, nextY - 100, R, C)) {
+                ans[i][0] = nextX - 100;
+                ans[i][1] = nextY - 100;
+                // cout<<i<<endl;
+                ++i;
+            }
+            
+            //cout<<"==="<<endl;
+        }
+        
+        return ans;
+    }
+    
+    bool isInGrid(int x, int y, int R, int C) {
+        return x >= 0 && y >= 0 && x < R && y < C;
+        //return true;
+    }
+};
