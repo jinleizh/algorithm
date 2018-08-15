@@ -1,0 +1,78 @@
+class Node {
+    public:
+        int start;
+        int move;
+        int weight;
+    
+    Node(int start, int move, int weight) {
+        this->start = start;
+        this->move = move;
+        this->weight = weight;
+    }
+};
+
+class MyCmp {
+    public:
+        bool operator() (const Node& l, const Node& r) {
+            return l.move > r.move;
+        }
+};
+
+class Solution {
+public:
+    //要对问题预处理，比如图的问题，要先建图
+    //要对问题进行再编码，让你求经过m步 how many nodes can be reachable.it is the same as
+    //from src to dst, how many paths's length little than m
+    //so we can use djstra to get the shortest path from src to dst
+    //当前位置的元素可以再编码，所以再编码的能力很重要
+    int reachableNodes(vector<vector<int>>& edges, int M, int N) {
+        //build graph
+        unordered_map<int, unordered_map<int, int>> graph;
+        
+        //visited flag
+        unordered_map<int, bool> visited;
+        
+        //build graph
+        for (vector<int> v : edges) {
+            graph[v[0]][v[1]] = v[2];
+            graph[v[1]][v[0]] = v[2];
+        }
+        
+        int result = 0;
+        priority_queue<Node, vector<Node>, MyCmp> pq;
+        Node head(0, 0, 0);
+        pq.push(head);
+        while (!pq.empty()) {
+            Node cur = pq.top();
+            pq.pop();
+            int src = cur.start;
+            int curMove = cur.move;
+            if (curMove > M) break;
+            
+            //already visited
+            if (visited[src]) continue;
+            visited[src] = true;
+            result++;
+            
+            for (auto& it : graph[src]) {
+                int dst = it.first;
+                int weight = it.second;
+                int nextMove = curMove + weight + 1;
+                if (!visited[dst]) {
+                    if (nextMove > M) {
+                        result += M - curMove;
+                        graph[dst][src] -= (M - curMove);
+                    } else {
+                        result += weight;
+                        graph[dst][src] = 0;
+                        Node next(dst, nextMove, weight);
+                        pq.push(next);
+                    }
+                } else {
+                    result += min(M - curMove, graph[src][dst]);
+                }
+            }
+        }
+        return result;
+    }
+};
