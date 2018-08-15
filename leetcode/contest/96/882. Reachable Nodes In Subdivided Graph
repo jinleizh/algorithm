@@ -208,3 +208,56 @@ public class Solution {
         return result;
     }
 }
+
+
+class Solution(object):
+    def reachableNodes(self, edges, M, N):
+        """
+        :type edges: List[List[int]]
+        :type M: int
+        :type N: int
+        :rtype: int
+        """
+        # hashmap
+        graph = {}
+        visited = {}
+        pq = []
+        result = 0
+        for i in range(N):
+            graph[i] = {}
+        
+        for i, j, l in edges:
+            graph[i][j] = graph[j][i] = l
+        
+        # print graph
+        
+        heapq.heappush(pq, (0, 0))
+        while pq:
+            move, src = heapq.heappop(pq)
+            # print move, "==", src
+            if move > M:
+                break
+            
+            if src in visited:
+                continue
+                
+            visited[src] = 1
+            result = result + 1
+            
+            for dst in graph[src]:
+                weight = graph[src][dst]
+                next_move = move + weight + 1
+                if dst in visited:
+                    result += min(M - move, graph[src][dst])
+                else:
+                    if next_move > M:
+                        result += M - move
+                        graph[dst][src] -= M - move
+                    else:
+                        result += weight
+                        graph[dst][src] = 0
+                        heapq.heappush(pq, (next_move, dst))
+                        
+        return result
+        
+        
