@@ -76,3 +76,135 @@ public:
         return result;
     }
 };
+
+
+class Node {
+    public:
+        int src;
+        int move;
+        Node(int a, int b) {
+            this->src = a;
+            this->move = b;
+        }
+};
+
+class MyCmp {
+    public:
+        bool operator() (const Node& l, const Node& r) {
+            return l.move > r.move;
+        }
+};
+
+class Solution {
+public:
+    int reachableNodes(vector<vector<int>>& edges, int M, int N) {    
+        unordered_map<int, unordered_map<int, int>> graph;
+        unordered_map<int, bool> visited;
+        priority_queue<Node, vector<Node>, MyCmp> pq;
+        
+        //build graph
+        for (vector<int> v : edges) {
+            graph[v[0]][v[1]] = v[2];
+            graph[v[1]][v[0]] = v[2];
+        }
+        
+        int result = 0;
+        Node head(0, 0);
+        pq.push(head);
+        
+        while (!pq.empty()) {
+            Node cur = pq.top();
+            pq.pop();
+            int src = cur.src;
+            int move = cur.move;
+            if (move > M) break;
+            
+            //may be duplicated
+            if (visited[src]) continue;
+            visited[src] = true;
+            result++;
+            
+            //travel array
+            for (auto& it : graph[src]) {
+                int dst = it.first;
+                int weight = it.second;
+                int nextMove = move + weight + 1;
+                if (visited[dst]) {
+                    result += min(M - move, graph[src][dst]);
+                } else {
+                    if (nextMove > M) {
+                        result += M - move;
+                        graph[dst][src] -= M - move;
+                    } else {
+                        result += weight;
+                        graph[dst][src] = 0;
+                        Node next(dst, nextMove);
+                        pq.push(next);
+                    }
+                }
+            }
+        }
+        
+        return result;
+    }
+};
+
+class Node {
+    public int src;
+    public int move;
+    public Node(int src, int move) {
+        this.src = src;
+        this.move = move;
+    }
+}
+
+public class Solution {
+    public int reachableNodes(int[][] edges, int M, int N) {
+        Map<Integer, Map<Integer, Integer>> graph = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            graph.put(i, new HashMap<>());
+        }
+        Map<Integer, Boolean> visited = new HashMap<>();
+        Queue<Node> pq = new PriorityQueue<>((a, b) -> (a.move - b.move));
+        
+        //build graph
+        for (int[] v : edges) {
+            graph.get(v[0]).put(v[1], v[2]);
+            graph.get(v[1]).put(v[0], v[2]);
+        }
+        
+        int result = 0;
+        Node head = new Node(0, 0);
+        pq.offer(head);
+        while (!pq.isEmpty()) {
+            Node cur = pq.peek();
+            pq.poll();
+            int src = cur.src;
+            int move = cur.move;
+            if (null != visited.get(src)) continue;
+            visited.put(src, true);
+            ++result;
+            
+            for (int id : graph.get(src).keySet()) {
+                int dst = id;
+                int weight = graph.get(src).get(dst);
+                int nextMove = move + weight + 1;
+                if (null != visited.get(dst)) {
+                    result += Math.min(M - move, graph.get(src).get(dst));
+                } else {
+                    if (nextMove > M) {
+                        result += M - move;
+                        graph.get(dst).put(src, graph.get(dst).get(src) - (M - move));
+                    } else {
+                        result += weight;
+                        graph.get(dst).put(src, 0);
+                        Node next = new Node(dst, nextMove);
+                        pq.offer(next);
+                    }
+                }
+            }
+        }
+        
+        return result;
+    }
+}
