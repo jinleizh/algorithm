@@ -1,0 +1,137 @@
+//注意这里list中存储的是key，而value作为pair的一部分存储在map中
+//这样list和map才能建立起关系，如果list存储了value，当删除list中元素时，还需要根据value查到
+//key，才能在map中删除对应元素，另一种方法就是在list中把key和value都存起来，也可以
+class LRUCache {
+public:
+    LRUCache(int capacity) {
+        cap = capacity;
+        curLen = 0;
+    }
+    
+    int get(int key) {
+        if (index.find(key) == index.end()) return -1;
+        pair<int, list<int>::iterator> ret = index[key];
+        int ans = ret.first;
+        keys.erase(ret.second);
+        keys.push_front(key);
+        index[key].second = keys.begin();
+        return ans;
+    }
+    
+    void put(int key, int value) {
+        if (index.find(key) != index.end()) {
+            index[key].first = value;
+            get(key);
+        } else {
+            if (curLen == cap) {
+                index.erase(keys.back());
+                keys.pop_back();
+                keys.push_front(key);
+                index[key] = pair<int, list<int>::iterator>(value, keys.begin());
+            } else {
+                keys.push_front(key);
+                index[key] = pair<int, list<int>::iterator>(value, keys.begin());
+                curLen++;
+            }
+        }
+    }
+private:
+    //double linked list
+    list<int> keys;
+    
+    //key - {value, iterator}
+    unordered_map<int, pair<int, list<int>::iterator>> index;
+    int cap;
+    int curLen;
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
+ 
+ 
+ public class LRUCache {
+    private Map<Integer, Node> index = new HashMap<>();
+    private int cap;
+    private int curLen;
+    private Node head = new Node(0, 0);
+    private Node tail = new Node(0, 0);
+        
+    public LRUCache(int capacity) {
+        this.cap = capacity;
+        this.curLen = 0;
+        head.next = tail;
+        tail.prev = head;
+    }
+    
+    public int get(int key) {
+        if (!index.containsKey(key)) return -1;
+        Node ans = index.get(key);
+        removeNode(ans);
+        addToHead(ans);
+        return ans.val;
+    }
+    
+    public void put(int key, int value) {
+        if (index.containsKey(key)) {
+            Node ans = index.get(key);
+            ans.val = value;
+            get(key);
+        } else {
+            if (curLen == cap) {
+                Node tmp = tail.prev;
+                removeNode(tmp);
+                index.remove(tmp.key);
+                --curLen;
+            }
+            
+            Node newNode = new Node(key, value);
+            addToHead(newNode);
+            index.put(key, newNode);
+            ++curLen;
+        }
+    }
+    
+    public void removeNode(Node node) {
+        if (null == node) return;
+        if (node.next == null) {
+            node.prev.next = null;
+            node.prev = null;
+        } else {
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+        }
+    }
+    
+    public void addToHead(Node node) {
+        Node tmp = head.next;
+        head.next = node;
+        node.next = tmp;
+        tmp.prev = node;
+        node.prev = head;
+    }
+    
+    class Node {
+        private Node prev;
+        private Node next;
+        private int key;
+        private int val;
+
+        Node(int key, int val) {
+            this.key = key;
+            this.val = val;
+            this.prev = null;
+            this.next = null;
+        }
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
