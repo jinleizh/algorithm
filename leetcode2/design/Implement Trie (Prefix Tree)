@@ -1,0 +1,74 @@
+class TrieNode {
+    public:
+        TrieNode* nodes[26];
+        char c;
+        bool isWord;
+    
+        TrieNode(char c) {
+            this->c = c;
+            this->isWord = false;
+            for (int i = 0; i < 26; i++) {
+                nodes[i] = nullptr;
+            }
+        }
+    
+        ~TrieNode() {
+            for (TrieNode* p : nodes) {
+                delete p;
+            }
+        }
+};
+
+class Trie {
+public:
+    /** Initialize your data structure here. */
+    Trie() {
+        this->root = new TrieNode(' ');
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        TrieNode* head = root;
+        for (char c : word) {
+            if (head->nodes[c - 'a'] == nullptr) {
+                head->nodes[c - 'a'] = new TrieNode(c);
+            }
+            head = head->nodes[c - 'a'];
+        }
+        
+        head->isWord = true;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        TrieNode* head = root;
+        for (char c : word) {
+            if (head->nodes[c - 'a'] == nullptr) return false;
+            head = head->nodes[c - 'a'];
+        }
+        
+        return head->isWord;
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        TrieNode* head = root;
+        for (char c : prefix) {
+            if (head->nodes[c - 'a'] == nullptr) return false;
+            head = head->nodes[c - 'a'];
+        }
+        
+        return true;
+    }
+    
+private:
+    TrieNode* root;
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * bool param_2 = obj.search(word);
+ * bool param_3 = obj.startsWith(prefix);
+ */
