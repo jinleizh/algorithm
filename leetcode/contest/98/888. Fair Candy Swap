@@ -1,0 +1,35 @@
+class Solution {
+public:
+    vector<int> fairCandySwap(vector<int>& A, vector<int>& B) {
+        vector<int> ans;
+        unordered_map<int, int> mapA, mapB;
+        int sumA = 0, sumB = 0;
+        for (int d : A) {
+            mapA[d] = 1;
+            sumA += d;
+        }
+        
+        for (int d : B) {
+            mapB[d] = 1;
+            sumB += d;
+        }
+        //cout<<sumA<<" "<<sumB<<endl;
+        int diff = (sumB - sumA) / 2;
+        if (0 == diff) {
+            ans.push_back(0);
+            ans.push_back(0);
+            return ans;
+        }
+        
+        for (int d : B) {
+            //cout<<d<<" "<<diff<<endl;
+            if (mapA.find(d - diff) != mapA.end()) {
+                ans.push_back(d - diff);
+                ans.push_back(d);
+                return ans;
+            }
+        }
+        
+        return ans;
+    }
+};
