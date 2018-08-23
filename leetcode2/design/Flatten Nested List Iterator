@@ -1,0 +1,119 @@
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * class NestedInteger {
+ *   public:
+ *     // Return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     bool isInteger() const;
+ *
+ *     // Return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // The result is undefined if this NestedInteger holds a nested list
+ *     int getInteger() const;
+ *
+ *     // Return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // The result is undefined if this NestedInteger holds a single integer
+ *     const vector<NestedInteger> &getList() const;
+ * };
+ */
+class NestedIterator {
+public:
+    NestedIterator(vector<NestedInteger> &nestedList) {
+        int n = nestedList.size();
+        for (int i = n - 1; i >= 0; i--) {
+            myStack.push(nestedList[i]);
+        }
+    }
+
+    int next() {
+        NestedInteger curTop = myStack.top();
+        myStack.pop();
+        return curTop.getInteger();
+    }
+
+    bool hasNext() {
+        while (!myStack.empty()) {
+            NestedInteger item = myStack.top();
+            if (item.isInteger()) {
+                return true;
+            }
+            
+            myStack.pop();
+            vector<NestedInteger> curList = item.getList();
+            int n = curList.size();
+            for (int i = n - 1; i >= 0; i--) {
+                myStack.push(curList[i]);
+            }
+        }
+        
+        return false;
+    }
+private:
+    stack<NestedInteger> myStack;
+};
+
+/**
+ * Your NestedIterator object will be instantiated and called as such:
+ * NestedIterator i(nestedList);
+ * while (i.hasNext()) cout << i.next();
+ */
+ 
+ 
+ /**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * public interface NestedInteger {
+ *
+ *     // @return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     public boolean isInteger();
+ *
+ *     // @return the single integer that this NestedInteger holds, if it holds a single integer
+ *     // Return null if this NestedInteger holds a nested list
+ *     public Integer getInteger();
+ *
+ *     // @return the nested list that this NestedInteger holds, if it holds a nested list
+ *     // Return null if this NestedInteger holds a single integer
+ *     public List<NestedInteger> getList();
+ * }
+ */
+public class NestedIterator implements Iterator<Integer> {
+    public ArrayDeque<NestedInteger> data = new ArrayDeque<>();
+    
+    public NestedIterator(List<NestedInteger> nestedList) {
+        int n = nestedList.size();
+        for (int i = n - 1; i >= 0; i--) {
+            data.push(nestedList.get(i));
+        }
+    }
+
+    @Override
+    public Integer next() {
+        int ans = data.peek().getInteger();
+        data.pop();
+        return ans;
+    }
+
+    @Override
+    public boolean hasNext() {
+        NestedInteger item;
+        while (!data.isEmpty()) {
+            item = data.peek();
+            if (item.isInteger()) {
+                return true;
+            }
+
+            data.pop();
+            List<NestedInteger> curList = item.getList();
+            for (int i = curList.size() - 1; i >= 0; i--) {
+                data.push(curList.get(i));
+            }
+        }
+        
+        return false;
+    }
+}
+
+/**
+ * Your NestedIterator object will be instantiated and called as such:
+ * NestedIterator i = new NestedIterator(nestedList);
+ * while (i.hasNext()) v[f()] = i.next();
+ */
