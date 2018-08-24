@@ -1,0 +1,57 @@
+class Solution {
+    public int numDecodings(String s) {
+        int n = s.length();
+        int[] dp = new int[n + 1];
+        dp[n] = 1;
+        
+        for (int i = n - 1; i >= 0; i--) {
+            if (s.charAt(i) == '0') {
+                dp[i] = 0;
+                continue;
+            }
+            
+            dp[i] += dp[i + 1];
+            if (i + 2 <= n && isValid(s.charAt(i), s.charAt(i + 1))) {
+                dp[i] += dp[i + 2];
+            }
+        }
+        
+        return dp[0];
+    }
+    
+    public boolean isValid(char c, char d) {
+        if (c == '1' && d >= '0' && d <= '9') return true;
+        if (c == '2' && d >= '0' && d <= '6') return true;
+        return false;
+    }
+}
+
+
+class Solution {
+public:
+    int numDecodings(string s) {
+        int n = s.length();
+        vector<int> dp(1 + n, 0);
+        dp[n] = 1;
+        
+        for (int i = n - 1; i >= 0; i--) {
+            if (s[i] == '0') {
+                dp[i] = 0;
+                continue;
+            }
+            
+            dp[i] += dp[i + 1];
+            if (i + 2 <= n && isValid(s[i], s[i + 1])) {
+                dp[i] += dp[i + 2];
+            }
+        }
+        
+        return dp[0];
+    }
+    
+    bool isValid(char c, char d) {
+        if (c == '1' && d >= '0' && d <= '9') return true;
+        if (c == '2' && d >= '0' && d <= '6') return true;
+        return false;
+    }
+};
