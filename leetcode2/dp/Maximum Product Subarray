@@ -1,0 +1,52 @@
+class Solution {
+public:
+    //max[i] = 以i结尾的最大乘积
+    //min[i] = 以i结尾的最小乘积
+    //max[i + 1] = max{a[i], a[i] * max[i], a[i] * min[i]}
+    int maxProduct(vector<int>& nums) {
+        int n = nums.size();
+        if (0 == n) return 0;
+        
+        vector<long> maxV(n, 0);
+        vector<long> minV(n, 0);
+        maxV[0] = nums[0];
+        minV[0] = nums[0];
+        int curMax = INT_MIN;
+        int curMin = INT_MAX;
+        for (int i = 1; i < n; i++) {
+            curMax = nums[i] * maxV[i - 1];
+            curMin = nums[i] * minV[i - 1];
+            maxV[i] = max(nums[i], max(curMax, curMin));
+            minV[i] = min(nums[i], min(curMax, curMin));
+        }
+        
+        long ans = INT_MIN;
+        for (long d : maxV) {
+            ans = max(ans, d);
+        }
+        return (int)ans;
+    }
+};
+
+class Solution {
+    public int maxProduct(int[] nums) {
+        int n = nums.length;
+        int[] maxV = new int[n];
+        int[] minV = new int[n];
+        maxV[0] = nums[0];
+        minV[0] = nums[0];
+        int curMax = 0, curMin = 0;
+        for (int i = 1; i < n; i++) {
+            curMax = nums[i] * maxV[i - 1];
+            curMin = nums[i] * minV[i - 1];
+            maxV[i] = Math.max(nums[i], Math.max(curMax, curMin));
+            minV[i] = Math.min(nums[i], Math.min(curMax, curMin));
+        }
+        
+        int ans = Integer.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            ans = Math.max(ans, maxV[i]);
+        }
+        return ans;
+    }
+}
