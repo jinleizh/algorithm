@@ -1,6 +1,7 @@
 class Solution {
 public:
-    //dp[i][j] = max{dp[i][k - 1] + dp[k + 1][j]} cooldown=3,4,5,6,...,n-3
+    //suppose cooldown at k
+    //dp[i][j] = max{dp[i][k - 1] + dp[k + 1][j]} k = i ... j
     int maxProfit(vector<int>& prices) {
         int n = prices.size();
         if (0 == n) return 0;
@@ -32,3 +33,52 @@ public:
         return dp[0][n - 1];
     }
 };
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if (0 == n) return 0;
+        
+        vector<int> buy(n, 0);
+        vector<int> rest(n, 0);
+        vector<int> sell(n, 0);
+        buy[0] = -prices[0];
+        rest[0] = 0;
+        
+        //不可能存在，所以收益取最小，因为i位置，我们希望取的是最大值，
+        //将sell设置为最小值，表示永远不可能取该值
+        sell[0] = INT_MIN;
+        
+        for (int i = 1; i < n; i++) {
+            buy[i] = max(buy[i - 1], rest[i - 1] - prices[i]);
+            rest[i] = max(rest[i - 1], sell[i - 1]);
+            sell[i] = buy[i - 1] + prices[i];
+        }
+        
+        return max(rest[n - 1], sell[n - 1]);
+    }
+};
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        if (0 == n) return 0;
+        
+        int[] buy = new int[n];
+        int[] rest = new int[n];
+        int[] sell = new int[n];
+        
+        buy[0] = -prices[0];
+        rest[0] = 0;
+        sell[0] = Integer.MIN_VALUE;
+        
+        for (int i = 1; i < n; i++) {
+            buy[i] = Math.max(buy[i - 1], rest[i - 1] - prices[i]);
+            rest[i] = Math.max(rest[i - 1], sell[i - 1]);
+            sell[i] = buy[i - 1] + prices[i];
+        }
+        
+        return Math.max(rest[n - 1], sell[n - 1]);
+    }
+}
