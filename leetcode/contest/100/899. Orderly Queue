@@ -1,0 +1,24 @@
+class Solution {
+public:
+    string orderlyQueue(string S, int K) {
+        if (K > 1) {
+            sort(S.begin(), S.end());
+            return S;
+        }
+        
+        int n = S.length();
+        string tmp = S + S;
+        string ans = "";
+        for (int i = 0; i < n; i++) {
+            if (ans.empty()) {
+                ans = tmp.substr(i, n);
+            } else {
+                if (tmp.substr(i, n) < ans) {
+                    ans = tmp.substr(i, n);
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
