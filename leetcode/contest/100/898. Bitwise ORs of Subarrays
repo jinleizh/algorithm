@@ -1,0 +1,61 @@
+class Solution {
+    //常规方法
+    public int subarrayBitwiseORs(int[] A) {
+        int n = A.length;
+        /*
+        int[][] dp = new int[n][n];
+        Set<Integer> hs = new HashSet<>();
+        
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = A[i];
+            hs.add(dp[i][i]);
+        }
+        
+        for (int l = 1; l < n; l++) {
+            for (int i = 0; i + l < n; i++) {
+                int j = i + l;
+                dp[i][j] = dp[i][j - 1] | A[j];
+                hs.add(dp[i][j]);
+            }
+        }
+        
+        return hs.size();
+        */
+        
+        /*
+        Set<Integer> hs = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            int[] dp = new int[n];
+            hs.add(A[i]);
+            dp[i] = A[i];
+            for (int l = 1; i + l < n; l++) {
+                int j = i + l;
+                dp[j] = dp[j - 1] | A[j];
+                hs.add(dp[j]);
+            }
+        }
+        
+        return hs.size();
+        */
+        
+        //需要去重复进行剪枝
+        Set<Integer> ans = new HashSet<>();
+        Set<Integer> src = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            Set<Integer> next = new HashSet<>();
+            next.add(A[i]);
+            for (int d : src) {
+                next.add(A[i] | d);
+            }
+            
+            src = next;
+            
+            for (int d : next) {
+                ans.add(d);
+            }
+        }
+        return ans.size();
+    }
+}
+
+//c++
