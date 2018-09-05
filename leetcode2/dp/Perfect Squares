@@ -1,0 +1,51 @@
+class Solution {
+    //for example
+    //n n - 1 n - 2
+    //dp[n][num] = 1 + mim{dp[n][num - n], dp[n - 1][num - n], dp[n - 2][num - n], ..., dp[1][n]}
+    //ans = min {dp[k][sum]} k = 1,2,3,...,n-1,n
+    public int numSquares(int n) {
+        int ans = Integer.MAX_VALUE;
+        List<Integer> data = new ArrayList<>();
+        int i = 0;
+        for (; i * i <= n; i++) {
+            data.add(i * i);
+        }
+        if (i * i == n) return 1;
+        
+        int cnt = data.size();
+        int[][] dp = new int[cnt][1 + n];
+        for (int l = 1; l < cnt; l++) {
+            for (int p = 1; p <= n; p++) {
+                dp[l][p] = Integer.MAX_VALUE;
+            }
+        }
+        
+        for (int k = 1; k < cnt; k++) {
+            int val = data.get(k);
+            for (int sum = val; sum <= n; sum++) {
+                for (int j = k; j >= 1; j--) {
+                    if (dp[j][sum - val] == Integer.MAX_VALUE) continue;
+                    //System.out.println("k={}" + k + " sum=" + sum + " j={}" + j + " remain={}" + (sum - k));
+                    dp[k][sum] = Math.min(dp[k][sum], 1 + dp[j][sum - val]);
+                    //System.out.println("dp[k][sum]=" + dp[k][sum]);
+                }
+            }
+            
+            if (ans > dp[k][n]) {
+                //System.out.println("dp[k][n]=" + dp[k][n]);
+                ans = dp[k][n];
+            }
+        }
+        
+        return ans;
+    }
+    
+    public boolean isSquare(int d) {
+        int i = 1;
+        for (; i * i < d; i++) {
+        }
+        
+        if (i * i == d) return true;
+        return false;
+    }
+}
