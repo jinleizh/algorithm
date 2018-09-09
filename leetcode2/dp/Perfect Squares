@@ -49,3 +49,71 @@ class Solution {
         return false;
     }
 }
+
+
+class Solution {
+public:
+    //dp[i][j] = 1 + min{dp[i][j - i], dp[nextI][j - i], ..., dp[k][j]}
+    //dp[i][i] = 1 + min{dp[0][0]} = 1
+    //dp[i][j] = 1 + min{dp[i][j - i], dp[ni][j - i], ..., dp[nii][j - i]}
+    //if i > j, dp[i][j] = INT_MAX;
+    //if i == j, dp[i][j] = 1;
+    //if i < j,
+    //
+    int numSquares(int n) {
+        int i = 1;
+        vector<int> data;
+        while (i * i <= n) {
+            data.push_back(i * i);
+            ++i;
+        }
+        
+        int len = data.size();
+        int dp[1 + len][1 + n];
+        memset(dp, 0, sizeof(dp));
+        int ans = INT_MAX;
+        //cout<<"len="<<len<<endl;
+        
+        for (int i = 1; i <= len; i++) {
+            //cout<<"num="<<data[i - 1]<<endl;
+            for (int j = data[i - 1] - 1; j >= 1; j--) {
+                dp[i][j] = INT_MAX;
+                //output(i, j, dp[i][j]);
+            }
+        }
+        
+        for (int j = 1; j <= n; j++) {
+            for (int i = 1; i <= len && data[i - 1] <= j; i++) {
+                int tmp = INT_MAX;
+                for (int k = i; k <= len; k++) {
+                    tmp = min(tmp, dp[k][j - data[i - 1]]);
+                }
+                
+                //output(i, j, tmp);
+                
+                if (tmp != INT_MAX) {
+                    dp[i][j] = 1 + tmp;
+                } else {
+                    dp[i][j] = tmp;
+                }
+                
+                //output(i, j, dp[i][j]);
+            }
+        }
+        
+        for (int i = 1; i <= len; i++) {
+            ans = min(ans, dp[i][n]);
+            //cout<<"ans="<<ans<<endl;
+        }
+        
+        return ans;
+    }
+    
+    void output(int i, int j, int tmp) {
+        cout<<"i="<<i<<" j="<<j<<" tmp="<<tmp<<endl;
+    }
+    
+    void output2(int i, int j, int tmp) {
+        cout<<"output2 i="<<i<<" j="<<j<<" tmp="<<tmp<<endl;
+    }
+};
