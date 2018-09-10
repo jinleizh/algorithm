@@ -117,3 +117,60 @@ public:
         cout<<"output2 i="<<i<<" j="<<j<<" tmp="<<tmp<<endl;
     }
 };
+
+class Solution {
+public:
+    //dp[n] = min{dp[n - i*i]} i*i<=n
+    //dp[n] represent least number of perfect square numbers
+    //dp[0] = 0, dp[1] = 1, dp[2] = dp[1] + 1 = 2
+    int numSquares(int n) {
+        int dp[1 + n];
+        for (int i = 0; i < n + 1; i++) {
+            dp[i] = INT_MAX;
+        }
+        
+        dp[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            int j = 1;
+            while (i - j * j >= 0) {
+                if (dp[i - j * j] != INT_MAX) {
+                    //cout<<dp[i]<<" "<<dp[i - j * j]<<endl;
+                    dp[i] = min(dp[i], 1 + dp[i - j * j]);
+                    //cout<<"dp[i]="<<dp[i]<<endl;
+                }
+                ++j;
+            }
+        }
+        
+        /*
+        for (int d : dp) {
+            cout<<d<<endl;
+        }
+        */
+
+        return dp[n];
+    }
+};
+
+class Solution {
+    //dp[i] = min{dp[i - j * j]} i - j * j >= 0
+    public int numSquares(int n) {
+        List<Integer> dp = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            dp.add(Integer.MAX_VALUE);
+        }
+        dp.set(0, 0);
+        
+        for (int i = 1; i <= n; i++) {
+            int j = 1;
+            while (i - j * j >= 0) {
+                if (dp.get(i - j * j) != Integer.MAX_VALUE) {
+                    dp.set(i, Math.min(dp.get(i), 1 + dp.get(i - j * j)));
+                }
+                ++j;
+            }
+        }
+        
+        return dp.get(n);
+    }
+}
