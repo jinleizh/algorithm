@@ -1,6 +1,6 @@
 class Solution {
 public:
-    //dp[i][j] = max(dp[i][j], dp[i][k - 1] + nums[k - 1] * nums[k] * nums[k + 1] + dp[k + 1][j]) i <= k <= j 
+    //dp[i][j] = max(dp[i][j], dp[i][k - 1] + nums[i - 1] * nums[k] * nums[j + 1] + dp[k + 1][j]) i <= k <= j 
     int maxCoins(vector<int>& nums) {
         int n = nums.size();
         nums.push_back(1);
