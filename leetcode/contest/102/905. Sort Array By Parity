@@ -1,0 +1,19 @@
+class Solution {
+public:
+    vector<int> sortArrayByParity(vector<int>& A) {
+        vector<int> even;
+        for (int d : A) {
+            if (d % 2 == 0) {
+                even.push_back(d);
+            }
+        }
+        
+        for (int d : A) {
+            if (d % 2 == 1) {
+                even.push_back(d);
+            }
+        }
+        
+        return even;
+    }
+};
