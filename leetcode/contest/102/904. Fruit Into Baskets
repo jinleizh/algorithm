@@ -1,0 +1,107 @@
+class Solution {
+public:
+    //1 2 3 2 2 4
+    //1 2 3 2 x
+    //1 1 1 2 x
+    int totalFruit(vector<int>& tree) {
+        //edge case
+        if (tree.empty()) return 0;
+        
+        vector<int> data;
+        vector<int> num;
+        int cur = tree[0];
+        int cnt = 1;
+        for (int i = 1; i < tree.size(); i++) {
+            if (tree[i] == cur) {
+                ++cnt;
+            } else {       
+                data.push_back(cur);
+                num.push_back(cnt);
+                cur = tree[i];
+                cnt = 1;
+            }
+        }
+        
+        data.push_back(cur);
+        num.push_back(cnt);
+        
+        /*
+        for (int d : data) {
+            cout<<d<<" ";
+        }
+        cout<<endl;
+        
+        for (int d : num) {
+            cout<<d<<" ";
+        }
+        cout<<endl;
+        */
+        
+        if (data.size() == 1) return num[0];
+        
+        int a = -1, b = -1, an = -1, bn = -1;
+        int sum = 0, ans = 0;
+        for (int i = 0; i < data.size(); i++) {         
+            if (a == -1) {
+                a = data[i];
+                sum = num[i];
+                an = num[i];
+            } else if (b == -1) {
+                b = data[i];
+                bn = num[i];
+                sum += num[i];
+            } else {
+                //cout<<data[i]<<" "<<a<<" "<<b<<" "<<sum<<endl;
+                if (data[i] == a || data[i] == b) {
+                    sum += num[i];
+                    a = b;
+                    b = data[i];
+                    an = bn;
+                    bn = num[i];
+                } else {
+                    ans = max(sum, ans);
+                    a = b;
+                    b = data[i];
+                    an = bn;
+                    bn = num[i];
+                    sum = an + bn;
+                }
+            }
+            
+            ans = max(ans, sum);
+        }
+        
+        return ans;
+    }
+};
+
+//slide window
+class Solution {
+public:
+    //slide window
+    //matain l, r, ans = max(ans, r - l + 1)
+    //head=0
+    //1 1 1 2 2 2 1 1 1 3 3 3
+    //l
+    //                  r
+    int totalFruit(vector<int>& tree) {
+        if (tree.empty()) return 0;
+        int ans = 0;
+        int l = 0, r = 0;
+        unordered_map<int, int> mp;
+        for (int d : tree) {
+            mp[d]++;
+            while (mp.size() > 2) {
+                mp[tree[l]]--;
+                if (0 == mp[tree[l]]) {
+                    mp.erase(tree[l]);
+                }
+                ++l;
+            }
+            ++r;
+            ans = max(ans, r - l);
+        }
+        
+        return ans;
+    }
+};
