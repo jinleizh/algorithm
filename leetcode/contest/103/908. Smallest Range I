@@ -1,0 +1,38 @@
+class Solution {
+public:
+    //how to prove this process
+    //min min + k 
+    //max max - k 
+    //如果min + k >= max - k 其它元素的取值范围一定是可以覆盖min + k, max - k
+    //所以是最小值是0
+    //如果min + k < max - k 则最大和最小的差值 = max - min - 2 * k
+    int smallestRangeI(vector<int>& A, int K) {
+        //edge case
+        int minV = INT_MAX;
+        int maxV = INT_MIN;
+        for (int d : A) {
+            minV = min(d, minV);
+            maxV = max(d, maxV);
+        }
+        
+        int ans = 0;
+        if (maxV - K <= minV + K) return ans;
+        
+        return maxV - minV - 2 * K;
+    }
+};
+
+class Solution {
+    public int smallestRangeI(int[] A, int K) {
+        int minV = Integer.MAX_VALUE;
+        int maxV = Integer.MIN_VALUE;
+        int ans = 0;
+        for (int d : A) {
+            minV = Math.min(minV, d);
+            maxV = Math.max(maxV, d);
+        }
+        
+        if (minV + K >= maxV - K) return ans;
+        return maxV - minV - 2 * K;
+    }
+}
