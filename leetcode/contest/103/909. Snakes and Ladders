@@ -1,0 +1,231 @@
+//bfs解法
+class Solution {
+public:
+    //bfs解法, 需要注意下一跳, 如果值为-1, 则下一跳为当前块
+    //如果当前值不为-1，则下一跳为该块对应的值
+    int snakesAndLadders(vector<vector<int>>& board) {
+        //edge case
+        if (board.empty()) return -1;
+        int n = board.size();
+        
+        vector<int> visited(1 + n * n, 0);
+        queue<int> q;
+        q.push(1);
+        visited[1] = 1;
+        int ans = 0;
+        bool find = false;
+        while (!q.empty()) {
+            int k = q.size();
+            for (int m = 1; m <= k; m++) {
+                int curTop = q.front();
+                q.pop();
+                
+                if (curTop == n * n) {
+                    find = true;
+                    break;
+                }
+                
+                for (int pos = 1; pos <= 6 && curTop + pos <= n * n; pos++) {
+                    pair<int, int> cp = getPos(curTop + pos, n);
+                    int nr = cp.first;
+                    int nc = cp.second;
+                    
+                    if (board[nr][nc] == -1) {
+                        if (visited[curTop + pos] != 0) continue;
+                        visited[curTop + pos] = 1;
+                        q.push(curTop + pos);
+                    } else {
+                        if (visited[board[nr][nc]] != 0) continue;
+                        visited[board[nr][nc]] = 1;
+                        q.push(board[nr][nc]);
+                    }
+                }
+            }
+            
+            if (find) {
+                break;
+            }
+            
+            ++ans;
+        }
+        
+        if (find) return ans;
+        return -1;
+    }
+    
+    //10 9 8 7 6
+    //1 2 3 4 5
+    pair<int, int> getPos(int x, int n) {
+        int r = n - 1 - (x - 1) / n;
+        int c = 0;
+        if ((n - 1) % 2 == 1) {
+            if (r % 2 == 1) {
+                c = (x - 1) % n;
+            } else {
+                c = n - 1 - (x - 1) % n;
+            }
+        } else {
+            if (r % 2 == 0) {
+                c = (x - 1) % n;
+            } else {
+                c = n - 1 - (x - 1) % n;
+            }
+        }
+        
+        return pair<int, int>(r, c);
+    }
+};
+
+
+
+//dfs解法有疑问，因为子问题可能受父问题的影响，所以是否可以使用memory dp，有一个很大的疑问.
+//如果不使用memory dp，单纯的剪枝条，并没有加速查询过程，一直
+class Solution {
+public:
+    //dfs和bfs都可以解决本题
+    //首先dfs + 剪枝
+    int snakesAndLadders(vector<vector<int>>& board) {
+        int ans = INT_MAX;
+        int n = board.size();
+        vector<vector<int>> visited(n, vector<int>(n, 0));
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        int ret = dfs(1, board, visited, dp, 0, INT_MAX);
+        //output(dp);
+        if (ret == INT_MAX) return -1;
+        return ret;
+        
+        /*
+        //bfs解法 - 思路是level by level跳
+        //遇到块的值为-1时, 直接判断当前块有没有走过，没有则入队，走过则忽略
+        //遇到块的值不为-1时，表示下一步起点是块的值指向的块，判断指向的块是否走过，没有则入队，走过则忽略
+        int n = board.size();
+        queue<int> q;
+        vector<int> visited(1 + n * n, 0);
+        q.push(1);
+        visited[1] = 1;
+        int level = 0;
+        bool find = false;
+        while (!q.empty()) {
+            int curSize = q.size();
+            for (int k = 0; k < curSize; k++) {
+                int curTop = q.front();
+                cout<<curTop<<" ";
+                q.pop();            
+                if (curTop == n * n) {
+                    find = true;
+                    break;
+                };
+                for (int x = 1; x <= 6; x++) {
+                    if (curTop + x > n * n) continue;
+                    pair<int, int> pos = getPos(curTop + x, n);
+                    int r = pos.first;
+                    int c = pos.second;
+                    if (board[r][c] == -1) {
+                        if (visited[curTop + x] != 0) continue;
+                        visited[curTop + x] = 1;
+                        q.push(curTop + x);
+                    } else {
+                        if (visited[board[r][c]] != 0) continue;
+                        visited[board[r][c]] = 1;
+                        q.push(board[r][c]);
+                    }
+                }
+            }
+            cout<<endl;
+            
+            if (find) break;
+            ++level;
+        }
+        
+        return find == true ? level : -1;
+        */
+    }
+    
+    int dfs(int startPos, vector<vector<int>>& board, vector<vector<int>>& visited, vector<vector<int>>& dp, int curLevel, int minLevel) {
+        //cout<<"dfs="<<startPos<<endl;
+        int n = board.size();
+        if (startPos == n * n) return 0;
+        
+        //cur branch
+        if (curLevel > minLevel) return INT_MAX;
+        
+        pair<int, int> pos = getPos(startPos, n);
+        int r = pos.first;
+        int c = pos.second;
+        //if (visited[r][c] != 0) return INT_MAX;
+        //if (dp[r][c] != -1) return dp[r][c];
+        
+        visited[r][c] = 1;
+        int ans = INT_MAX;
+        for (int k = 1; k <= 6; k++) {
+            int tmp = INT_MAX;
+            int nextStartPos = startPos + k;
+            if (nextStartPos <= n * n) {
+                pair<int, int> nextPos = getPos(nextStartPos, n);
+                int nr = nextPos.first;
+                int nc = nextPos.second;
+                //cout<<"nextStartPos="<<nextStartPos<<endl;
+                //cout<<"nr nc="<<nr<<" "<<nc<<endl;
+                if (board[nr][nc] == -1) {
+                    if (visited[nr][nc] == 0) {
+                        tmp = dfs(nextStartPos, board, visited, dp, curLevel + 1, ans);
+                    }
+                } else {
+                    pair<int, int> nextPos = getPos(board[nr][nc], n);
+                    int nnr = nextPos.first;
+                    int nnc = nextPos.second;
+                    if (visited[nnr][nnc] != 0) continue;
+                    tmp = dfs(board[nr][nc], board, visited, dp, curLevel + 1, ans);
+                    
+                    //dp[nr][nc] = tmp;
+                    //cout<<"nr nc="<<nr<<" "<<nc<<" "<<tmp<<" pos="<<nextStartPos<<endl;
+                    //visited[nr][nc] = 0;
+                }
+
+                //cout<<"tmp="<<tmp<<endl;
+                ans = min(ans, tmp);
+            }
+        }
+        
+        if (ans != INT_MAX) {
+            ans += 1;
+        }
+        
+        dp[r][c] = ans;
+        visited[r][c] = 0;
+        //cout<<r<<" "<<c<<" ans="<<ans<<endl;
+        return ans;
+    }
+    
+    //10 9 8 7 6
+    //1 2 3 4 5
+    pair<int, int> getPos(int pos, int n) {
+        int r = n - 1 - (pos - 1) / n;
+        int c = 0;
+        if ((n - 1) % 2 == 0) {
+            if (r % 2 == 1) {
+                c = n - 1 - (pos - 1) % n;
+            } else {
+                c = (pos - 1) % n;
+            }
+        } else {
+            if (r % 2 == 0) {
+                c = n - 1 - (pos - 1) % n;
+            } else {
+                c = (pos - 1) % n;
+            }
+        }
+        
+        return pair<int, int>(r, c);
+    }
+    
+    void output(vector<vector<int>>& dp) {
+        for (vector<int> v : dp) {
+            for (int d : v) {
+                cout<<d<<" ";
+            }
+            cout<<endl;
+        }
+        cout<<endl;
+    }
+};
