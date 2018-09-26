@@ -1,0 +1,75 @@
+class Node {
+    public:
+        int id;
+        int val;
+    
+        Node(int id, int val) : id(id), val(val) {
+            
+        }
+    
+        bool operator < (const Node& other) {
+            return val < other.val;
+        }
+};
+
+class Solution {
+public:
+    //slide window
+    //left, right, map<int, int>
+    //sort
+    int smallestRangeII(vector<int>& A, int K) {
+        if (A.empty()) return 0;
+        
+        vector<Node> data;
+        int i = 0;
+        for (int d : A) {
+            Node one(i, d + K);
+            Node two(i, d - K);
+            data.push_back(one);
+            data.push_back(two);
+            ++i;
+        }
+        
+        sort(data.begin(), data.end());
+        
+        /*
+        for (Node d : data) {
+            cout<<"("<< d.id<<" "<<d.val<<")";
+        }
+        cout<<endl;
+        */
+        
+        int left = 0, right = 0;
+        unordered_map<int, int> mp;
+        int end = data.size();
+        int ans = INT_MAX;
+        while (right < end) {
+            //right往前走
+            while (right < end && mp.size() < A.size()) {
+                Node cur = data[right];
+                if (mp.find(cur.id) == mp.end()) {
+                    mp[cur.id] = 0;
+                }
+                
+                mp[cur.id]++;
+                ++right;
+            }
+            
+            //left往前走
+            int prevRight = right - 1;
+            while (left <= prevRight && mp.size() == A.size()) {
+                int tmpRst = data[prevRight].val - data[left].val;
+                //cout<<"tmpRst="<<tmpRst<<endl;
+                ans = min(ans, tmpRst);
+                Node cur = data[left];
+                mp[cur.id]--;
+                if (0 == mp[cur.id]) {
+                    mp.erase(cur.id);
+                }
+                ++left;
+            }
+        }
+        
+        return ans;
+    }
+};
