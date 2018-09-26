@@ -73,3 +73,71 @@ public:
         return ans;
     }
 };
+
+
+//one pass
+class Node {
+    public:
+        int id;
+        int val;
+        Node(int id, int val) : id(id), val(val) {
+            
+        }
+    
+        bool operator < (const Node& other) const {
+            return val < other.val;
+        }
+};
+
+class Solution {
+public:
+    //slide window
+    int smallestRangeII(vector<int>& A, int K) {
+        //edge case
+        int n = A.size();
+        if (0 == n) return 0;
+        
+        //
+        vector<Node> data;
+        int left = 0, right = 0, ans = INT_MAX, idx = 0;
+        for (int d : A) {
+            Node one(idx, d + K);
+            Node two(idx, d - K);
+            data.push_back(one);
+            data.push_back(two);
+            ++idx;
+        }
+        
+        sort(data.begin(), data.end());
+        unordered_map<int, int> mp;
+        
+        while (right < data.size()) {
+            //go right
+            while (right < data.size() && mp.size() < n) {
+                Node cur = data[right];
+                if (mp.find(cur.id) == mp.end()) {
+                    mp[cur.id] = 0;
+                }
+                
+                mp[cur.id]++;
+                ++right;
+            }
+            
+            int prev = right - 1;
+            
+            //go left
+            while (left <= prev && mp.size() == n) {
+                int tmp = data[prev].val - data[left].val;
+                ans = min(ans, tmp);
+                int curId = data[left].id;
+                mp[curId]--;
+                if (0 == mp[curId]) {
+                    mp.erase(curId);
+                }
+                ++left;
+            }
+        }
+        
+        return ans;
+    }
+};
