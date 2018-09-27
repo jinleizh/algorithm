@@ -1,0 +1,77 @@
+class Winner {
+    public:
+        int t;
+        int userId;
+        Winner(int t, int userId) : t(t), userId(userId) {
+            
+        }
+};
+
+class TopVotedCandidate {
+public:    
+    //维护每个人的得票数
+    unordered_map<int, int> mp;
+    
+    //构建时间t和对应的得票最高者 - vector<>
+    vector<Winner> data;
+    
+    //当前最多票数
+    int curMaxVoteNum;
+    
+    //当前得票最多的人
+    int curWinnerId;
+    
+    TopVotedCandidate(vector<int> persons, vector<int> times) {
+        curMaxVoteNum = 0;
+        curWinnerId = 0;
+        
+        int n = persons.size();
+        for (int i = 0; i < n; i++) {
+            int userId = persons[i];
+            if (mp.find(userId) == mp.end()) {
+                mp[userId] = 0;
+            }
+            mp[userId]++;
+            
+            if (mp[userId] >= curMaxVoteNum) {
+                curMaxVoteNum = mp[userId];
+                curWinnerId = userId;
+            }
+            
+            int time = times[i];
+            Winner winner(time, curWinnerId);
+            data.push_back(winner);
+        }
+    }
+    
+    //binary search
+    int q(int t) {
+        int n = data.size();
+        int l = 0, r = n - 1;
+        
+        while (l + 1 < r) {
+            int mid = l + (r - l) / 2;
+            if (t == data[mid].t) {
+                return data[mid].userId;
+            }
+            
+            if (t < data[mid].t) {
+                r = mid;
+            } else {
+                l = mid;
+            }
+        }
+        
+        if (t == data[l].t) return data[l].userId;
+        if (t == data[r].t) return data[r].userId;
+        if (t < data[l].t) return -1;
+        if (t > data[r].t) return data[r].userId;
+        return data[l].userId;
+    }
+};
+
+/**
+ * Your TopVotedCandidate object will be instantiated and called as such:
+ * TopVotedCandidate obj = new TopVotedCandidate(persons, times);
+ * int param_1 = obj.q(t);
+ */
