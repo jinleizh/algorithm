@@ -141,3 +141,33 @@ public:
         return ans;
     }
 };
+
+
+class Solution {
+public:
+    //排序后，处理过程会更清晰
+    //假设第i个位置为最后一个+k的位置, 即i + 1后都是-k的
+    //则我们可以把i之前的位置，全部+k, 因为这不影响最后的结果，原因是 0 - i-1 全部+k后，不影响当前可取到的最大值，也不影响这部分，可取到的最大的最小值
+    //我们的思路是
+    //用左半部的最小值和右半部的最小值比较，取小的.
+    //用右半部的最大值和左半部的最大值比较，取大的.
+    //共n种可能，全部计算出，求差值最小的
+    int smallestRangeII(vector<int>& A, int K) {
+        int n = A.size();
+        sort(A.begin(), A.end());
+        int maxV = 0, minV = 0, ans = A[n - 1] - A[0];
+        int left = A[0] + K;
+        int right = A[n - 1] - K;
+        
+        //下标注意范围
+        //注意变量声明顺序
+        //a & b 必须要搞清楚你是要 0 或 1, 还是说需要结果
+        for (int i = 0; i < n - 1; i++) {
+            maxV = max(A[i] + K, right);
+            minV = min(left, A[i + 1] - K);
+            ans = min(ans, maxV - minV);
+        }
+        
+        return ans;
+    }
+};
