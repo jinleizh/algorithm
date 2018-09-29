@@ -1,6 +1,8 @@
 class Solution {
 public:
     //1 2 3 4
+    //time - O(N^2)
+    //space - O(N)
     //dp[i][j] = min{dp[i][j - 1], a[j]}
     int sumSubarrayMins(vector<int>& A) {
         int n = A.size();
@@ -31,3 +33,43 @@ public:
     }
 };
 
+class Solution {
+public:
+    //time - O(N)
+    //space - O(N) 
+    int sumSubarrayMins(vector<int>& A) {
+        int n = A.size();
+        if (0 == n) return 0;
+        stack<pair<int, int>> left, right;
+        vector<int> leftData(n, 0), rightData(n, 0);
+        
+        for (int i = 0; i < n; i++) {
+            int d = A[i];
+            int res = 1;
+            while (!left.empty() && left.top().first >= d) {
+                res += left.top().second;
+                left.pop();
+            }
+            leftData[i] = res;
+            left.push(pair<int, int>(d, res));
+        }
+        
+        for (int i = n - 1; i >= 0; i--) {
+            int d = A[i];
+            int res = 1;
+            while (!right.empty() && right.top().first > d) {
+                res += right.top().second;
+                right.pop();
+            }
+            rightData[i] = res;
+            right.push(pair<int, int>(d, res));
+        }
+        
+        int ans = 0, mod = 1e9 + 7;
+        for (int i = 0; i < n; i++) {
+            ans = (ans + leftData[i] * rightData[i] * A[i] % mod) % mod;
+        }
+        
+        return ans;
+    }
+};
