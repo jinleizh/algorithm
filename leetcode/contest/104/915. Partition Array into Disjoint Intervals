@@ -1,0 +1,81 @@
+class Solution {
+public:
+    //起点 - 0
+    //从右到左找到第一个小于起点的 i
+    //从start 到 i 找最大值, 如果 不大于起点值，则返回 i + 1
+    //若大于起点值, 则i作为起点，从末尾开始找第一个小于 最大值的点j
+    //如果j == i则返回 i + 1， 跳出
+    //如果j != i, 则继续在(i + 1, j)中间找更大的值，并把j作为新起点
+    int partitionDisjoint(vector<int>& A) {
+        int ans = 0;
+        int start = 0;
+        int maxV = A[0];
+        int oldMaxV = INT_MIN;
+        while (maxV > oldMaxV) {
+            int pos = findFirstLittle(maxV, start, A);
+            //cout<<start<<" "<<pos<<endl;
+            if (start > pos) break;
+            
+            ans += pos - start + 1;
+            //cout<<"ans="<<ans<<endl;
+            int curMax = findCurMax(start, pos, A);
+            if (curMax <= maxV) break;
+            oldMaxV = maxV;
+            maxV = curMax;
+            start = pos + 1;
+        }
+        
+        if (0 == ans) return 1;
+        return ans;
+    }
+    
+    int findFirstLittle(int val, int start, vector<int>& A) {
+        int end = A.size() - 1;
+        int i = end;
+        for (; i >= start; i--) {
+            if (A[i] < val) break;
+        }
+        
+        return i;
+    }
+    
+    int findCurMax(int left, int right, vector<int>& A) {
+        int ans = INT_MIN;
+        for (int i = left; i <= right; i++) {
+            ans = max(ans, A[i]);
+        }
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //找到左边最大的和右边最小的，从左到右，符合条件的第一个为结果
+    int partitionDisjoint(vector<int>& A) {
+        int n = A.size();
+        vector<int> left(n, 0), right(n, 0);
+        left[0] = A[0];
+        right[n - 1] = A[n - 1];
+        
+        for (int i = 1; i < n; i++) {
+            left[i] = max(left[i - 1], A[i]);
+        }
+        
+        for (int i = n - 2; i >= 0; i--) {
+            right[i] = min(right[i + 1], A[i]);
+        }
+        
+        for (int i = 0; i < n - 1; i++) {
+            if (left[i] <= right[i + 1]) return i + 1;
+        }
+        
+        /*
+        for (int d : right) {
+            cout<<d<<" ";
+        }
+        cout<<endl;
+        */
+        
+        return 0;
+    }
+};
