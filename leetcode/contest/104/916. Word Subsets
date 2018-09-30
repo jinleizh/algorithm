@@ -1,0 +1,52 @@
+class Solution {
+public:
+    vector<string> wordSubsets(vector<string>& A, vector<string>& B) {
+        int n = A.size();
+        vector<unordered_map<char, int>> dA, dB;
+        for (string s : A) {
+            unordered_map<char, int> mp;
+            for (char c : s) {
+                mp[c]++;
+            }
+            dA.push_back(mp);
+        }
+        
+        unordered_map<char, int> mb;
+        for (string s : B) {
+            unordered_map<char, int> tmp;
+            for (char c : s) {
+                tmp[c]++;
+            }
+            
+            for (auto& it : tmp) {
+                char c = it.first;
+                int cnt = it.second;
+                if (mb.find(c) == mb.end()) {
+                    mb[c] = cnt;
+                } else {
+                    mb[c] = max(mb[c], cnt);
+                }
+            }
+        }
+        
+        vector<string> ans;
+        for (int i = 0; i < n; i++) {
+            unordered_map<char, int> ma = dA[i];
+            bool isValid = true;
+            for (auto& it : mb) {
+                char c = it.first;
+                int cnt = it.second;
+                if (ma[c] < cnt) {
+                    isValid = false;
+                    break;
+                }
+            }
+            
+            if (isValid) {
+                ans.push_back(A[i]);
+            }
+        }
+        
+        return ans;
+    }
+};
