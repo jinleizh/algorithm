@@ -1,0 +1,33 @@
+class Solution {
+public:
+    //map - item, count
+    //minCnt >= 2
+    //
+    bool hasGroupsSizeX(vector<int>& deck) {
+        unordered_map<int, int> mp;
+        for (int d : deck) {
+            mp[d]++;
+        }
+        
+        int minCnt = INT_MAX;
+        for (auto& it : mp) {
+            minCnt = min(minCnt, it.second);
+        }
+        
+        if (minCnt < 2) return false;
+        for (auto& it : mp) {
+            if (1 == gcd(it.second, minCnt)) return false;
+        }
+        
+        return true;
+    }
+    
+    //5 3
+    //3 2
+    //2 1
+    //1 0
+    int gcd(int a, int b) {
+        if (0 == b) return a;
+        return gcd(b, a % b);
+    }
+};
