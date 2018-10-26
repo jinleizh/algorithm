@@ -157,3 +157,50 @@ class Solution {
         return sb.toString();
     }
 }
+
+class Solution {
+    //另一种解法
+    public int[] threeEqualParts(int[] A) {
+        int[] ans = new int[] {-1, -1};
+        if (A.length == 0) return ans;
+        
+        int oneCnt = 0;
+        for (int d : A) {
+            if (d == 1) {
+                ++oneCnt;
+            }
+        }
+        
+        if (0 == oneCnt) return new int[] {0, 2};
+        if (0 != oneCnt % 3) return ans;
+        
+        int idx0 = 0;
+        int idx1 = 0;
+        int idx2 = 0;
+        int curCnt = 0;
+        for (int i = 0; i < A.length; i++) {
+            if (1 == A[i]) {
+                ++curCnt;
+                if (curCnt == 1) {
+                    idx0 = i;
+                } else if (curCnt == oneCnt / 3 + 1) {
+                    idx1 = i;
+                } else if (curCnt == 2 * oneCnt / 3 + 1) {
+                    idx2 = i;
+                }
+            }
+        }
+        
+        while (idx2 < A.length) {
+            if (A[idx2] == A[idx1] && A[idx2] == A[idx0]) {
+                idx2++;
+                idx1++;
+                idx0++;
+            } else {
+                return ans;
+            }
+        }
+        
+        return new int[]{idx0 - 1, idx1};
+    }
+}
