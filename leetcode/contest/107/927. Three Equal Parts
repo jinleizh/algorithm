@@ -1,0 +1,159 @@
+class Solution {
+public:
+    //001101010011011010010100
+    vector<int> threeEqualParts(vector<int>& A) {
+        vector<int> ans = {-1, -1};
+        if (A.empty()) return ans;
+        
+        int cnt = 0;
+        for (int d : A) {
+            if (1 == d) ++cnt;
+        }
+        
+        if (cnt % 3 != 0) return ans;
+        if (cnt == 0) {
+            ans[0] = 0;
+            ans[1] = 2;
+            return ans;
+        }
+        
+        int targetCnt = cnt / 3;
+        pair<int, int> fsec = findOnePos(A, 0, targetCnt);
+        pair<int, int> ssec = findOnePos(A, fsec.second + 1, targetCnt);
+        pair<int, int> tsec = findOnePos(A, ssec.second + 1, targetCnt);
+        
+        int tailZero = A.size() - 1 - tsec.second;
+        //cout<<tailZero<<endl;
+        if (tsec.first - 1 - ssec.second < tailZero) return ans;
+        if (ssec.first - 1 - fsec.second < tailZero) return ans;
+        
+        string fs = getValStr(A, fsec.first, fsec.second);
+        string ss = getValStr(A, ssec.first, ssec.second);
+        string ts = getValStr(A, tsec.first, tsec.second);
+        
+        if (fs == ss && ss == ts) {
+            int len = A.size() - tsec.first;
+            int lp = fsec.first + len - 1;
+            int rp = ssec.first + len;
+            ans[0] = lp;
+            ans[1] = rp;
+        }
+        
+        return ans;
+    }
+    
+    pair<int, int> findOnePos(vector<int>& A, int start, int targetCnt) {
+        bool isStart = false;
+        bool isFinish = false;
+        int curCnt = 0;
+        int idx = start;
+        int left = 0, right = 0;
+        while (!isFinish) {
+            if (A[idx] == 1) {
+                ++curCnt;
+                if (!isStart) {
+                    isStart = true;
+                    left = idx;
+                }
+                
+                if (curCnt == targetCnt) {
+                    isFinish = true;
+                    right = idx;
+                    break;
+                }
+            }
+            
+            ++idx;
+        }
+        
+        //cout<<left<<" "<<right<<endl;
+        return pair<int, int>(left, right);
+    }
+    
+    string getValStr(vector<int>& A, int l, int r) {
+        string s;
+        for (int i = l; i <= r; i++) {
+            s += A[i];
+        }
+        return s;
+    }
+};
+
+
+class Solution {
+    //split into three parts
+    public int[] threeEqualParts(int[] A) {
+        int[] ans = new int[] {-1, -1};
+        if (0 == A.length) return ans;
+        
+        int oneCnt = 0;
+        for (int d : A) {
+            if (1 == d) ++oneCnt;
+        }
+        
+        if (0 == oneCnt) {
+            ans[0] = 0;
+            ans[1] = 2;
+            return ans;
+        }
+        
+        if (oneCnt % 3 != 0) return ans;
+        oneCnt /= 3;
+        
+        int[] fPos = findOnePos(A, 0, oneCnt);
+        int[] sPos = findOnePos(A, fPos[1] + 1, oneCnt);
+        int[] tPos = findOnePos(A, sPos[1] + 1, oneCnt);
+        
+        int tailZeroCnt = A.length - 1 - tPos[1];
+        if (tPos[0] - sPos[1] - 1 < tailZeroCnt) return ans;
+        if (sPos[0] - fPos[1] - 1 < tailZeroCnt) return ans;
+        
+        String fs = getStr(A, fPos[0], fPos[1]);
+        String ss = getStr(A, sPos[0], sPos[1]);
+        String ts = getStr(A, tPos[0], tPos[1]);
+        
+        if (fs.compareTo(ss) != 0 || ss.compareTo(ts) != 0) return ans;
+        
+        int len = A.length - tPos[0];
+        ans[0] = fPos[0] + len - 1;
+        ans[1] = sPos[0] + len;
+        return ans;
+    }
+    
+    //suppose it always has one
+    public int[] findOnePos(int[] A, int start, int oneCnt) {
+        boolean isFinish = false;
+        boolean findStart = false;
+        int curCnt = 0;
+        int idx = start;
+        int[] ans = new int[2];
+        while (!isFinish) {
+            if (A[idx] == 1) {
+                ++curCnt;
+                if (!findStart) {
+                    findStart = true;
+                    ans[0] = idx;
+                }
+                
+                if (curCnt == oneCnt) {
+                    isFinish = true;
+                    ans[1] = idx;
+                    break;
+                }
+            }
+            
+            ++idx;
+        }
+        
+        return ans;
+    }
+    
+    public String getStr(int[] A, int l, int r) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = l; i <= r; i++) {
+            sb.append(String.valueOf(A[i]));
+        }
+        
+        return sb.toString();
+    }
+}
