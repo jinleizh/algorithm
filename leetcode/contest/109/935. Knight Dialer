@@ -1,0 +1,128 @@
+class Solution {
+public:
+    //递归求解
+    //dfs(start, n) = dfs(next, n - 1) {next = 1,2,3,4,...n}
+    unordered_map<int, vector<int>> dp;
+    map<pair<int,int>, int> cache;
+    int knightDialer(int N) {
+        dp[0] = {4, 6};
+        dp[1] = {6, 8};
+        dp[2] = {7, 9};
+        dp[3] = {4, 8};
+        dp[4] = {3, 0, 9};
+        dp[5] = {};
+        dp[6] = {1, 7, 0};
+        dp[7] = {2, 6};
+        dp[8] = {1, 3};
+        dp[9] = {2, 4};
+        
+        int ans = 0;
+        int mod = 1e9 + 7;
+        for (int i = 0; i <= 9; i++) {
+            int ret = dfs(N, i);
+            ans = (ans + ret) % mod;
+        }
+        
+        return ans;
+    }
+    
+    int dfs(int level, int start) {
+        if (1 == level) return 1;
+        pair<int, int> p(start, level);
+        if (cache.find(p) != cache.end()) {
+            return cache[p];
+        }
+        
+        if (dp[start].empty()) return 0;
+        
+        int mod = 1e9 + 7;
+        int ans = 0;
+        for (int next : dp[start]) {
+            int ret = dfs(level - 1, next);
+            ans = (ans + ret) % mod;
+        }
+        
+        cache[p] = ans;
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //dp[n][k] = dp[n - 1][a] + dp[n - 1][b] + ... dp[n - 1][c]
+    //dp[1][k] = 1
+    unordered_map<int, vector<int>> dp;
+    int knightDialer(int N) {
+        dp[0] = {4, 6};
+        dp[1] = {6, 8};
+        dp[2] = {7, 9};
+        dp[3] = {4, 8};
+        dp[4] = {3, 0, 9};
+        dp[5] = {};
+        dp[6] = {1, 7, 0};
+        dp[7] = {2, 6};
+        dp[8] = {1, 3};
+        dp[9] = {2, 4};
+        
+        int ans = 0;
+        int mod = 1e9 + 7;
+        vector<vector<int>> data(1 + N, vector<int>(10, 0));
+        for (int i = 0; i < 10; i++) {
+            data[1][i] = 1;
+        }
+        
+        for (int i = 2; i <= N; i++) {
+            for (int j = 0; j <= 9; j++) {
+                for (int val : dp[j]) {
+                    data[i][j] = (data[i][j] + data[i - 1][val]) % mod;
+                }
+            }
+        }
+        
+        for (int i = 0; i <= 9; i++) {
+            ans = (ans + data[N][i]) % mod;
+        }
+        
+        return ans;
+    }
+};
+
+//空间复杂度优化
+class Solution {
+public:
+    //dp[n][k] = dp[n - 1][a] + dp[n - 1][b] + ... dp[n - 1][c]
+    //dp[1][k] = 1
+    unordered_map<int, vector<int>> dp;
+    int knightDialer(int N) {
+        dp[0] = {4, 6};
+        dp[1] = {6, 8};
+        dp[2] = {7, 9};
+        dp[3] = {4, 8};
+        dp[4] = {3, 0, 9};
+        dp[5] = {};
+        dp[6] = {1, 7, 0};
+        dp[7] = {2, 6};
+        dp[8] = {1, 3};
+        dp[9] = {2, 4};
+        
+        int ans = 0;
+        int mod = 1e9 + 7;
+        vector<int> oldData(10, 1);     
+        for (int i = 2; i <= N; i++) {
+            vector<int> newData(10, 0);
+            for (int j = 0; j <= 9; j++) {
+                for (int d : dp[j]) {
+                    newData[j] = (newData[j] + oldData[d]) % mod;
+                }
+            }
+            
+            oldData = newData;
+        }
+        
+        for (int i = 0; i <= 9; i++) {
+            ans = (ans + oldData[i]) % mod;
+        }
+        
+        return ans;
+    }
+};
