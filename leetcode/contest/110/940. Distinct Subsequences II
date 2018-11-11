@@ -58,3 +58,33 @@ public:
         return dp[n] % mod;
     }
 };
+
+class Solution {
+public:
+    //最终的结果只有26中组合, 即最终是要么以a结尾，要么以b结尾，要么以c结尾....
+    //每次添加一个元素字符c时, endwith[c]的数量会被更新为 endwith[others] + 1
+    //1包括c本身
+    //最终的结果就是求出以这26个元素结尾的可能数之和
+    int distinctSubseqII(string S) {
+        int end[26];
+        memset(end, 0, sizeof(end));
+        
+        int mod = 1e9 + 7;
+        for (char c : S) {
+            int idx = c - 'a';
+            int sum = 0;
+            for (int i = 0; i < 26; i++) {
+                sum = (sum + end[i]) % mod;
+            }
+            sum = (sum + 1) % mod;
+            end[idx] = sum;
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < 26; i++) {
+            ans = (ans + end[i]) % mod;
+        }
+        
+        return ans;
+    }
+};
