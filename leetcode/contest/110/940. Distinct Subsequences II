@@ -1,0 +1,60 @@
+//暴力解法, 时间复杂度o(2^n), 空间复杂度o(2^n)
+//MLE
+class Solution {
+public:
+    //map
+    //计数
+    int distinctSubseqII(string S) {
+        unordered_map<string, bool> mp;
+        int mod = 1e9 + 7;
+        int ans = 0;
+        vector<string> data;
+        data.push_back("");
+        
+        for (char c : S) {
+            int n = data.size();
+            for (int i = 0; i < n; i++) {
+                string s = data[i];
+                s += c;
+                if (mp.find(s) != mp.end()) continue;
+                data.push_back(s);
+                mp[s] = true;
+                ++ans;
+                if (ans > mod) ans %= mod;
+            }
+        }
+
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //如果是暴力的解法,需要枚举出所有的可能
+    //时间复杂度为o(2^n)
+    //空间复杂度也为o(2^n)
+    //有乘法时，需要用long来保存值, 防止一处
+    //空间复杂度为o(n), 时间复杂度为o(n)
+    int distinctSubseqII(string S) {
+        int flag[26];
+        memset(flag, -1, sizeof(flag));
+        
+        int ans = 0;
+        int n = S.length();
+        vector<long> dp(n + 1, 0);
+        int mod = 1e9 + 7;
+        for (int i = 0; i < n; i++) {
+            int idx = S[i] - 'a';
+            if (flag[idx] == -1)  {
+                dp[i + 1] = (1 + 2 * dp[i]) % mod;
+            } else {
+                //防止出现负数
+                dp[i + 1] = (2 * dp[i] - dp[flag[idx] - 1] + mod) % mod;
+            }
+            
+            flag[idx] = i + 1;
+        }
+        
+        return dp[n] % mod;
+    }
+};
