@@ -1,0 +1,53 @@
+class Solution {
+public:
+    //可以倒着来标记
+    //?等于任何元素
+    vector<int> movesToStamp(string stamp, string target) {
+        int lenT = target.length();
+        int lenS = stamp.length();
+        vector<int> ans;
+        vector<int> visit(lenT, 0);
+        while (!isEnd(target)) {
+            //cout<<target<<endl;
+            bool needGoOn = false;
+            for (int i = 0; i + lenS - 1 < lenT; i++) {
+                if (visit[i]) continue;
+                
+                bool find = false;
+                for (int j = 0; j < lenS; j++) {
+                    if (target[i + j] == '?' || target[i + j] == stamp[j]) {
+                        if (j == lenS - 1) find = true;
+                    } else {
+                        break;
+                    }
+                }
+                
+                if (find) {
+                    ans.push_back(i);
+                    visit[i] = 1;
+                    needGoOn = true;
+                    for (int k = i; k < i + lenS; k++) {
+                        target[k] = '?';
+                    }
+                }
+            }
+            
+            if (!needGoOn) break;
+        }
+        
+        if (isEnd(target)) {
+            reverse(ans.begin(), ans.end());
+            return ans;
+        }
+        
+        return vector<int>();
+    }
+    
+    bool isEnd(string target) {
+        for (char c : target) {
+            if (c != '?') return false;
+        }
+        
+        return true;
+    }
+};
