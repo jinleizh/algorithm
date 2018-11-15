@@ -21,3 +21,35 @@ public:
         return prev;
     }
 };
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //recursively
+    ListNode* reverseList(ListNode* head) {
+        if (nullptr == head) return nullptr;
+        
+        pair<ListNode*, ListNode*> ret = helper(head);
+        return ret.first;
+    }
+    
+    pair<ListNode*, ListNode*> helper(ListNode* head) {
+        pair<ListNode*, ListNode*> ans(head, head);
+        if (nullptr == head->next) return ans;
+        
+        pair<ListNode*, ListNode*> ret = helper(head->next);
+        ret.second->next = head;
+        head->next = nullptr;
+        ans.second = head;
+        ans.first = ret.first;
+        return ans;
+    }
+};
