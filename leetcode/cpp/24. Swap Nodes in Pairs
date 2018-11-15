@@ -28,3 +28,57 @@ public:
         return dummy->next;
     }
 };
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //递归
+    ListNode* swapPairs(ListNode* head) {
+        if (head == nullptr || head->next == nullptr) return head;
+        
+        ListNode* ret = swapPairs(head->next->next);
+        ListNode* ans = head->next;
+        head->next = ret;
+        ans->next = head;
+        return ans;
+    }
+};
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //a b c
+    //0 1 2 3 4 null
+    
+    ListNode* swapPairs(ListNode* head) {
+        ListNode dummy(0);
+        dummy.next = head;
+        ListNode* cur = &dummy;
+        while (cur != nullptr && cur->next != nullptr && cur->next->next != nullptr) {
+            ListNode* a = cur;
+            ListNode* b = cur->next;
+            ListNode* c = cur->next->next;
+            
+            a->next = c;
+            b->next = c->next;
+            c->next = b;
+            cur = b;
+        }
+        
+        return dummy.next;
+    }
+};
