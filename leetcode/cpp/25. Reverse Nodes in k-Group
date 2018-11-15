@@ -130,3 +130,57 @@ public:
         return prevHead->next;
     }
 };
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //recursive 
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        //find first K values
+        ListNode* node = getTheKthPointer(head, k);
+        if (node == nullptr) return head;
+        
+        //reverse first K
+        ListNode* ret = reverseKGroup(node->next, k);
+        
+        ListNode* newHead = reverse(head, k);
+        
+        head->next = ret;
+        
+        return newHead;
+    }
+    
+    ListNode* reverse(ListNode* head, int k) {
+        int cnt = 1;
+        ListNode* prev = nullptr;
+        ListNode* cur = head;
+        while (cnt <= k) {
+            ListNode* tmp = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = tmp;
+            ++cnt;
+        }
+        
+        return prev;
+    }
+    
+    ListNode* getTheKthPointer(ListNode* head, int k) {
+        int cnt = 1;
+        ListNode* cur = head;
+        while (cur) {
+            if (cnt == k) return cur;
+            cur = cur->next;
+            ++cnt;
+        }
+        
+        return nullptr;
+    }
+};
