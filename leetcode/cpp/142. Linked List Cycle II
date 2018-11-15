@@ -8,33 +8,36 @@
  */
 class Solution {
 public:
+    //s, l, r
+    //2(s + l) = s + l + nr
+    //s + l = nr
+    //s = (n - 1)r + r - l
     ListNode *detectCycle(ListNode *head) {
-        if(NULL == head) return NULL;
-		
-		ListNode *slow = head;
-		ListNode *fast = head->next;
-		
-		bool hasCycle = false;
-		while(NULL != fast && NULL != fast->next) {
-			fast = fast->next->next;
-			slow = slow->next;
-			if(slow == fast) {
-				hasCycle = true;
-				break;
-			}
-		}
-		
-		if(hasCycle) {
-			slow = head;
-			fast = fast->next;
-			while(slow != fast) {
-				slow = slow->next;
-				fast = fast->next;
-			}
-			
-			return slow;
-		} 
-			
-		return NULL;    
+        ListNode* pos = hasCycle(head);
+        if (nullptr == pos) return pos;
+        
+        ListNode* slow = head;
+        ListNode* fast = pos;
+        while (slow != fast) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+        
+        return slow;
+    }
+    
+    ListNode* hasCycle(ListNode* head) {
+        if (head == nullptr || head->next == nullptr) return nullptr;
+        
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while (fast && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+            
+            if (slow == fast) return slow;
+        }
+        
+        return nullptr;
     }
 };
