@@ -1,0 +1,53 @@
+class Solution {
+public:
+    unordered_map<string, int> mp;
+    int bagOfTokensScore(vector<int>& tokens, int P) {
+        int n = tokens.size();
+        sort(tokens.begin(), tokens.end());
+        return dfs(tokens, 0, n - 1, P);
+    }
+    
+    int dfs(vector<int>& tokens, int left, int right, int P) {
+        string key = to_string(left) + "_" + to_string(right) + "_" + to_string(P);
+        if (mp.find(key) != mp.end()) return mp[key];
+        int ans = 0;
+        if (left > right) return 0; 
+        if (P < tokens[left]) return 0;
+        
+        int tmp = 1 + dfs(tokens, left + 1, right, P - tokens[left]);
+        int tmp2 = dfs(tokens, left + 1, right - 1, P - tokens[left] + tokens[right]);
+        
+        ans = tmp > tmp2 ? tmp : tmp2;
+        mp[key] = ans;
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int bagOfTokensScore(vector<int>& tokens, int P) {
+        sort(tokens.begin(), tokens.end());
+        int n = tokens.size();
+        int i = 0, j = n - 1;
+        int points = 0, ans = 0;
+        while (i <= j) {
+            //cout<<i<<" "<<j<<endl;
+            if (P >= tokens[i]) {
+                P -= tokens[i];
+                points++;
+                //cout<<"points="<<points<<endl;
+                ans = max(ans, points);
+                ++i;
+            } else if (points > 0) {
+                points--;
+                P += tokens[j];
+                //cout<<"points="<<points<<endl;
+                --j;
+            } else {
+                break;
+            }
+        }
+        
+        return ans;
+    }
+};
