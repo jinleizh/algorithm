@@ -1,0 +1,34 @@
+class Solution {
+public:
+    //求连通的个数，交集等使用并查集
+    unordered_map<int, int> root;
+    int island = 0;
+    int removeStones(vector<vector<int>>& stones) {
+        for (auto& it : stones) {
+            uni(it[0], ~it[1]);
+        }
+        
+        return stones.size() - island;
+    }
+    
+    int find(int x) {
+        if (root.find(x) == root.end()) {
+            root[x] = x;
+            ++island;
+        }
+        
+        //需要找到最终的父亲节点
+        if (root[x] != x)  root[x] = find(root[x]);
+        
+        return root[x];
+    }
+    
+    void uni(int x, int y) {
+        x = find(x);
+        y = find(y);
+        if (x != y) {
+            root[y] = x;
+            --island;
+        }
+    }
+};
