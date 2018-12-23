@@ -1,0 +1,182 @@
+class Solution {
+public:
+    //找左边的最小值
+    //找右边的最大值
+    //最优解左侧的值 都比 右侧的值大
+    //找出所有的最小值, 两两比较
+    int maxWidthRamp(vector<int>& A) {
+        int n = A.size();
+        vector<int> minVec, maxVec;
+        
+        int minV = INT_MAX;
+        for (int i = 0; i < n; i++) {
+            if (A[i] < minV) {
+                minV = A[i];
+                minVec.push_back(i);
+            }
+        }
+        
+        int maxV = INT_MIN;
+        for (int i = n - 1; i >=0; i--) {
+            if (A[i] > maxV) {
+                maxV = A[i];
+                maxVec.push_back(i);
+            }
+        }
+        
+        //for loop (n^2)
+        int ans = 0;
+        for (int i = 0; i < minVec.size(); i++) {
+            int tmpMin = A[minVec[i]];
+            for (int j = 0; j < maxVec.size(); j++) {
+                int tmpMax = A[maxVec[j]];
+                if (tmpMin <= tmpMax) {
+                    ans = max(ans, maxVec[j] - minVec[i]);
+                    break;
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
+
+
+class Solution {
+public:
+    typedef pair<int, int> pii;
+    int maxWidthRamp(vector<int>& A) {
+        // 
+        vector<pii> data;
+        for (int i = 0; i < A.size(); i++) {
+            pii p(A[i], i);
+            data.push_back(p);
+        }
+        
+        sort(data.begin(), data.end());
+        
+        int ans = 0;
+        int curMin = data[0].second;
+        for (int i = 1; i < data.size(); i++) {
+            ans = max(ans, data[i].second - curMin);
+            curMin = min(curMin, data[i].second);
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    //维护下标索引
+    //利用先后顺序, 当前坐标 - 最小坐标
+    int left[50001];
+    int right[50001];
+    int maxWidthRamp(vector<int>& A) {
+        int n = A.size();
+        memset(left, -1, sizeof(left));
+        memset(right, -1, sizeof(right));
+        
+        int maxV = INT_MIN;
+        for (int i = 0; i < n; i++) {
+            if (left[A[i]] == -1) {
+                left[A[i]] = i;
+            }
+            
+            right[A[i]] = i;
+            maxV = max(maxV, A[i]);
+        }
+        
+        int curLeft = INT_MAX;
+        int ans = 0;
+        for (int val = 0; val <= maxV; val++) {
+            if (-1 == left[val]) continue;
+            //cout<<"val="<<val<<" left="<<left[val]<<endl;
+            curLeft = min(curLeft, left[val]);
+            //cout<<"curLeft="<<curLeft<<" right="<<right[val]<<endl;
+            ans = max(ans, right[val] - curLeft);
+        }
+        
+        return ans;
+    }
+};'
+
+
+class Solution {
+public:
+    //stack解法要注意, 当已经在左侧形成有序集合后，是可以利用二分查找优化时间复杂度
+    //同时, 可以利用有序性，移动下标和操作栈
+    int maxWidthRamp(vector<int>& A) {
+        stack<int> st;
+        int n = A.size();
+        for (int i = 0; i < n; i++) {
+            if (st.empty() || A[st.top()] > A[i]) {
+                st.push(i);
+            }
+        }
+        
+        int ans = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            while (!st.empty() && A[i] >= A[st.top()]) {
+                ans = max(ans, i - st.top());
+                st.pop();
+            }
+        }
+        
+        return ans;
+    }
+};
+
+
+//fenwick tree 可以用于索引查询
+//比当前元素大或者小的元素的 最远的下标
+//这种问题同样可以使用decreasing stack 来解决， 或者利用排序的性质，采用贪心，例如股票价格的方法去求解
+//或者可以通过剪枝，通过缩小问题的范围求解
+class Solution {
+public:
+    //fenwick tree
+    //通常是用来计算前缀和，可以局部更新fenwick tree
+    //这样当每次数组元素更新时，可以避免重新计算所有的前缀和
+    //现在根据题意, 如果我们可以得到当前元素右侧，比当前值大的元素的最远下标,
+    //那么我们就可以求出当前元素所能形成的最大的区间大小
+    int fwTree[50001];
+    int maxWidthRamp(vector<int>& A) {
+        //初始化
+        memset(fwTree, 60000, sizeof(fwTree));
+        
+        //查比当前值大的元素的最远位置
+        int n = A.size();
+        int ans = 0;
+        // for (int i = n - 1; i >= 0; i--) {
+        //     int rightPos = get(A[i] + 1);
+        //     ans = max(ans, rightPos - i);
+        //     add(A[i] + 1, i);
+        // }
+        
+        for (int i = 0; i < n; i++) {
+            int leftPos = get(A[i] + 1);
+            ans = max(ans, i - leftPos);
+            add(A[i] + 1, i);
+        }
+        
+        return ans;
+    }
+    
+    void add(int x, int val) {
+        while (x <= 50001) {
+            //cout<<1<<endl;
+            fwTree[x] = min(fwTree[x], val);
+            x += x & (-x);
+        }
+    }
+    
+    int get(int x) {
+        int ans = INT_MAX;
+        while (x) {
+            //cout<<2<<endl;
+            ans = min(ans, fwTree[x]);
+            x -= x & (-x);
+        }
+        return ans;
+    }
+};
