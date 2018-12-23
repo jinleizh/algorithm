@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int repeatedNTimes(vector<int>& A) {
+        unordered_map<int, int> dp;
+        int ans = -1;
+        for (int d : A) {
+            if (dp.find(d) == dp.end()) {
+                dp[d] = 1;
+            } else {
+                ans = d;
+                break;
+            }
+        }
+        return ans;
+    }
+};
