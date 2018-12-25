@@ -80,3 +80,82 @@ public:
     }
 };
 
+class Node {
+    public:
+        int x;
+        int y;
+        Node(int a, int b) : x(a), y(b) {
+            
+        }
+    
+        bool operator < (const Node& other) const {
+            return x < other.x || ( x == other.x && y < other.y);
+        }
+};
+
+class Solution {
+public:
+    //about my thinking process
+    double minAreaFreeRect(vector<vector<int>>& points) {
+        map<Node, bool> data;
+        for (auto& v : points) {
+            Node node(v[0], v[1]);
+            data[node] = true;
+        }
+        
+        //p1 p2 p3 p4
+        double ans = 1e9;
+        int n = points.size();
+        for (int i = 0; i < n; i++) {
+            int px1 = points[i][0];
+            int py1 = points[i][1];
+            Node nx1(px1, py1);
+            data[nx1] = false;
+            output(px1, py1, 1);
+            for (int j = 0; j < n; j++) {
+                if (j == i) continue;
+                int px2 = points[j][0];
+                int py2 = points[j][1];
+                Node nx2(px2, py2);
+                data[nx2] = false;
+                output(px2, py2, 2);
+                for (int k = 0; k < n; k++) {
+                    if (k == i || k == j) continue;
+                    int px3 = points[k][0];
+                    int py3 = points[k][1];
+                    Node nx3(px3, py3);
+                    data[nx3] = false;
+                    int px4 = px2 + px3 - px1;
+                    int py4 = py2 + py3 - py1;
+                    output(px3, py3, 3);
+                    Node target(px4, py4);
+                    if (data.find(target) != data.end() && data[target] == true && check(nx1, nx2, nx3, target)) {
+                        //cout<<"x4====y4 begin"<<endl;
+                        //cout<<data[target]<<endl;
+                        output(px4, py4, 4);
+                        //cout<<"x4====y4 end"<<endl;
+                        double area = sqrt(pow(px1 - px2, 2) + pow(py1 - py2, 2)) * 
+                            sqrt(pow(px1 - px3, 2) + pow(py1 - py3, 2));
+                        ans = min(ans, area);
+                    }
+                    
+                    data[nx3] = true;
+                }
+                data[nx2] = true;
+            }
+            data[nx1] = true;
+        }
+        
+        if (1e9 == ans) ans = 0;
+        
+        return ans;
+    }
+    
+    void output(int x, int y, int id) {
+        //cout<<"px"<<id<<" x="<<x<<" y="<<y<<endl;
+    }
+    
+    bool check(Node& n1, Node& n2, Node& n3, Node& n4) {
+        return pow(n1.x - n4.x, 2) + pow(n1.y - n4.y, 2) == pow(n2.x - n3.x, 2) + pow(n2.y - n3.y, 2);
+    }
+};
