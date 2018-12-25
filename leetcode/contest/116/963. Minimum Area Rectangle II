@@ -1,0 +1,82 @@
+class Node {
+    public:
+        double x;
+        double y;
+        Node(double a, double b) : x(a), y(b) {
+            
+        }
+};
+
+class Solution {
+public:
+    //矩形的特点
+    //两条对角线长度相同, 中心点相同
+    //所以根据对角线长度和中心点位置，可以将边进行归类,
+    //归类的时间复杂度为O(n^2)
+    //归完类之后, 一共有n^2/2条边, 其中每一类最多有(n/2)条边，因为我们只有n个点
+    //所以单个归类的时间复杂度是o(n^2)
+    double minAreaFreeRect(vector<vector<int>>& points) {
+        //build map
+        unordered_map<string, vector<vector<Node>>> data;
+        int n = points.size();
+        for (int i = 0; i < n; i++) {
+            Node left(points[i][0], points[i][1]);
+            for (int j = i + 1; j < n; j++) {
+                Node right(points[j][0], points[j][1]);
+                double len = getLen(left, right); 
+                Node center = getCenter(left, right);
+                string key = double2str(len) + " " + double2str(center.x) + " " + double2str(center.y);
+                vector<Node> tmp = {left, right};
+                data[key].push_back(tmp);
+            }
+        }
+        
+        //{key: [[node1, node2], [node1, node2], [node1, node2]]}
+        //get min area
+        double ans = 1e9;
+        for (auto& it : data) {
+            string key = it.first;
+            vector<vector<Node>> nodeList = it.second;
+            int sz = nodeList.size();
+            for (int i = 0; i < sz; i++) {
+                Node x = nodeList[i][0];
+                Node y = nodeList[i][1];
+                for (int j = i + 1; j < sz; j++) {
+                    Node z = nodeList[j][0];
+                    double area = getArea(x, y, z);
+                    ans = min(ans, area);
+                }
+            }
+        }
+        
+        if (1e9 == ans) ans = 0;
+        return ans;
+    }
+    
+    double getLen(const Node& a, const Node& b) {
+        return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+    }
+    
+    Node getCenter(const Node& a, const Node& b) {
+        return Node((a.x + b.x) / 2, (a.y + b.y) / 2);
+    }
+    
+    string double2str(double input) {
+        stringstream ss;
+        ss << input;
+        string ans;
+        ss >> ans;
+        return ans;
+    }
+    
+    double getArea(const Node& x, const Node& y, const Node& z) {
+        //width
+        double width = getLen(x, z);
+        
+        //height
+        double height = getLen(y, z);
+        
+        return abs(width * height);
+    }
+};
+
