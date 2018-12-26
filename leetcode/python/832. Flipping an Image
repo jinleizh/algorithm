@@ -1,0 +1,33 @@
+class Solution:
+    def flipAndInvertImage(self, A):
+        """
+        :type A: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        for row in A:
+            self.process(row)
+            
+        return A
+    
+    def process(self, row):
+        self.invert(row)
+        self.update(row)
+        
+    def invert(self, row):
+        for k, v in enumerate(row):
+            if v:
+                row[k] = 0
+            else:
+                row[k] = 1
+    
+    def update(self, row):
+        n = len(row)
+        l = 0
+        r = n - 1
+        while l < r:
+            tmp = row[l]
+            row[l] = row[r]
+            row[r] = tmp
+            l = l + 1
+            r = r - 1
+        
