@@ -1,0 +1,39 @@
+class Solution {
+public:
+    //dfs
+    //dfs + 3
+    //dfs - 3
+    //level == n output
+    vector<int> ans;
+    vector<int> numsSameConsecDiff(int N, int K) {
+        int start = 0;
+        if (N > 1) {
+            start = 1;
+        }
+        
+        for (int i = start; i <= 9; i++) {
+            dfs(N, K, i, i, 1);
+        }
+        
+        set<int> tmp(ans.begin(), ans.end());
+        vector<int> ret(tmp.begin(), tmp.end());
+        return ret;
+    }
+    
+    void dfs(int N, int K, int prev, int tmp, int level) {
+        if (level == N) {
+            ans.push_back(tmp);
+            return;
+        }
+        
+        int val = prev + K;
+        if (val <= 9) {
+            dfs(N, K, val, tmp * 10 + val, level + 1);
+        }
+        
+        val = prev - K;
+        if (val >= 0) {
+            dfs(N, K, val, tmp * 10 + val, level + 1);
+        }
+    }
+};
