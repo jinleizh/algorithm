@@ -1,0 +1,209 @@
+string lowerStr(string str) {
+    string ans = "";
+    for (char c : str) {
+        ans += tolower(c);
+    }
+    return ans;
+}
+
+class TrieNode {
+    public:
+        TrieNode* children[26];
+        char c;
+        string src;
+        bool isWord;
+    
+        TrieNode(char c) {
+            isWord = false;
+            for (int i = 0; i < 26; i++) {
+                children[i] = nullptr;
+            }
+            this->c = c;
+            src = "";
+        }
+};
+
+class Tree {
+    public:
+        TrieNode* root;
+        Tree(TrieNode* root) {
+            this->root = root;
+        }
+    
+        void insert(string str) {
+            string tmp = lowerStr(str);
+            TrieNode* head = root;
+            for (char c : tmp) {
+                if (head->children[c - 'a'] == nullptr) {
+                    head->children[c - 'a'] = new TrieNode(c);
+                }
+                
+                head = head->children[c - 'a'];
+            }
+            
+            //first insert
+            if (!head->isWord) {
+                head->isWord = true;
+                head->src = str;
+            }
+        }
+    
+        string search(string str) {
+            TrieNode* head = root;
+            for (char c : lowerStr(str)) {
+                if (head->children[c - 'a'] == nullptr) return "";
+                head = head->children[c - 'a'];
+            }
+            
+            if (!head->isWord) return "";
+            return head->src;
+        }
+};
+
+class Solution {
+public:
+    //Trie tree
+    //52 every level
+    //
+    vector<string> ans;
+    vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        //build map
+        unordered_map<string, bool> mp;
+        for (string s : wordlist) {
+            mp[s] = true;
+        }
+        
+        //build trie tree
+        TrieNode* root = new TrieNode('#');
+        Tree* tree = new Tree(root);
+        for (string word : wordlist) {
+            tree->insert(word);
+        }
+        
+        for (string q : queries) {
+            if (mp.find(q) != mp.end()) {
+                ans.push_back(q);
+            } else {
+                string src = tree->search(q);
+                if (!src.empty()) {
+                    ans.push_back(src);
+                } else {
+                    string left = lowerStr(q);
+                    bool find = false;
+                    for (string word : wordlist) {
+                        string right = lowerStr(word);
+                        int lenA = left.length();
+                        int lenB = right.length();
+                        if (lenA != lenB) {
+                            continue;
+                        } else {
+                            int i = 0;
+                            //cout<<left<<" "<<right<<endl;
+                            for (; i < lenA; i++) {
+                                if (!isSame(left[i], right[i])) {
+                                    break;
+                                }
+                            }
+
+                            if (i == lenA) {
+                                ans.push_back(word);
+                                find = true;
+                            }
+                        }
+
+                        if (find) break;
+                    }
+                    
+                    if (!find) {
+                        ans.push_back("");
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+    
+    bool isSame(char c, char d) {
+        if (c == d) return true;
+        unordered_map<char, bool> mp;
+        mp['a'] = 1;
+        mp['e'] = 1;
+        mp['i'] = 1;
+        mp['o'] = 1;
+        mp['u'] = 1;
+        
+        return (mp.find(c) != mp.end()) && (mp.find(d) != mp.end());
+    }
+};
+
+
+class Solution {
+public:
+    //build uniq map
+    //build cap map
+    //build vow map
+    //change aeiou to '#'
+    string lowerStr(string str) {
+        string ans = "";
+        for (char c : str) {
+            c = tolower(c);
+            ans += c;
+        }
+        return ans;
+    }
+    
+    string update(string str) {
+        string ans = "";
+        str = lowerStr(str);
+        for (char c : str) {
+            if (c == 'a' || c == 'i' || c == 'e' || c == 'o' || c == 'u') {
+                c = '#';
+            }
+            ans += c;
+        }
+        return ans;
+    }
+    
+    vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        unordered_map<string, bool> uniq;
+        for (string s : wordlist) {
+            uniq[s] = true;
+        }
+        
+        unordered_map<string, string> cap;
+        for (string s : wordlist) {
+            string tmp = lowerStr(s);
+            if (cap.find(tmp) == cap.end()) {
+                cap[tmp] = s;
+            }
+        }
+        
+        unordered_map<string, string> vow;
+        for (string s : wordlist) {
+            string tmp = update(s);
+            if (vow.find(tmp) == vow.end()) {
+                vow[tmp] = s;
+            }
+        }
+        
+        vector<string> ans;
+        for (string s : queries) {
+            if (uniq.find(s) != uniq.end()) {
+                ans.push_back(s);
+            } else {
+                s = lowerStr(s);
+                if (cap.find(s) != cap.end()) {
+                    ans.push_back(cap[s]);
+                } else {
+                    s = update(s);
+                    if (vow.find(s) != vow.end()) {
+                        ans.push_back(vow[s]);
+                    } else {
+                        ans.push_back("");
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
