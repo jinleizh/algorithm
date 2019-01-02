@@ -1,0 +1,19 @@
+class Solution(object):
+    def transpose(self, A):
+        """
+        :type A: List[List[int]]
+        :rtype: List[List[int]]
+        """
+#         if A is None:
+#             return None
+        
+#         B = []
+#         row = len(A)
+#         col = len(A[0])
+#         for j in range(col):
+#             B.append([])
+#             for i in range(row):
+#                 B[j].append(A[i][j])
+#         return B
+        # return zip(*A)
+        return [ [x[i] for x in A] for i in range(len(A[0]))]
