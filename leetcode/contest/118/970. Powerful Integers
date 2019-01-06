@@ -1,0 +1,106 @@
+class Solution {
+public:
+    set<int> ans;
+    vector<int> powerfulIntegers(int x, int y, int bound) {
+        vector<int> ret;
+        if (bound == 0) {
+            if (x == 0 && y == 0) {
+                ret.push_back(0);
+            }
+            return ret;
+        }
+        
+        if (x == 0 && y == 0) {
+            ret.push_back(0);
+            return ret;
+        }
+        
+        if (x == 1 && y == 1) {
+            if (bound < 2) return ret;
+            ret.push_back(2);
+            return ret;
+        }
+        
+        int upX = 0, upY = 0;
+        if (x == 1) {
+            upX = 0;
+            upY = getUp(y, bound);
+        } else if (y == 1) {
+            upY = 0;
+            upX = getUp(x, bound);
+        } else {
+            upX = getUp(x, bound);
+            upY = getUp(y, bound);
+        }
+        
+        //cout<<upX<<" "<<upY<<endl;
+        getAns(x, y, upX, upY, bound);
+        vector<int> result(ans.begin(), ans.end());
+        return result;
+    }
+    
+    void getAns(int x, int y, int upX, int upY, int bound) {
+        for (int i = 0; i <= upX; i++) {
+            for (int j = 0; j <= upY; j++) {
+                int tmp = 0;
+                if (x != 0) {
+                    tmp += pow(x, i);
+                }
+
+                if (y != 0) {
+                    tmp += pow(y, j);
+                }
+                
+                if (tmp <= bound) {
+                    ans.insert(tmp);
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+    
+    int getUp(int x, int bound) {
+        int ans = 0;
+        if (0 == x) return ans;
+        while (pow(x, ans) < bound) {
+            ++ans;
+        }
+        
+        return ans;
+    }
+    
+};
+
+
+class Solution {
+public:
+    vector<int> powerfulIntegers(int x, int y, int bound) {
+        vector<int> left = {1};
+        vector<int> right = {1};
+        
+        set<int> st;
+        if (x > 1) {
+            for (int p = x; p <= bound; p *= x) {
+                left.push_back(p);
+            }
+        }
+        
+        if (y > 1) {
+            for (int p = y; p <= bound; p *= y) {
+                right.push_back(p);
+            }
+        }
+        
+        for (int x : left) {
+            for (int y : right) {
+                if (x + y <= bound) {
+                    st.insert(x + y);
+                }
+            }
+        }
+        
+        vector<int> ans(st.begin(), st.end());
+        return ans;
+    }
+};
