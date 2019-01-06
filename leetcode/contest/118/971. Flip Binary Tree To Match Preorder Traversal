@@ -1,0 +1,150 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+class Node {
+    public:
+        TreeNode* parent;
+        int val;
+
+        Node(TreeNode* parent, int val) : parent(parent), val(val) {
+
+        }
+};
+
+class Solution {
+public:
+    //贪心求解
+    vector<Node> preOrder;
+    vector<int> flipMatchVoyage(TreeNode* root, vector<int>& voyage) {
+        vector<int> ans;
+        int curPos = 0;
+        bool next = true;
+        bool swaped = false;
+        while (next) {
+            next = false;
+            preOrder.clear();
+            travel(root, nullptr);
+            for (int i = curPos; i < preOrder.size(); i++) {
+                if (preOrder[i].val != voyage[i]) {
+                    if (swaped) {
+                        vector<int> result = {-1};
+                        return result;
+                    }
+                    
+                    curPos = i;
+                    next = true;
+                    TreeNode* root = preOrder[i].parent;
+                    if (nullptr != root) {
+                        TreeNode* tmp = root->left;
+                        root->left = root->right;
+                        root->right = tmp;
+                        ans.push_back(root->val);
+                        swaped = true;
+                    } else {
+                        vector<int> result = {-1};
+                        return result;
+                    }
+                    break;
+                } else {
+                    swaped = false;
+                }
+            }
+        }
+        return ans;
+    }
+    
+    void travel(TreeNode* root, TreeNode* parent) {
+        if (nullptr == root) return;
+        Node node(parent, root->val);
+        preOrder.push_back(node);
+        travel(root->left, root);
+        travel(root->right, root);
+    }
+};
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //先序遍历注意别和bfs搞混了
+    //递归求解子问题
+    vector<int> flipMatchVoyage(TreeNode* root, vector<int>& voyage) {
+        vector<int> ans;
+        if (nullptr == root) return ans;
+        
+        if (root->val != voyage[0]) {
+            vector<int> ret = {-1};
+            return ret;
+        }
+        
+        bool needSwap = false;
+        int n = voyage.size();
+        vector<int> leftAns, rightAns;
+        cout<<root->val<<endl;
+        if (root->left) {
+            int leftSize = getSize(root->left);
+            //cout<<root->left->val<<" "<<voyage[1]<<endl;
+            if (root->left->val == voyage[1]) {
+                vector<int> leftVec = getSubVec(voyage, 1, leftSize);
+                leftAns = flipMatchVoyage(root->left, leftVec);
+            } else {
+                needSwap = true;
+                vector<int> leftVec = getSubVec(voyage, n - leftSize, n - 1);
+                leftAns = flipMatchVoyage(root->left, leftVec);
+            }
+            //cout<<leftSize<<endl;
+        }
+        
+        if (root->right) {
+            int rightSize = getSize(root->right);
+            if (root->left != nullptr && root->right->val == voyage[1]) {
+                needSwap = true;
+                vector<int> rightVec = getSubVec(voyage, 1, rightSize);
+                rightAns = flipMatchVoyage(root->right, rightVec);
+            } else {
+                vector<int> rightVec = getSubVec(voyage, n - rightSize, n - 1);
+                rightAns = flipMatchVoyage(root->right, rightVec);
+            }
+        }
+        
+        if (needSwap) {
+            ans.push_back(root->val);
+        }
+        
+        vector<int> bad = {-1};
+        if (leftAns == bad || rightAns == bad) return bad;
+        
+        ans.insert(ans.end(), leftAns.begin(), leftAns.end());
+        ans.insert(ans.end(), rightAns.begin(), rightAns.end());
+        return ans;
+    }
+    
+    int getSize(TreeNode* root) {
+        if (nullptr == root) return 0;
+        int leftSize = getSize(root->left);
+        int rightSize = getSize(root->right);
+        return 1 + leftSize + rightSize;
+    }
+    
+    vector<int> getSubVec(vector<int>& A, int l, int r) {
+        vector<int> ans;
+        for (int i = l; i <= r; i++) {
+            ans.push_back(A[i]);
+        }
+        return ans;
+    }
+};
