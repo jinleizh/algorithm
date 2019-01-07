@@ -1,0 +1,35 @@
+class Solution {
+public:
+    unordered_map<string, bool> mp;
+    int numSpecialEquivGroups(vector<string>& A) {
+        int ans = 0;
+        if (A.empty()) return ans;
+        
+        for (string s : A) {
+            int len = s.length();
+            string key = "";
+            vector<char> evens, odds;
+            for (int i = 0; i < len; i++) {
+                if (i % 2) {
+                    odds.push_back(s[i]);
+                } else {
+                    evens.push_back(s[i]);
+                }
+            }
+            
+            sort(evens.begin(), evens.end());
+            sort(odds.begin(), odds.end());
+            for (char c : evens) {
+                key += c;
+            }
+            
+            for (char c : odds) {
+                key += c;
+            }
+            
+            mp[key] = true;
+        }
+        
+        return mp.size();
+    }
+};
