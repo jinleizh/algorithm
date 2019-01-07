@@ -1,0 +1,58 @@
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def __init__(self):
+        self.leafA = []
+        self.leafB = []
+        
+    def leafSimilar(self, root1, root2):
+        """
+        :type root1: TreeNode
+        :type root2: TreeNode
+        :rtype: bool
+        """
+        self.preOrder(root1, self.leafA)
+        self.preOrder(root2, self.leafB)
+        return self.leafA == self.leafB
+        
+    
+    def preOrder(self, root, leafs):
+        if root is None:
+            return
+        
+        if root.left is None and root.right is None:
+            leafs.append(root.val)
+            
+        self.preOrder(root.left, leafs)
+        self.preOrder(root.right, leafs)
+        
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def leafSimilar(self, root1, root2):
+        """
+        :type root1: TreeNode
+        :type root2: TreeNode
+        :rtype: bool
+        """
+        def dfs(root):
+            if root is None:
+                return
+            
+            if not root.left and not root.right:
+                yield root.val
+                
+            yield from dfs(root.left)
+            yield from dfs(root.right)
+            
+        return list(dfs(root1)) == list(dfs(root2))
