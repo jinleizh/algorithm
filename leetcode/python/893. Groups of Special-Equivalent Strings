@@ -33,3 +33,19 @@ public:
         return mp.size();
     }
 };
+
+
+class Solution(object):
+    def numSpecialEquivGroups(self, A):
+        """
+        :type A: List[str]
+        :rtype: int
+        """
+        def count(word):
+            ans = [0] * 52
+            for i, letter in enumerate(word):
+                ans[ord(letter) - ord('a') + (i % 2) * 26] += 1
+            
+            return tuple(ans)
+        
+        return len({count(s) for s in A})
