@@ -1,0 +1,98 @@
+"""
+# Definition for a Node.
+class Node(object):
+    def __init__(self, val, children):
+        self.val = val
+        self.children = children
+"""
+class Solution(object):
+    def maxDepth(self, root):
+        """
+        :type root: Node
+        :rtype: int
+        """
+        if root is None:
+            return 0
+        
+        ans = 0
+        for child in root.children:
+            ans = max(ans, self.maxDepth(child))
+        
+        return 1 + ans
+    
+    
+"""
+# Definition for a Node.
+class Node(object):
+    def __init__(self, val, children):
+        self.val = val
+        self.children = children
+"""
+class Solution(object):
+    def maxDepth(self, root):
+        """
+        :type root: Node
+        :rtype: int
+        """
+        if root is None:
+            return 0
+        q = collections.deque([root, None])
+        ans = 0
+        while q:
+            node = q.popleft()
+            if node is None:
+                ans += 1
+                if q:
+                    q.append(None)
+            else:
+                q.extend(node.children)
+        return ans
+        
+ """
+# Definition for a Node.
+class Node(object):
+    def __init__(self, val, children):
+        self.val = val
+        self.children = children
+"""
+class Solution(object):
+    def maxDepth(self, root):
+        """
+        :type root: Node
+        :rtype: int
+        """
+        # bfs
+        if root is None:
+            return 0
+        
+        q = collections.deque([root])
+        ans = 0
+        while q:
+            sz = len(q)
+            ans = ans + 1
+            for i in range(sz):
+                node = q.popleft()
+                q.extend(node.children)
+        return ans
+        
+"""
+# Definition for a Node.
+class Node(object):
+    def __init__(self, val, children):
+        self.val = val
+        self.children = children
+"""
+class Solution(object):
+    def maxDepth(self, root):
+        """
+        :type root: Node
+        :rtype: int
+        """
+        if root is None:
+            return 0
+        
+        ans = [self.maxDepth(child) for child in root.children]
+        if ans == []:
+            return 1
+        
+        return max(ans) + 1
