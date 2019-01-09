@@ -1,0 +1,28 @@
+class Solution(object):
+    def arrangeCoins(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        ans, a, total = 0, 1, 0
+        total += a
+        while total <= n:
+            ans += 1
+            a += 1
+            total += a
+        return ans
+        
+class Solution(object):
+    def arrangeCoins(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        # x = (-b + (b**2 - 4ac)**0.5) / 2a
+        # x = (-b - (b**2 - 4ac)**0.5) / 2a
+        # x(x + 1) = 2n
+        # x^2 + x - 2n = 0
+        # a = 1 b = 1 c = -2n
+        
+        delta = 1 + 8 * n
+        return int((-1 + delta ** 0.5) / 2);
