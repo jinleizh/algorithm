@@ -1,0 +1,27 @@
+class Solution(object):
+    def backspaceCompare(self, S, T):
+        """
+        :type S: str
+        :type T: str
+        :rtype: bool
+        """
+        data, nextD = [], []
+        def visit(S, data):
+            p = 0
+            for c in S:
+                if c == '#':
+                    p -= 1
+                    p = max(p, 0)
+                else:
+                    if p == len(data):
+                        data.append(c)
+                    else:
+                        data[p] = c
+                        
+                    p += 1
+            return data[0:p]
+        
+        xS = visit(S, data)
+        xT = visit(T, nextD)
+        return xS == xT
+
