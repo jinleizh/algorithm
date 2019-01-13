@@ -1,0 +1,49 @@
+class Solution {
+public:
+    //dp - prefix sum
+    int subarraysDivByK(vector<int>& A, int K) {
+        int ans = 0;
+        unordered_map<int, unordered_map<int, int>> index;
+        int sum = 0;
+        index[0][0] = 1;
+        
+        for (int i = 0; i < A.size(); i++) {           
+            sum += A[i];
+            //cout<<"sum="<<sum<<endl;
+            int mod = (sum % K + K) % K;
+            for (auto& it : index[mod]) {
+                int val = it.first;
+                int cnt = it.second;
+                if ((sum - val) % K == 0) {
+                    ans += cnt;
+                }
+            }
+            
+            if (index[mod].find(sum) == index[mod].end()) {
+                index[mod][sum] = 0;
+            }
+            
+            index[mod][sum] += 1;
+        }
+        
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int subarraysDivByK(vector<int>& A, int K) {
+        unordered_map<int, int> index;
+        int ans = 0;
+        int sum = 0;
+        index[0] = 1;
+        for (int d : A) {
+            sum += d;
+            int mod = (sum % K + K) % K;
+            //cout<<"mod="<<mod<<" "<<sum<<endl;
+            ans += index[mod];
+            index[mod] += 1;
+        }
+        return ans;
+    }
+};
