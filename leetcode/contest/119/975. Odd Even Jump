@@ -1,0 +1,93 @@
+class Solution {
+public:
+    /*
+    dfs
+    如果是odd，需要找到刚好大于它的元素下标
+    如果是even，需要找到刚好小于它的元素下标
+    可能重复计算的地方 - 找到下一个节点可能会重复计算，所以如果可以缓存下来，则可以极大的提高性能
+    time O(n^2)
+    space O(n)
+    */
+    
+    unordered_map<int, int> nextOdd;
+    unordered_map<int, int> nextEven;
+    int oddEvenJumps(vector<int>& A) {
+        int n = A.size();
+        int ans = 0;
+        
+        for (int i = 0; i < n; i++) {
+            int candEven = INT_MIN;
+            int candOdd = INT_MAX;
+            int oddPos = -1, evenPos = -1;
+            for (int j = i + 1; j < n; j++) {
+                //odd
+                if (A[j] >= A[i] && A[j] < candOdd) {
+                    candOdd = A[j];
+                    oddPos = j;
+                }
+                
+                //even
+                if (A[j] <= A[i] && A[j] > candEven) {
+                    candEven = A[j];
+                    evenPos = j;
+                }
+            }
+            
+            nextOdd[i] = oddPos;
+            nextEven[i] = evenPos;
+        }
+        
+        for (int i = 0; i < n; i++) {
+            bool ret = dfs(A, i, true);
+            if (ret) {
+                ans++;
+            }
+        }
+        
+        return ans;
+    }
+    
+    bool dfs(vector<int>& A, int start, bool isOdd) {
+        int n = A.size();
+        if (start == n - 1) return true;
+        
+        int nextStart = 0;
+        if (isOdd) {
+            nextStart = nextOdd[start];
+        } else {
+            nextStart = nextEven[start];
+        }
+        
+        if (nextStart == -1) return false;
+        return dfs(A, nextStart, !isOdd);
+    }
+    
+    int oddFind(vector<int>& A, int start) {
+        int val = A[start];
+        int candVal = INT_MAX;
+        int candPos = -1;
+        for (int i = start + 1; i < A.size(); i++) {
+            if (A[i] >= val && A[i] < candVal) {
+                candVal = A[i];
+                candPos = i;
+            }
+        }
+        
+        return candPos;
+    }
+    
+    int evenFind(vector<int>& A, int start) {
+        int val = A[start];
+        int candPos = -1;
+        int candVal = INT_MIN;
+        for (int i = start + 1; i < A.size(); i++) {
+            if (A[i] <= val && A[i] > candVal) {
+                candVal = A[i];
+                candPos = i;
+            }
+        }
+        
+        return candPos;
+    }
+};
+
