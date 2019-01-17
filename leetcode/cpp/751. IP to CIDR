@@ -1,0 +1,81 @@
+class Solution {
+public:
+    //思路:利用x & (-x) 求出当前可以容纳的ip个数
+    //并计算出当前的掩码位数
+    //如果当前可以满足, 则需要折半，去逼近最小的解
+    //如果不满足,则当前解是最终IP范围的一部分，
+    //需要递增子网掩码, 继续求解当前网段可以容纳的ip个数
+    //即为结果
+    //需要将ip字符串转换为数字，方便计算
+    vector<string> ipToCIDR(string ip, int n) {
+        //edge case
+        vector<string> ans;
+        if (ip.empty() || n <= 0) return ans;
+        
+        vector<string> ipStr = parseIp(ip, '.');
+        long ipVal = ipToLong(ipStr);
+        //cout<<ipVal<<endl;
+        
+        while (n > 0) {
+            int ipNum = ipVal & (-ipVal);
+            while (ipNum > n) {
+                ipNum /= 2;
+            }
+            string ret = getAns(ipVal, ipNum);
+            ans.push_back(ret);
+            //cout<<ret<<endl;
+            ipVal += ipNum;
+            n -= ipNum;
+        }
+        return ans;
+    }
+    
+    long ipToLong(vector<string>& ipVec) {
+        long ret = 0;
+        for (string s : ipVec) {
+            ret = ret * 256 + stoi(s);
+        }
+        return ret;
+    }
+    
+    vector<string> parseIp(string s, char split) {
+        vector<string> ret;
+        string buff = "";
+        for (char c : s) {
+            if (c != split) {
+                buff += c;
+            } else {
+                if (!buff.empty()) {
+                    ret.push_back(buff);
+                    buff = "";
+                }
+            }
+        }
+        
+        if (!buff.empty()) {
+            ret.push_back(buff);
+        }
+        
+        return ret;
+    }
+    
+    string getAns(int ipVal, int ipNum) {
+        int step = 0;
+        while (ipNum) {
+            ipNum /= 2;
+            ++step;
+        }
+        
+        string ans = "";
+        for (int i = 0; i < 4; i++) {            
+            ans = to_string(ipVal & 255) + ans;
+            if (i != 3) {
+                ans = "." + ans;
+            }
+            ipVal >>= 8;
+        }
+        
+        ans += "/" + to_string(33 - step);
+        return ans;
+    }
+};
