@@ -1,0 +1,57 @@
+class Solution {
+public:
+    //dfs求解
+    //四个方向，记录visited
+    int ans = 0, pathLen = 0;
+    int uniquePathsIII(vector<vector<int>>& grid) {
+        int row = grid.size();
+        int col = grid[0].size();
+        
+        int sx = 0, sy = 0;
+        int obs = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == 1) {
+                    sx = i;
+                    sy = j;
+                }
+                
+                if (grid[i][j] == -1) {
+                    obs++;
+                }
+            }
+        }
+        
+        pathLen = row * col - obs;
+        
+        dfs(sx, sy, row, col, true, grid, 1);
+        return ans;
+    }
+    
+    void dfs(int x, int y, int row, int col, bool isStart, vector<vector<int>>& grid, int len) {
+        if (grid[x][y] == 2 && len == pathLen) {
+            ans += 1;
+            return;
+        }
+        
+        if (grid[x][y] == -1) return;
+        
+        int tmp = grid[x][y];
+        grid[x][y] = -1;
+        //4 direction
+        int dx[4] = {0, 0, 1, -1};
+        int dy[4] = {1, -1, 0, 0};
+        for (int k = 0; k < 4; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            if (!isValid(nx, ny, row, col)) continue;
+            dfs(nx, ny, row, col, false, grid, len + 1);
+        }
+        
+        grid[x][y] = tmp;
+    }
+    
+    bool isValid(int x, int y, int row, int col) {
+        return x >= 0 && x < row && y >= 0 && y < col;
+    }
+};
