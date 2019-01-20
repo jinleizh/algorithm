@@ -1,0 +1,57 @@
+class Solution {
+public:
+    //a > b - sign = 1, len = 1
+    //b > c - sign = -1, len = 1
+    //b < c - sign = 1, len++
+    int maxTurbulenceSize(vector<int>& A) {
+        int n = A.size();
+        bool sign = true;
+        int len = 1;
+        int i = 0;
+        int ans = 0;
+        while (i + 1 < n && A[i] == A[i + 1]) i++;
+        if (i + 1 == n) return len;
+        
+        //sign = true when A[i] > A[i + 1]
+        sign = A[i] - A[i + 1] > 0 ? true : false;
+        len = 1;
+        ans = len;
+        while (i + 1 < n) {
+            if (sign) {
+                if (A[i] > A[i + 1]) {
+                    ++len;
+                    ans = max(ans, len);
+                    sign = !sign;
+                } else {
+                    while (i + 1 < n && A[i] == A[i + 1]) {
+                        ++i;
+                    }
+                    if (i + 1 == n) break;
+                    
+                    sign = !sign;
+                    len = 1;
+                    --i;
+                }
+            } else {
+                if (A[i] < A[i + 1]) {
+                    ++len;
+                    ans = max(ans, len);
+                    sign = !sign;
+                } else {
+                    while (i + 1 < n && A[i] == A[i + 1]) {
+                        ++i;
+                    }
+                    if (i + 1 == n) break;
+                    
+                    sign = !sign;
+                    len = 1;
+                    --i;
+                }
+            }
+            
+            ++i;
+        }
+        
+        return ans;
+    }
+};
