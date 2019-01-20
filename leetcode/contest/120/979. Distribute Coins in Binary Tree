@@ -1,0 +1,29 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    //树 - 子节点计算出它需要的金币数, 绝对值即为步数
+    int ret = 0;
+    int distributeCoins(TreeNode* root) {
+        dfs(root);
+        return ret;
+    }
+    
+    int dfs(TreeNode* root) {
+        if (nullptr == root) return 0;
+        int lans = dfs(root->left);
+        int rans = dfs(root->right);
+        
+        ret += abs(lans) + abs(rans);
+        root->val -= lans;
+        root->val -= rans;
+        return 1 - root->val;
+    }
+};
