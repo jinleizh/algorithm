@@ -1,0 +1,44 @@
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+//A和B数组
+//逐个遍历
+//A和B无交集，则靠左的被淘汰
+//A和B有交集, 则判断A和下一个元素是否有交集，有则继续，没则退出，因为A更靠左
+
+//判断A和B哪个先出时，可以利用end来判断
+//不相交时，end小的先出
+//相交时, end小的也是先出
+//这个是非常好的技巧
+class Solution {
+public:
+    vector<Interval> intervalIntersection(vector<Interval>& A, vector<Interval>& B) {
+        vector<Interval> ans;
+        int lenA = A.size();
+        int lenB = B.size();
+        int i = 0, j = 0;
+        int l = 0, r = 0;
+        while (i < lenA && j < lenB) {
+            l = max(A[i].start, B[j].start);
+            r = min(A[i].end, B[j].end);
+            if (l <= r) {
+                Interval result(l, r);
+                ans.push_back(result);
+            }
+            
+            if (A[i].end < B[j].end) {
+                ++i;
+            } else {
+                ++j;
+            }
+        }
+        
+        return ans;
+    }
+};
