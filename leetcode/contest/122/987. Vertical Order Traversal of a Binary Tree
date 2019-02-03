@@ -1,0 +1,70 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+//给节点建立坐标
+//根据坐标，按照x从小到大排序输出，x相同的分为一组，x相同的按y从大到小输出，x和y相同的按先后顺序输出
+//所以需要一个vector保证顺序
+
+//x轴可以使用map<int, vector<TreeNode>>
+//使用bfs按层遍历树,构造结果集
+class Index {
+    public:
+        TreeNode *node;
+        int xPos;
+        Index(TreeNode* node, int xPos) : node(node), xPos(xPos) {}
+    
+        bool operator < (const Index& other) const {
+            return node->val < other.node->val;
+        }
+};
+
+class Solution {
+public:
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        vector<vector<int>> ans;
+        if (root == nullptr) return ans;
+        map<int, vector<int>> mp;
+        queue<Index> q;
+        int x = 20000, y = 20000;
+        Index origin(root, x);
+        q.push(origin);
+        while (!q.empty()) {
+            int levelSize = q.size();
+            vector<Index> tmpVec;
+            for (int i = 0; i < levelSize; i++) {
+                Index cur = q.front();
+                q.pop();
+                mp[cur.xPos].push_back(cur.node->val);
+                TreeNode* curNode = cur.node;
+                TreeNode* leftNode = curNode->left;
+                if (leftNode) {
+                    Index leftIdx(leftNode, cur.xPos - 1);
+                    tmpVec.push_back(leftIdx);
+                }
+                
+                if (curNode->right) {
+                    Index rightIdx(curNode->right, cur.xPos + 1);
+                    tmpVec.push_back(rightIdx);
+                }
+            }
+            
+            sort(tmpVec.begin(), tmpVec.end());
+            for (auto it : tmpVec) {
+                q.push(it);
+            }
+        }
+        
+        for (auto& it : mp) {
+            //cout<<it.first<<endl;
+            ans.push_back(it.second);
+        }
+        
+        return ans;
+    }
+};
