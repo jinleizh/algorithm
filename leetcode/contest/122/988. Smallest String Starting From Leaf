@@ -1,0 +1,74 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+//BFS先找到叶子节点, 同时构造出带父节点的树, 或者用map来维护
+//子节点只会有一个父节点,所以可以很快找到串
+//比较子串即可
+class Solution {
+public:
+    unordered_map<TreeNode*, TreeNode*> parent;
+    vector<TreeNode*> leafNodes;
+    string smallestFromLeaf(TreeNode* root) {
+        string ans = "";
+        if (root == nullptr) return ans;
+        queue<TreeNode*> q;
+        q.push(root);
+        parent[root] = nullptr;
+        while (!q.empty()) {
+            int n = q.size();
+            for (int i = 0; i < n; i++) {
+                TreeNode* cur = q.front();
+                q.pop();
+                if (cur->left == nullptr && cur->right == nullptr) {
+                    leafNodes.push_back(cur);
+                }
+                
+                if (cur->left) {
+                    parent[cur->left] = cur;
+                    q.push(cur->left);
+                }
+                
+                if (cur->right) {
+                    parent[cur->right] = cur;
+                    q.push(cur->right);
+                }
+            }
+        }
+        
+        int minVal = INT_MAX;
+        for (auto it : leafNodes) {
+            //cout<<"it="<<it->val<<endl;
+            if (it->val < minVal) {
+                minVal = it->val;
+            }
+        }
+        //cout<<minVal<<endl;
+        
+        for (auto it : leafNodes) {
+            if (it->val != minVal) continue;
+            TreeNode* node = it;
+            string tmp = "";
+            while (node) {
+                tmp += 'a' + node->val;
+                node = parent[node];
+                
+            }
+            
+            if (ans == "") {
+                ans = tmp;
+            }
+            
+            if (tmp < ans) {
+                ans = tmp;
+            }
+        }
+        
+        return ans;
+    }
+};
