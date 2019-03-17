@@ -1,0 +1,202 @@
+class Solution {
+public:
+    //
+    int kEmptySlots(vector<int>& flowers, int k) {
+        set<int> active;
+        bool isFirst = true;
+        for (int i = 0; i < flowers.size(); i++) {
+            int flower = flowers[i];
+            active.insert(flower);
+            if (isFirst) {
+                isFirst = false;
+                continue;
+            }
+            
+            set<int>::iterator low = active.lower_bound(flower);
+            if (low != active.begin()) {
+                if (flower - *(--low) - 1 == k) return i + 1;
+            }
+            //cout<<"low="<<*low<<endl;
+            
+            set<int>::iterator high = active.upper_bound(flower);
+            if (high != active.end()) {
+                if (*high - flower - 1 == k) return i + 1;
+            }
+            //cout<<"high="<<*high<<endl;
+        }
+        
+        return -1;
+    }
+};
+
+
+class Solution {
+    public int kEmptySlots(int[] flowers, int k) {
+        TreeSet<Integer> tree = new TreeSet<>();
+        int day = 0;
+        for (int flower : flowers) {
+            ++day;
+            tree.add(flower);
+            Integer lower = tree.lower(flower);
+            if (lower != null && flower - lower - 1 == k) return day;
+            
+            Integer higher = tree.higher(flower);
+            if (higher != null && higher - flower - 1 == k) return day;
+        }
+        
+        return -1;
+    }
+}
+
+class Solution {
+    public int kEmptySlots(int[] flowers, int k) {
+        int[] days = new int[flowers.length];
+        for (int i = 0; i < days.length; i++) {
+            days[flowers[i] - 1] = i + 1;
+        }
+        
+        int ans = Integer.MAX_VALUE;
+        MinQueue<Integer> minQ = new MinQueue<>();
+        for (int i = 0; i < days.length; i++) {
+            minQ.addLast(days[i]);
+            //0..k,k+1
+            if (i >= k) {
+                int x = minQ.pollFirst();
+                if (i + 1 < days.length && (k == 0 || (x < minQ.min() && days[i + 1] < minQ.min()))) {
+                    ans = Math.min(ans, Math.max(x, days[i + 1]));
+                }
+            }
+        }
+        
+        if (ans == Integer.MAX_VALUE) {
+            ans = -1;
+        }
+        
+        return ans;
+    }
+}
+
+class MinQueue<E extends Comparable<E>> extends ArrayDeque<E> {
+    Deque<E> mins;
+    
+    public MinQueue() {
+        mins = new ArrayDeque<E>();
+    }
+    
+    @Override
+    public void addLast(E x) {
+        super.addLast(x);
+        while (mins.peekLast() != null && x.compareTo(mins.peekLast()) < 0) {
+            mins.pollLast();
+        }
+        mins.addLast(x);
+    }
+    
+    @Override
+    public E pollFirst() {
+        E x = super.pollFirst();
+        if (x.compareTo(mins.peekFirst()) == 0) {
+            mins.pollFirst();
+        }
+        
+        return x;
+    }
+    
+    public E min() {
+        return mins.peekFirst();
+    }
+}
+
+class Solution {
+    public int kEmptySlots(int[] flowers, int k) {
+        int[] days = new int[flowers.length];
+        for (int i = 0; i < days.length; i++) {
+            days[flowers[i] - 1] = i + 1;
+        }
+        
+        int ans = Integer.MAX_VALUE;
+        MinQueue<Integer> mins = new MinQueue<>();
+        for (int i = 0; i < days.length; i++) {
+            mins.addLast(days[i]);
+            if (i >= k) {
+                Integer x = mins.pollFirst();
+                if (mins.isEmpty()) {
+                    if (i + 1 < days.length) {
+                        ans = Math.min(ans, Math.max(x, days[i + 1]));
+                    }
+                } else {
+                    if (x < mins.min() && i + 1 < days.length && days[i + 1] < mins.min()) {
+                        ans = Math.min(ans, Math.max(x, days[i + 1]));
+                    }
+                }
+            }
+        }
+        
+        if (ans == Integer.MAX_VALUE) {
+            ans = -1;
+        }
+        
+        return ans;
+    }
+}
+
+class MinQueue<E extends Comparable<E>> extends ArrayDeque<E> {
+    Deque<E> mins;
+    
+    public MinQueue() {
+        mins = new ArrayDeque<E>();
+    }
+    
+    @Override
+    public void addLast(E x) {
+        super.addLast(x);
+        while (mins.peekLast() != null && x.compareTo(mins.peekLast()) < 0) {
+            mins.pollLast();
+        }
+        mins.addLast(x);
+    }
+    
+    @Override
+    public E pollFirst() {
+        E x = super.pollFirst();
+        if (0 == x.compareTo(mins.peekFirst())) {
+            mins.pollFirst();
+        }
+        return x;
+    }
+    
+    public E min() {
+        return mins.peekFirst();
+    }
+}
+
+class Solution {
+    public int kEmptySlots(int[] flowers, int k) {
+        int[] days = new int[flowers.length];
+        for (int i = 0; i < days.length; i++) {
+            days[flowers[i] - 1] = i + 1;
+        }
+        
+        int left = 0, right = k + 1;
+        int ans = Integer.MAX_VALUE;
+        search: while (right < days.length) {
+            for (int j = left + 1; j < right; j++) {
+                if (days[j] < days[left] || days[j] < days[right]) {
+                    left = j;
+                    right = j + k + 1;
+                    continue search;
+                }
+            }
+            
+            ans = Math.min(ans, Math.max(days[left], days[right]));
+            left = right;
+            right = left + k + 1;
+        }
+        
+        if (ans == Integer.MAX_VALUE) {
+            ans = -1;
+        }
+        
+        return ans;
+    }
+}
