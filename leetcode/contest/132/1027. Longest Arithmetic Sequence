@@ -1,0 +1,90 @@
+//这个解法需要每次从头开始依次更新数组, 时间复杂度o(N^2)
+class Solution {
+public:
+    int ans = 0;
+    int longestArithSeqLength(vector<int>& A) {
+        int n = A.size();
+        vector<map<int, int>> dp;
+        for (int i = 0; i < n; i++) {
+            dp.push_back(map<int, int>());
+            for (int j = 0; j < i; j++) {
+                int target = A[i] - A[j];
+                int tmp = 2;
+                if (dp[j].find(target) != dp[j].end()) {
+                    tmp = dp[j][target] + 1;
+                    dp[i][target] = max(dp[i][target], tmp);
+                } else {
+                    dp[i][target] = tmp;
+                }
+                ans = max(ans, tmp);
+            }
+        }
+        
+        return ans;
+    }
+};
+
+//这个解法也是o(N^2)
+const int N = 2e3 + 10;
+int dp[N][N];
+
+class Solution {
+public:
+    int longestArithSeqLength(vector<int>& a) {
+        int n = a.size();
+        //int dp[2003][2003] = {0}; 此处在栈中分配, 栈空间会报栈溢出,需要把声明移动到全局数据区
+        int ans = 0;
+        map<int, vector<int>> A;
+        for (int i = 0; i < n; i++) {
+            A[a[i]].push_back(i);
+        }
+        
+        for (int i = n - 2; i >= 0; i--) {
+            for (int j = i + 1; j < n; j++) {
+                int x = a[j] + a[j] - a[i];
+                dp[i][j] = 2;
+                if (A.find(x) != A.end()) {
+                    auto it = upper_bound(A[x].begin(), A[x].end(), j);
+                    if (it == A[x].end()) continue;
+                    int k = *it;
+                    dp[i][j] = 1 + dp[j][k];
+                }
+                
+                ans = max(ans, dp[i][j]);
+            }
+        }
+        
+        return ans;
+    }
+};
+
+// const int N = 2e3 + 10;
+// int dp[N][N];
+
+// class Solution {
+// public:
+//     int longestArithSeqLength(vector<int>& a) {
+//         int n = a.size();
+//         map<int, vector<int>> A;
+//         for (int i = 0; i < n; ++i) {
+//             A[a[i]].push_back(i);
+//         }
+//         int ret = 0;
+//         for (int i = n - 2; i >= 0; --i) {
+//             for (int j = i + 1; j < n; ++j) {
+//                 dp[i][j] = 2;
+//                 int x = a[j] * 2 - a[i];
+//                 if (A.count(x)) {
+//                     auto it = upper_bound(A[x].begin(), A[x].end(), j);
+//                     if (it == A[x].end()) continue;
+//                     int k = *it;
+//                     dp[i][j] = dp[j][k] + 1;
+//                 }
+//                 ret = max(ret, dp[i][j]);
+//             }
+//         }
+//         return ret;
+//     }
+// };
+
+
