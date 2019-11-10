@@ -1,0 +1,43 @@
+https://leetcode.com/problems/longest-absolute-file-path/
+
+解题思路:
+1) 根据换行符, 将字符串分解为多个部分
+2) 判断每部分前缀 '\t' 的个数,  个数+1反应的是当前层数, 
+例如首行, ‘\t’ 个数为0, 层数即为1, 第一个子目录'\t'个数为1，层数为2
+3) 使用栈来存储截止到父目录时的总路径长度
+4) 判断每个部分时，先要找到这部分的直接父目录路径的长度, 这里预先在栈里插入了为第一个元素，因为
+根目录没有父目录，我们把值设置为0，这样使所有的计算都变得统一, 即都是先去找父目录的路径长度, 再计算当前目录的长度
+5) 计算方法, 我们提到预先存放了一个父目录长度0, 当计算第一层目录的路径长度时, 我们使用当前目录长度 + 父目录路径长度 - 当前
+目录't'的个数 + 1 (1表示'/'的长度, 每个目录都是以'/'结尾). 这里知道怎么算后，我们如何找到父目录在栈中的位置呢?
+方法是, 看栈中的元素个数, 由于本题的输入特殊
+
+
+class Solution {
+    public int lengthLongestPath(String input) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        int ans = 0;
+        String[] arr = input.split("\n");
+        stack.push(0);
+        for (String path : arr) {
+            output(path);
+            int level = path.lastIndexOf("\t") + 2;
+            while(level < stack.size()) stack.poll();
+            output(stack.peek());
+            int tmpLen = stack.peek() + path.length() - (level - 1) + 1;
+            stack.push(tmpLen);
+            output("stack size ===");
+            output(stack.size());
+            output("stack size end ===");
+            output(tmpLen);
+            if (path.contains(".")) {
+                ans = Math.max(ans, tmpLen - 1);
+            }
+        }
+        
+        return ans;
+    }
+    
+    public void output(Object obj) {
+        System.out.println(obj);
+    }
+}
