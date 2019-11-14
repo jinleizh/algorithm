@@ -1,0 +1,53 @@
+class Solution {
+    //112233  
+    //0 - 1 uniq=1 cnt=2
+    //2 - 2 uniq=2 cnt=4
+    //4 - 3 uniq=3 -> uniq=1 cnt = curPos - startPos => uniq++ cnt++ nextStart=4
+    
+    //112345
+    //0 - 1 uniq=1 start=0 cnt=2
+    //2 - 2 uniq=2 start=2 cnt=3
+    //3 - 3 uniq=3 => cnt=3, cnt=3 -2 + 1=2, start=3, uniq=2
+    //4 - 4 uniq=3 => cnt=4-3 + 1=2, start=4, uniq=2
+    //5 - 5 
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        int ans = 0;
+        char first = 0;
+        char second = 0;
+        char last = 0;
+        int lastStartPos = 0;
+        int cnt = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (first == 0) {
+                first = s.charAt(i);
+                last = first;
+                cnt++;
+                lastStartPos = i;
+            } else if (second == 0 && s.charAt(i) != first) {
+                second = s.charAt(i);
+                last = second;
+                cnt++;
+                lastStartPos = i;
+            } else if (s.charAt(i) == second || s.charAt(i) == first) {
+                if (s.charAt(i) == last) {
+                    cnt++;
+                } else {
+                    last = s.charAt(i);
+                    lastStartPos = i;
+                    cnt++;
+                }
+            } else {
+                ans = Math.max(ans, cnt);
+                first = last;
+                second = s.charAt(i);
+                last = second;
+                cnt = i - lastStartPos + 1;
+                lastStartPos = i;
+                //System.out.println("first=" + first + " second=" + second);
+            }
+        }
+        
+        ans = Math.max(ans, cnt);
+        return ans;
+    }
+}
