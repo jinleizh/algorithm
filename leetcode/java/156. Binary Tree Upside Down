@@ -20,3 +20,31 @@ class Solution {
         return newRoot;
     }
 }
+
+// 时间复杂度O(N) 空间复杂度O(1)
+class Solution {
+     public TreeNode upsideDownBinaryTree(TreeNode root) {
+         TreeNode parent = null;
+         TreeNode right = null;
+         TreeNode next = null;
+         while (root != null) {
+             next = root.left;
+             root.left = right;
+             right = root.right;
+             root.right = parent;
+             parent = root;
+             root = next;
+         }
+         return parent;
+     }
+}
+
+解题思路: 跟翻转链表的思路相同, 注意写法上的"首尾相接"规律. 本题关键是想清楚上下翻转的逻辑问题.
+ 1
+2 3
+
+ 2
+1 3
+
+ 4
+5 2
