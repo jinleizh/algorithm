@@ -1,0 +1,41 @@
+//需要注意边界溢出的问题
+//对于加减乘除, 一定要注意处理边界溢出的问题
+//策略是放大取值范围, 常见的就是从int全部变为long
+class Solution {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        int len = nums.length;
+        List<String> ans = new ArrayList<>();
+        if (len == 0) {
+            if (lower < upper) {
+                ans.add(String.valueOf(lower) + "->" + String.valueOf(upper));
+            } else {
+                ans.add(String.valueOf(lower));
+            }
+            return ans;
+        }
+        
+        long left = lower;
+        int i = 0;
+        while (i < len) {
+            long right = (long)nums[i] - 1;
+            // System.out.println("left=" + String.valueOf(left));
+            // System.out.println("right=" + String.valueOf(right));
+            if (left == right) {
+                ans.add(String.valueOf(left));
+            } else if (left < right) {
+                ans.add(String.valueOf(left) + "->" + String.valueOf(right));
+            }
+            left = (long)nums[i] + 1;
+            ++i;
+        }
+        
+        long right = upper;
+        if (left == right) {
+            ans.add(String.valueOf(left));
+        } else if (left < right) {
+            ans.add(String.format("%s->%s", left, right));
+        }
+        
+        return ans;
+    }
+}
