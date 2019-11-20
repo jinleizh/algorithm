@@ -1,0 +1,89 @@
+//时间复杂度O(n) 空间复杂度O(1)
+class Solution {
+    // lengths are same
+    // lengths are different
+    public boolean isOneEditDistance(String s, String t) {
+        if (s.length() - t.length() == 1 || 
+           s.length() - t.length() == -1) {
+            return add(s, t);
+        } else if (s.length() == t.length()) {
+            return replace(s, t);
+        }
+        
+        return false;
+    }
+    
+    boolean replace(String s, String t) {
+        if (s.equals(t)) return false;
+        
+        int len = s.length();
+        int diff = 0;
+        for (int i = 0; i < len; i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                ++diff;
+                if (diff > 1) break;
+            }
+        }
+        
+        return diff == 1;
+    }
+    
+    boolean add(String s, String t) {
+        String left = s;
+        String right = t;
+        if (s.length() > t.length()) {
+            left = t;
+            right = s;
+        }
+        
+        int len = left.length();
+        int diff = 0;
+        int i = 0, j = 0;
+        while (i < len) {
+            // System.out.println("i=" + i + " j=" + j);
+            if (left.charAt(i) != right.charAt(j)) {
+                if (diff == 0) {
+                    diff = 1;
+                    j++;
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+            
+            ++i;
+            ++j;
+        }
+        
+        return true;
+    }
+}
+
+//使用substring 比用for循环写的代码更少
+class Solution {
+    public boolean isOneEditDistance(String s, String t) {
+        int lenS = s.length();
+        int lenT = t.length();
+        if (lenS > lenT) {
+            return isOneEditDistance(t, s);
+        }
+        
+        if (lenS - lenT < -1) return false;
+        if (lenS == lenT) {
+            if (s.equals(t)) return false;
+            for (int i = 0; i < lenS; i++) {
+                if (s.charAt(i) != t.charAt(i)) {
+                    return s.substring(i + 1).equals(t.substring(i + 1));
+                }
+            }
+        } else {
+            for (int i = 0; i < lenS; i++) {
+                if (s.charAt(i) != t.charAt(i)) {
+                    return s.substring(i).equals(t.substring(i + 1));
+                }
+            }
+        }
+        
+        return true;
+    }
+}
