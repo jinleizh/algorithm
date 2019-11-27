@@ -1,0 +1,41 @@
+class WordDistance {
+    private Map<String, List<Integer>> posMap = new HashMap<>();
+    
+    public WordDistance(String[] words) {
+        int len = words.length;
+        for (int i = 0; i < len; i++) {
+            if (!posMap.containsKey(words[i])) {
+                posMap.put(words[i], new ArrayList<Integer>());
+            }
+            
+            posMap.get(words[i]).add(i);
+        }
+    }
+    
+    public int shortest(String word1, String word2) {
+        return calc(posMap.get(word1), posMap.get(word2));
+    }
+    
+    private int calc(List<Integer> a, List<Integer> b) {
+        int la = a.size();
+        int lb = b.size();
+        int i = 0, j = 0;
+        int ans = Integer.MAX_VALUE;
+        while (i < la && j < lb) {
+            if (a.get(i) < b.get(j)) {
+                ans = Math.min(ans, b.get(j) - a.get(i));
+                i++;
+            } else {
+                ans = Math.min(ans, a.get(i) - b.get(j));
+                j++;
+            }
+        }
+        return ans;
+    }
+}
+
+/**
+ * Your WordDistance object will be instantiated and called as such:
+ * WordDistance obj = new WordDistance(words);
+ * int param_1 = obj.shortest(word1,word2);
+ */
