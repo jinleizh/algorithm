@@ -1,0 +1,107 @@
+//TLE
+//time O(N^3)
+//space O(N^3)
+class Solution {
+    public int countSquares(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int l = Math.min(m, n) + 1;
+        
+        int[][][] rowIdx = new int[m][n][n];
+        int[][][] colIdx = new int[n][m][m];
+        int[][][] tmp = new int[m][n][l];
+        
+        int ans = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = j; k < n; k++) {
+                    if (k - j > 0) {
+                        rowIdx[i][j][k] = (rowIdx[i][j][k - 1] == 1 && matrix[i][k] == 1) ? 1 : 0;
+                    } else {
+                        rowIdx[i][j][k] = matrix[i][j] == 1 ? 1 : 0;
+                    }
+                }
+            }
+        }
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                for (int k = j; k < m; k++) {
+                    if (k > j) {
+                        colIdx[i][j][k] = (colIdx[i][j][k - 1] == 1 && matrix[k][i] == 1) ? 1 : 0;
+                    } else {
+                        colIdx[i][j][k] = matrix[k][i] == 1 ? 1 : 0;
+                    }
+                }
+            }
+        }
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 1; k <= l; k++) {
+                    if (k == 1) {
+                        tmp[i][j][1] = matrix[i][j] == 1 ? 1 : 0;
+                        if (matrix[i][j] == 1) {
+                            ++ans;
+                        }
+                    } else {
+                        int startX = i;
+                        int startY = j;
+                        int endX = i + k - 1;
+                        int endY = j + k - 1;
+                        if (endX >= m || endY >= n) continue;
+
+                        tmp[i][j][k] = (tmp[i][j][k - 1] == 1 
+                            && rowIdx[endX][startY][endY - 1] == 1 
+                            && colIdx[endY][startX][endX - 1] == 1 
+                            && matrix[endX][endY] == 1) ? 1 : 0;
+                        
+                        if (tmp[i][j][k] == 1) {
+                            ++ans;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
+
+//time O(MN)
+//space O(MN)
+class Solution {
+    //dp[i][j] means - the number of square it can form when (i,j) is at the corner of the bottom right
+    //dp[i][j] = 0 if matrix[i][j] = 0
+    //dp[i][j] = Math.min(dp[i][j - 1], dp[i - 1][j - 1], dp[i - 1][j])
+    //if you take a look at the square, you can split it into four parts
+    //bottom right corner + left side + top side + top left corner
+    //left side is decided by dp[i][j - 1], right side is decided by dp[i - 1][j], top left corner is decided by dp[i - 1][j - 1]
+    //we just get the minimum side of all of them
+    
+    //每一个正方形会对应一个右下角
+    //本题要求的是所有正方形的个数, 那么能不能反过来想, 给出一个右下角, 可以把该右下角对应的所有正方形求出来？
+    //显然,如果该右下角值为1,这是一个解,然后我们要看左侧,上方和对角线上的正方形, 从三者中找到最小值,就使我们还可以形成的正方形个数
+    //这样依次把所有的正方形个数求出来, 即本题解.
+    public int countSquares(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        //default is 0
+        int[][] dp = new int[m][n];
+        int ans = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = matrix[i][j];
+                } else {
+                    if (matrix[i][j] == 1) {
+                        dp[i][j] = matrix[i][j] + Math.min(Math.min(dp[i - 1][j - 1], dp[i][j - 1]), dp[i - 1][j]);
+                    }
+                }
+                
+                ans += dp[i][j];
+            }
+        }
+        return ans;
+    }
+}
