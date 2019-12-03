@@ -1,0 +1,73 @@
+class Solution {
+    public List<String> findStrobogrammatic(int n) {
+        return helper(n, n);
+    }
+    
+    private List<String> helper(int n, int m) {
+        if (n == 0) return Arrays.asList("");
+        if (n == 1) return Arrays.asList("0", "1", "8");
+        
+        List<String> cands = helper(n - 2, m);
+        List<String> ans = new ArrayList<>();
+        for (int i = 0; i < cands.size(); i++) {
+            String s = cands.get(i);
+            if (n != m) {
+                ans.add("0" + s + "0");
+            }
+
+            ans.add("1" + s + "1");
+            ans.add("6" + s + "9");
+            ans.add("8" + s + "8");
+            ans.add("9" + s + "6");
+        }
+        
+        return ans;
+    }
+}
+
+//这种接法将 递归次数 缩小了一半, 比上面的递归快很多
+//因为它一次处理连个位置, 上面那个是一个一个的去处理
+class Solution {
+    //dfs
+    public List<String> findStrobogrammatic(int n) {
+        char[] arr = new char[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = 0;
+        }
+        
+        List<String> ans = new ArrayList<>();
+        dfs(0, n - 1, arr, ans);
+        return ans;
+    }
+    
+    void dfs(int l, int r, char[] s, List<String> ans) {
+        if (l > r) {
+            ans.add(String.valueOf(s));
+            return;
+        }
+        
+        if (l == r) {
+            s[l] = '0';
+            ans.add(String.valueOf(s));
+            s[l] = '1';
+            ans.add(String.valueOf(s));
+            s[l] = '8';
+            ans.add(String.valueOf(s));
+            return;
+        }
+        
+        if (l != 0) {
+            s[l] = '0';
+            s[r] = '0';
+            dfs(l + 1, r - 1, s, ans);
+        }
+        
+        char[] cX = {'1', '8', '6', '9'};
+        char[] cY = {'1', '8', '9', '6'};
+        for (int k = 0; k < cX.length; k++) {
+            s[l] = cX[k];
+            s[r] = cY[k];
+            dfs(l + 1, r - 1, s, ans);
+        }
+    }
+}
