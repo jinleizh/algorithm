@@ -1,0 +1,61 @@
+class Solution {
+    //类似的思路
+    //首先指定长度
+    //把所有可能的结果求出来
+    //然后比较当前值和low 与 high的大小
+    //复合范围时, 个数加1
+    //单次查询时间复杂度o(4^(n/2))
+    //已知长度为(b - a), 故总的时间复杂度为o(n * 4^(n/2)) 
+    private int ans = 0;
+    public int strobogrammaticInRange(String low, String high) {
+        int down = low.length();
+        int up = high.length();
+        for (int l = down; l <= up; l++) {
+            char[] s = new char[l];
+            for (int i = 0; i < l; i++) {
+                s[i] = 0;
+            }
+            dfs(0, l - 1, s, low, high);
+        }
+        return ans;
+    }
+    
+    void dfs(int left, int right, char[] s, String low, String high) {
+        if (left == right) {
+            char[] cs = {'0', '1', '8'};
+            for (int k = 0; k < cs.length; k++) {
+                s[left] = cs[k];
+                if (s.length == low.length() && String.valueOf(s).compareTo(low) < 0) continue;
+                if (s.length == high.length() && String.valueOf(s).compareTo(high) > 0) continue; 
+                ans++;
+            }
+            return;
+        }
+        
+        if (left > right) {
+            if (s.length == low.length() && String.valueOf(s).compareTo(low) < 0) return;
+            if (s.length == high.length() && String.valueOf(s).compareTo(high) > 0) return; 
+            ans++;
+            return;
+        }
+        
+        if (left != 0) {
+            s[left] = s[right] = '0';
+            dfs(left + 1, right - 1, s, low, high);
+        }
+        
+        s[left] = s[right] = '1';
+        dfs(left + 1, right - 1, s, low, high);
+        
+        s[left] = s[right] = '8';
+        dfs(left + 1, right - 1, s, low, high);
+        
+        s[left] = '6';
+        s[right] = '9';
+        dfs(left + 1, right - 1, s, low, high);
+        
+        s[left] = '9';
+        s[right] = '6';
+        dfs(left + 1, right - 1, s, low, high);
+    }
+}
