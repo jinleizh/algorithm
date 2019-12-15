@@ -1,0 +1,44 @@
+class Solution {
+    int[][] memo;
+    private static final int SUCCESS = 1;
+    private static final int FAILURE = 2;
+    
+    //正向思考,从0开始
+    //这个题目细节需要注意, 1.数组分配大小必须是length() + 1, 因为它的终止状态是length() + 1的
+    //另外默认的结果因为是true 或者 false, 所以需要注意一些转换的地方
+    //其实可以直接定义一个int数组, 使用1 和 2来表示成功还是失败
+    //使用0来表示没有赋值
+    public boolean isMatch(String s, String p) {
+        memo = new int[s.length() + 1][p.length() + 1];
+        return helper(0, 0, s, p);
+    }
+    
+    // l - position of s
+    // r - position of p
+    // 首字符可以match时, 有几种选择; 不match时, 有几种选择
+    private boolean helper(int up, int down, String s, String p) {
+        //终止条件就是大家都走到最后了
+        if (down == p.length()) {
+            return up == s.length();
+        }
+        
+        if (memo[up][down] != 0) {
+            return memo[up][down] == SUCCESS;
+        }
+        
+        boolean ans;
+        boolean firstMatch = false;
+        if (up < s.length()) {
+            firstMatch = s.charAt(up) == p.charAt(down) || p.charAt(down) == '.';
+        }
+        
+        if (down + 1 < p.length() && p.charAt(down + 1) == '*') {
+             ans = helper(up, down + 2, s, p) || firstMatch && helper(up + 1, down, s, p);
+        } else {
+            ans = firstMatch && helper(up + 1, down + 1, s, p);
+        }
+        
+        memo[up][down] = ans ? SUCCESS : FAILURE;
+        return ans;
+    }
+}
