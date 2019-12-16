@@ -37,7 +37,7 @@ class Solution {
         
         int ans = 0;
         for (int i = 0; i < s.length(); i++) {
-            for (int j = i + 2; j <= s.length(); j++) {
+            for (int j = i + 2; j <= s.length(); j += 2) {
                 if (isValid(s.substring(i, j))) {
                     ans = Math.max(ans, j - i);
                 }
