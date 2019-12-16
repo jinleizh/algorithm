@@ -1,0 +1,45 @@
+class Solution {
+    //dp[i][j] represents string starting at index i, pattern starting at index j
+    //if string mathces the pattern
+    //
+    int dp[][];
+    private static final int TRUE = 1;
+    private static final int FALSE = 2;
+    public boolean isMatch(String s, String p) {
+        dp = new int[s.length() + 1][p.length() + 1];
+        return helper(0, 0, s, p);
+    }
+    
+    private boolean helper(int up, int down, String s, String p) {
+        if (dp[up][down] != 0) {
+            return dp[up][down] == TRUE;
+        }
+        
+        if (down == p.length()) {
+            return up == s.length();    
+        }
+        
+        boolean ans = false;
+        if (up < s.length()) {
+            char pc = p.charAt(down);
+            char sc = s.charAt(up);
+            
+            if (sc == pc) {
+                ans = helper(up + 1, down + 1, s, p);
+            } else if (pc == '?') {
+                ans = helper(up + 1, down + 1, s, p);
+            } else if (pc == '*') {
+                //abd
+                //a*d
+                ans = helper(up + 1, down, s, p) || helper(up, down + 1, s, p);
+            } else {
+                ans = false;
+            }
+        } else {
+            ans = p.charAt(down) == '*' && helper(up, down + 1, s, p);
+        }
+        
+        dp[up][down] = ans ? TRUE : FALSE;
+        return ans;
+    }
+}
