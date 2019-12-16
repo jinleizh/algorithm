@@ -1,0 +1,64 @@
+class Solution {
+    //(
+    //)
+    //()
+    //(()
+    //()()
+    //(())
+    //if (s.charAt(i) == ')' && s.charAt(i - 1) == '(') dp[i] = dp[i - 2] + 2;
+    //if (s.charAt(i - 1) == ')' && s.charAt(i - dp[i - 1] - 1) == '(') 
+    //dp[i] = 2 + dp[i - 1] + dp[i - dp[i - 1] - 2]
+    public int longestValidParentheses(String s) {
+        int[] dp = new int[s.length()];
+        int ans = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (i >= 1 && s.charAt(i) == ')') {
+                if (s.charAt(i - 1) == '(') {
+                    dp[i] = (i >= 2 ? dp[i - 2] : 0) + 2;
+                } else {
+                    if (i - dp[i - 1] - 1 >= 0 && s.charAt(i - dp[i - 1] - 1) == '(') {
+                        dp[i] = 2 + dp[i - 1] + (i - dp[i - 1] - 2 >= 0 ? dp[i - dp[i - 1] - 2] : 0);
+                    }
+                }
+            }
+            
+            ans = Math.max(ans, dp[i]);
+        }
+        return ans;
+    }
+}
+
+//使用stack 时间复杂度O(n^2)
+class Solution {
+    //use stack
+    public int longestValidParentheses(String s) {
+        //edge case
+        if (s.isEmpty()) return 0;
+        
+        int ans = 0;
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = i + 2; j <= s.length(); j++) {
+                if (isValid(s.substring(i, j))) {
+                    ans = Math.max(ans, j - i);
+                }
+            }
+        }
+        return ans;
+    }
+    
+    private boolean isValid(String s) {
+        Stack<Character> st = new Stack();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') {
+                st.push(c);
+            } else if (!st.empty()) {
+                st.pop();
+            } else {
+                return false;
+            }
+        }
+        
+        return st.empty();
+    }
+}
