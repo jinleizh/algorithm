@@ -1,0 +1,95 @@
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) return 0;
+        int n = heights.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        
+        for (int i = 0; i < n; i++) {
+            left[i] = i;
+            right[i] = i;
+        }
+        
+        for (int k = 0; k < n; k++) {
+            int p = k - 1;
+            while (p >= 0 && heights[p] >= heights[k]) {
+                left[k] = p;
+                --p;
+            }
+        }
+        
+        for (int k = 0; k < n; k++) {
+            int p = k + 1;
+            while (p < n && heights[p] >= heights[k]) {
+                right[k] = p;
+                ++p;
+            }
+        }
+        
+        int ans = 0;
+        for (int m = 0; m < n; m++) {
+            ans = Math.max(ans, heights[m] * (right[m] - left[m] + 1));
+        }
+        return ans;
+    }
+}
+
+使用单调栈在o(N)时间内求出left和right数组
+class Solution {
+    //monoth stack
+    public int largestRectangleArea(int[] heights) {
+        if (heights == null || heights.length == 0) return 0;
+        
+        Stack<Integer> s = new Stack<>();
+        int n = heights.length;
+        int[] left = new int[n];
+        for (int i = 0; i < n; i++) {
+            while (!s.isEmpty() && heights[s.peek()] >= heights[i]) {
+                s.pop();
+            }
+            left[i] = !s.isEmpty() ? s.peek() : -1;
+            s.push(i);
+        }
+        
+        int[] right = new int[n];
+        s.clear();
+        // System.out.println(s.size());
+        for (int i = n - 1; i >= 0; i--) {
+            while (!s.isEmpty() && heights[s.peek()] >= heights[i]) {
+                s.pop();
+            }
+            right[i] = !s.isEmpty() ? s.peek() : n;
+            s.push(i);
+        }
+        
+        int ans = 0; 
+        for (int i = 0; i < n; i++) {
+            ans = Math.max(ans, heights[i] * (right[i] - left[i] - 1));
+        }
+        return ans;
+    }
+}
+
+仅仅使用单调栈来求解
+通过单调栈我们知道, 利用当前栈顶元素, 可以找到第一个比栈顶元素小或者大的, 这取决于维护的是递增栈还是递减栈
+如果是递增栈, 则栈顶可以找到右边第一个小于它的元素, 然后下一个栈顶元素, 又是右侧第一个小于当前栈顶的元素, 
+这样我们就找到了一个区间, 在此区间内, 所有的数都小于栈顶元素.
+
+如果维护的是递减栈, 则栈顶元素可以找到右边第一个大于它的元素, 然后上一个栈顶元素又是右边第一个大于栈顶的元素
+
+public class Solution {
+    public int largestRectangleArea(int[] height) {
+        int len = height.length;
+        Stack<Integer> s = new Stack<Integer>();
+        int maxArea = 0;
+        for(int i = 0; i <= len; i++){
+            int h = (i == len ? 0 : height[i]);
+            while (!s.isEmpty() && height[s.peek()] > h) {
+                int tp = s.pop();
+                maxArea = Math.max(maxArea, height[tp] * (s.isEmpty() ? i : i - 1 - s.peek()));
+            }
+            s.push(i);
+        }
+        return maxArea;
+    }
+}
