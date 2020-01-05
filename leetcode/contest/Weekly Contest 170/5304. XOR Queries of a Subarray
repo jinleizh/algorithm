@@ -1,0 +1,17 @@
+class Solution {
+    public int[] xorQueries(int[] arr, int[][] queries) {
+        int n = arr.length;
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            dp[i] = arr[i - 1] ^ dp[i - 1];
+        }
+        
+        int m = queries.length;
+        int[] ans = new int[m];
+        for (int i = 0; i < m; i++) {
+            ans[i] = dp[queries[i][1] + 1] ^ dp[queries[i][0]];
+        }
+        return ans;
+    }
+}
