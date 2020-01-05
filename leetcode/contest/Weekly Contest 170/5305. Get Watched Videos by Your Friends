@@ -1,0 +1,84 @@
+class Solution {
+    public List<String> watchedVideosByFriends(List<List<String>> watchedVideos, int[][] friends, int id, int level) {
+        List<Integer> fs = getFriends(id, level, friends);
+        List<String> ans = getVideos(fs, watchedVideos);
+        return ans;
+    }
+    
+    private List<Integer> getFriends(int id, int level, int[][] friends) {
+        Queue<Integer> q = new LinkedList<>();
+        q.add(id);
+        int n = friends.length;
+        int[] flag = new int[n];
+        flag[id] = 1;
+        int idx = 1;
+        while (!q.isEmpty() && idx <= level) {
+            int qSize = q.size();
+            while (qSize > 0) {
+                int root = q.poll();
+                for (int curPerson : friends[root]) {
+                    if (flag[curPerson] == 0) {
+                        flag[curPerson] = 1;
+                        q.add(curPerson);
+                    }
+                }
+                qSize--;
+            }
+            
+            idx++;
+        }
+        
+        List<Integer> ans = new ArrayList<>();
+        while (!q.isEmpty()) {
+            // System.out.println(q.peek());
+            ans.add(q.poll());
+        }
+        return ans;
+    }
+    
+    private List<String> getVideos(List<Integer> friends, List<List<String>> watchedVideos) {
+        Map<Integer, TreeSet<String>> mp = new TreeMap<>();
+        Map<String, Integer> count = new HashMap<>();
+        List<String> videos = new ArrayList<>();
+        int n = friends.size();
+        for (int i = 0; i < n; i++) {
+            int t = friends.get(i);
+            videos.addAll(watchedVideos.get(t));
+        }
+        
+        // System.out.println("video size=" + videos.size());
+        
+        for (int i = 0; i < videos.size(); i++) {
+            String curVideo = videos.get(i);
+            count.put(curVideo, count.getOrDefault(curVideo, 0) + 1);
+        }
+        // System.out.println("count size=" + count.size());
+        
+        for (Map.Entry<String, Integer> entry : count.entrySet()) {
+            String videoName = entry.getKey();
+            int videoCnt = entry.getValue();
+            if (!mp.containsKey(videoCnt)) {
+                mp.put(videoCnt, new TreeSet<String>());
+            }
+            
+            mp.get(videoCnt).add(videoName);
+        }
+        
+        // System.out.println("mp size=" + mp.size());
+        for (Map.Entry<Integer, TreeSet<String>> item : mp.entrySet()) {
+            System.out.println("key=" + item.getKey());
+        }
+        
+        List<String> ans = new ArrayList<>();
+        for (Map.Entry<Integer, TreeSet<String>> entry : mp.entrySet()) {
+            TreeSet<String> v = entry.getValue();
+            // System.out.println("treeset entry=" + entry);
+            Iterator<String> it = v.iterator();
+            while (it.hasNext()) {
+                ans.add(it.next());
+            }
+        }
+        
+        return ans;
+    }
+}
