@@ -31,3 +31,39 @@ class Solution {
         return c == '+' || c == '-';
     }
 }
+
+class Solution {
+    public int myAtoi(String str) {
+        int n = str.length();
+        int i = 0;
+        int sign = 1;
+        long num = 0;
+        
+        while (i < n && str.charAt(i) == ' ') {
+            i++;
+        }
+        a
+        if (i < n &&a isSign(str.charAt(i))) {
+            sign = str.charAt(i) == '-' ? -1 : 1;a
+            i++;
+        }
+        
+        while (i < n && isDigit(str.charAt(i))) {
+            num = num * 10 + str.charAt(i) - '0';
+            if (num > Integer.MAX_VALUE) {
+                return sign == -1 ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+            }
+            i++;
+        }
+        
+        return (int) (sign * num);
+    }
+    
+    private boolean isSign(char c) {
+        return c == '-' || c == '+';
+    }
+    
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
+    }
+}
