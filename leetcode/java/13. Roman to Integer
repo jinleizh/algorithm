@@ -27,3 +27,77 @@ public class Solution {
         return result;
     }
 }
+
+class Solution {
+    public int romanToInt(String s) {
+        Map<Character, Integer> data = new HashMap<>();
+        data.put('I', 1);
+        data.put('V', 5);
+        data.put('X', 10);
+        data.put('L', 50);
+        data.put('C', 100);
+        data.put('D', 500);
+        data.put('M', 1000);
+        
+        int ans = 0;
+        int i = 0;
+        int n = s.length();
+        while (i < n) {
+            if (i + 1 < n) {
+                int val = getSpecialValue(s.charAt(i), s.charAt(i + 1));
+                if (val != -1) {
+                    ans += val;
+                    i++;
+                } else {
+                    ans += data.get(s.charAt(i));
+                }
+            } else {
+                ans += data.get(s.charAt(i));
+            }
+            
+            i++;
+        }
+        
+        return ans;
+    }
+    
+    private int getSpecialValue(char l, char r) {
+        if (l == 'I' && r == 'V') return 4;
+        if (l == 'I' && r == 'X') return 9;
+        if (l == 'X' && r == 'L') return 40;
+        if (l == 'X' && r == 'C') return 90;
+        if (l == 'C' && r == 'D') return 400;
+        if (l == 'C' && r == 'M') return 900;
+        return -1;
+    }
+}
+
+
+class Solution {
+    public int romanToInt(String s) {
+        Map<Character, Integer> data = new HashMap<>();
+        data.put('I', 1);
+        data.put('V', 5);
+        data.put('X', 10);
+        data.put('L', 50);
+        data.put('C', 100);
+        data.put('D', 500);
+        data.put('M', 1000);
+        
+        int n = s.length();
+        int prev = Integer.MAX_VALUE;
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            int cur = data.get(s.charAt(i));
+            if (cur <= prev) {
+                ans += cur; 
+            } else {
+                ans += cur - 2 * prev;
+            }
+            
+            prev = cur;
+        }
+        
+        return ans;
+    }
+}
