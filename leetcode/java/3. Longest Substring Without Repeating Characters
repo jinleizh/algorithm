@@ -24,3 +24,22 @@ public class Solution {
         return maxLen;
     }
 }
+
+/* 思路: 跟上面的解法类似, 差别只是一个用map 一个用array*/
+class Solution {
+    // one pass
+    public int lengthOfLongestSubstring(String s) {
+        if (s.isEmpty()) return 0;
+        int n = s.length();
+        int ans = 0;
+        Map<Character, Integer> pos = new HashMap<>();
+        for (int i = 0, j = 0; i < n; i++) {
+            if (pos.containsKey(s.charAt(i))) {
+                j = Math.max(j, pos.get(s.charAt(i)) + 1);
+            }
+            pos.put(s.charAt(i), i);
+            ans = Math.max(ans, i - j + 1);
+        }
+        return ans;
+    }
+}
