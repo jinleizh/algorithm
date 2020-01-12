@@ -43,3 +43,28 @@ class Solution {
         return ans;
     }
 }
+
+class Solution {
+    //注意左右两边高度相等时, 下一组可能的解就必然不会包括当前的高度
+    //因为一旦边界中还是包括当前的高度, 那么最终得到的面积一定是小于当前的面积
+    //所以最终肯定是找到一个两个边界都要高于当前边界高度的
+    //所以左边和右边往哪个方向移动, 都没关系, 因为最终一定会往边界值比当前边界值大的方向移动
+    //最终无论先从左边还是先从右边, 一定都会到达那个区间.
+    public int maxArea(int[] height) {
+        int n = height.length;
+        if (n == 0) return n;
+        
+        int l = 0, r = n - 1;
+        int ans = 0;
+        while (l < r) {
+            ans = Math.max(ans, Math.min(height[l], height[r]) * (r - l));
+            if (height[l] < height[r]) {
+                l++;
+            } else {
+                r--;
+            }
+        }
+        
+        return ans;
+    }
+}
