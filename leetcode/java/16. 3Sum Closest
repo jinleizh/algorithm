@@ -1,0 +1,70 @@
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        // edge case
+        if (nums.length < 3) throw new IllegalArgumentException("must have at least 3 items");
+        
+        Arrays.sort(nums);
+        int diff = Integer.MAX_VALUE;
+        int ans = 0;
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int p = i + 1, q = nums.length - 1;
+            while (p < q) {
+                int curSum = nums[i] + nums[p] + nums[q];
+                if (curSum == target) {
+                    return target;
+                } else if (curSum > target) {
+                    if (curSum - target < diff) {
+                        diff = curSum - target;
+                        ans = curSum;
+                    }
+                    while (p < q && nums[q] == nums[--q]);
+                } else {
+                    if (target - curSum < diff) {
+                        diff = target - curSum;
+                        ans = curSum;
+                    }
+                    while (p < q && nums[p] == nums[++p]);
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
+
+// 这个的快慢取决于有多少重复的元素, 重复元素多的话, 用while循环去直接搜索到下一个更高效
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        // edge case
+        if (nums.length < 3) throw new IllegalArgumentException("must have at least 3 items");
+        
+        Arrays.sort(nums);
+        int diff = Integer.MAX_VALUE;
+        int ans = 0;
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int p = i + 1, q = nums.length - 1;
+            while (p < q) {
+                int curSum = nums[i] + nums[p] + nums[q];
+                if (curSum == target) {
+                    return target;
+                } else if (curSum > target) {
+                    if (curSum - target < diff) {
+                        diff = curSum - target;
+                        ans = curSum;
+                    }
+                    q--;
+                } else {
+                    if (target - curSum < diff) {
+                        diff = target - curSum;
+                        ans = curSum;
+                    }
+                    p++;
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
