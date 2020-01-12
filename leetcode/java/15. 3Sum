@@ -1,0 +1,97 @@
+class Solution {
+    //find all answers starts with a
+    //starts with b
+    //starts with c
+    // ...
+    public List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        List<List<Integer>> ans = new ArrayList<>();
+        if (n == 0) return ans;
+        
+        Arrays.sort(nums);
+        for (int i = 0; i < n - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int target = 0 - nums[i];
+            Set<List<Integer>> ret = helper(i + 1, n - 1, nums, target);
+            if (!ret.isEmpty()) {
+                for (List<Integer> item : ret) {
+                    item.add(0, nums[i]);
+                    ans.add(item);
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+    private Set<List<Integer>> helper(int l, int r, int[] nums, int sum) {
+        Set<List<Integer>> ans = new HashSet<>();
+        Map<Integer, Integer> posMap = new HashMap<>();
+        for (int i = l; i <= r; i++) {
+            if (posMap.containsKey(sum - nums[i])) {
+                List<Integer> tmp = new ArrayList<>();
+                // keep in order
+                if (sum - nums[i] < nums[i]) {
+                    tmp.add(sum - nums[i]);
+                    tmp.add(nums[i]);
+                } else {
+                    tmp.add(nums[i]);
+                    tmp.add(sum - nums[i]);
+                }
+                ans.add(tmp);
+            }
+            
+            posMap.put(nums[i], i);
+        }
+        return ans;
+    }
+}
+
+// 利用了有序性, 使得我们可以利用有序性去除重复
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if (nums.length == 0) return ans;
+        
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) { 
+                continue;
+            }
+            
+            int target = -nums[i];
+            List<List<Integer>> twoSumResult = helper(i + 1, nums.length - 1, target, nums);
+            for (List<Integer> item : twoSumResult) {
+                item.add(0, nums[i]);
+                ans.add(item);
+            }
+        }
+        return ans;
+    }
+    
+    private List<List<Integer>> helper(int l, int r, int sum, int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        while (l < r) {
+            int curValue = nums[l] + nums[r];
+            if (sum == curValue) {
+                List<Integer> tmp = new ArrayList<>();
+                tmp.add(nums[l]);
+                tmp.add(nums[r]);
+                ans.add(tmp);
+                while (l < r && nums[l] == nums[++l]) {
+                }
+                
+                while (l < r && nums[r] == nums[--r]) {
+                }
+                
+            } else if (curValue > sum) {
+                while (l < r && nums[r] == nums[--r]) {
+                }
+            } else {
+                while (l < r && nums[l] == nums[++l]) {
+                }
+            }
+        }
+        return ans;
+    }
+}
