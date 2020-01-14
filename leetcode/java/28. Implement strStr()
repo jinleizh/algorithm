@@ -1,0 +1,70 @@
+//O(n^2)
+class Solution {
+    public int strStr(String haystack, String needle) {
+        //edge case
+        if (haystack.length() < needle.length()) return -1;
+        
+        //brute force
+        for (int i = 0; i <= haystack.length() - needle.length(); i++) {
+            int j = 0;
+            for (; j < needle.length(); j++) {
+                if (haystack.charAt(i + j) != needle.charAt(j)) {
+                    break;
+                }
+            }
+            if (j == needle.length()) return i;
+        }
+        
+        return -1;
+    }
+}
+
+//KMP algorithm
+class Solution {
+    public int strStr(String haystack, String needle) {
+        if (haystack == null || needle == null) return -1;
+        if (haystack.length() < needle.length()) return -1;
+        if (needle.isEmpty()) return 0;
+        
+        int n = haystack.length();
+        int m = needle.length();    
+        int[] los = preProcess(needle);
+        int i = 0, j = 0;
+        while (i < n && j < m) {
+            if (haystack.charAt(i) == needle.charAt(j)) {
+                ++i;
+                ++j;
+                if (j == m) {
+                    return i - m;
+                }
+            } else {
+                if (j > 0) {
+                    j = los[j - 1];
+                } else {
+                    ++i;
+                }
+            }
+        }
+        
+        return -1;
+    }
+    
+    private int[] preProcess(String pattern) {
+        int n = pattern.length();
+        int[] los = new int[n];
+        los[0] = 0;
+        int len = 0;
+        for (int i = 1; i < n;) {
+            if (pattern.charAt(len) == pattern.charAt(i)) {
+                los[i++] = ++len;
+            } else {
+                if (len > 0) {
+                    len = los[len - 1];
+                } else {
+                    los[i++] = 0;
+                }
+            }
+        }
+        return los;
+    }
+}
