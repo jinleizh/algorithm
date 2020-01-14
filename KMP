@@ -44,3 +44,73 @@ public:
     }
     
 };
+
+// 计算next数组是一种解法, 但这里我更推荐计算lps数组 (longest proper prefix suffix)
+// for example:
+// 输入串 abcabdabcabc
+// 模式串 abcabc
+// lps   000123
+// 先预处理模式串,思路为维护一个索引len, 以及当前pattern的元素索引
+初始时, lps[0] = 0
+然后从下标为1的元素开始求解, 
+假如char[i] == char[len]
+那么lps[i++] = ++len;
+因为我们要给i赋值, 而值应该是++len， 想想第一个元素和第二个元素相同时, lps[1] = 1
+如果char[i] != char[len]
+那么如果len > 0, 那么 len = lps[len - 1]
+
+因为我们知道从0到len - 1的串 与从 i - len + 1到i 的串是相同的, 
+现在第len个元素和第i个元素不同, 而lps[len - 1]中记录了当地len个元素不匹配时, 应该回退到的
+下标. 所以len = lps[len - 1]
+
+当然你可能会想为什么不是len = lps[i - 1],  
+因为lps[i - 1]返回的是下标len,  这样会陷入死循环, 并且它并不是求解前缀和后缀匹配的长度.
+   
+class Solution {
+    public int strStr(String haystack, String needle) {
+        if (haystack == null || needle == null) return -1;
+        if (haystack.length() < needle.length()) return -1;
+        if (needle.isEmpty()) return 0;
+        
+        int n = haystack.length();
+        int m = needle.length();    
+        int[] los = preProcess(needle);
+        int i = 0, j = 0;
+        while (i < n && j < m) {
+            if (haystack.charAt(i) == needle.charAt(j)) {
+                ++i;
+                ++j;
+                if (j == m) {
+                    return i - m;
+                }
+            } else {
+                if (j > 0) {
+                    j = los[j - 1];
+                } else {
+                    ++i;
+                }
+            }
+        }
+        
+        return -1;
+    }
+    
+    private int[] preProcess(String pattern) {
+        int n = pattern.length();
+        int[] los = new int[n];
+        los[0] = 0;
+        int len = 0;
+        for (int i = 1; i < n;) {
+            if (pattern.charAt(len) == pattern.charAt(i)) {
+                los[i++] = ++len;
+            } else {
+                if (len > 0) {
+                    len = los[len - 1];
+                } else {
+                    los[i++] = 0;
+                }
+            }
+        }
+        return los;
+    }
+}
