@@ -26,3 +26,32 @@ class Solution {
         }
     }
 }
+
+class Solution {
+    public void rotate(int[][] matrix) {
+        int row =  matrix.length;
+        if (row == 0) return;
+        
+        int col = matrix[0].length;
+        if (col == 0) return;
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = i + 1; j < col; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
+            }
+        }
+        
+        for (int i = 0; i < row; i++) {
+            int p = 0, q = col - 1;
+            while (p < q) {
+                int tmp = matrix[i][p];
+                matrix[i][p] = matrix[i][q];
+                matrix[i][q] = tmp;
+                ++p;
+                --q;
+            }
+        }
+    }
+}
