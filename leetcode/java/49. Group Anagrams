@@ -1,0 +1,50 @@
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        int n = strs.length;
+        if (0 == n) return new ArrayList<>();
+        
+        for (String s : strs) {
+            char[] charArr = s.toCharArray();
+            Arrays.sort(charArr);
+            String key = String.valueOf(charArr);
+            if (!map.containsKey(key)) {
+                map.put(key, new ArrayList<>());
+            }
+            map.get(key).add(s);
+        }
+        
+        return new ArrayList(map.values());
+    }
+}
+
+//time complexity O(26 * N + N * M)
+class Solution {
+    //count
+    public List<List<String>> groupAnagrams(String[] strs) {
+        int n = strs.length;
+        if (0 == n) return new ArrayList<List<String>>();
+        
+        int[] counter = new int[26];
+        Map<String, List<String>> map = new HashMap<>();
+        for (String s : strs) {
+            Arrays.fill(counter, 0);
+            for (char c : s.toCharArray()) {
+                counter[c - 'a']++;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int d : counter) {
+                sb.append(d);
+                sb.append("#");
+            }
+            String key = sb.toString();
+            if (!map.containsKey(key)) {
+                map.put(key, new ArrayList());
+            }
+            
+            map.get(key).add(s);
+        }
+        
+        return new ArrayList<List<String>>(map.values());
+    }
+}
