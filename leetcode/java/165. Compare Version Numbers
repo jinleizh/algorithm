@@ -1,0 +1,47 @@
+class Solution {
+    public int compareVersion(String version1, String version2) {
+        //1.edge case
+        //2.split version number
+        //3.convert to int
+        //4.store them to array
+        //5.compare the array
+        //time complexity O(N)  space complexity O(N)
+        
+        //1.edge case
+        if (version1 == version2) return 0;
+        if (version1 == null) return -1;
+        if (version2 == null) return 1;
+        if (version1.equals(version2)) return 0;
+        
+        String[] leftArr = version1.split("\\.");
+        String[] rightArr = version2.split("\\.");
+        int n = Math.max(leftArr.length, rightArr.length);
+        int[] leftVersions = new int[n];
+        Arrays.fill(leftVersions, 0);
+        
+        int[] rightVersions = new int[n];
+        Arrays.fill(rightVersions, 0);
+        
+        for (int i = 0; i < leftArr.length; i++) {
+            leftVersions[i] = Integer.valueOf(leftArr[i]);
+        }
+        
+        for (int i = 0; i < rightArr.length; i++) {
+            rightVersions[i] = Integer.valueOf(rightArr[i]);
+        }
+        
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (leftVersions[i] == rightVersions[i]) continue;
+            if (leftVersions[i] > rightVersions[i]) {
+                ans = 1;
+                break;
+            } else {
+                ans = -1;
+                break;
+            }
+        }
+        
+        return ans;
+    }
+}
