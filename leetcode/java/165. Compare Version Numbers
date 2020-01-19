@@ -45,3 +45,90 @@ class Solution {
         return ans;
     }
 }
+
+// optimize
+class Solution {
+    public int compareVersion(String version1, String version2) {
+        //1.edge case
+        //2.split version number
+        //3.convert to int
+        //4.store them to array
+        //5.compare the array
+        //time complexity O(N)  space complexity O(N)
+        
+        //1.edge case
+        if (version1 == version2) return 0;
+        if (version1 == null) return -1;
+        if (version2 == null) return 1;
+        if (version1.equals(version2)) return 0;
+        
+        String[] leftArr = version1.split("\\.");
+        String[] rightArr = version2.split("\\.");
+        int n = Math.max(leftArr.length, rightArr.length);
+        
+        int ans = 0;
+        int leftVersion = 0, rightVersion = 0;
+        for (int i = 0; i < n; i++) {
+            leftVersion = i < leftArr.length ? Integer.parseInt(leftArr[i]) : 0;
+            rightVersion = i < rightArr.length ? Integer.parseInt(rightArr[i]) : 0; 
+            if (leftVersion == rightVersion) continue;
+            if (leftVersion > rightVersion) {
+                ans = 1;
+                break;
+            } else {
+                ans = -1;
+                break;
+            }
+        }
+        
+        return ans;
+    }
+}
+
+//
+class Solution {
+    public int compareVersion(String version1, String version2) {
+        //1.edge case
+        //2.split version number
+        //3.convert to int
+        //4.store them to array
+        //5.compare the array
+        //time complexity O(N)  space complexity O(N)
+        
+        //1.edge case
+        if (version1 == version2) return 0;
+        if (version1 == null) return -1;
+        if (version2 == null) return 1;
+        if (version1.equals(version2)) return 0;
+        
+        int leftLen = version1.length();
+        int rightLen = version2.length();
+        int p = 0, q = 0;
+        while (p < leftLen || q < rightLen) {
+            int leftTmpVersion = 0;
+            while (p < leftLen && version1.charAt(p) != '.') {
+                leftTmpVersion = leftTmpVersion * 10 + version1.charAt(p) - '0';
+                ++p;
+            }
+            
+            int rightTmpVersion = 0;
+            while (q < rightLen && version2.charAt(q) != '.') {
+                rightTmpVersion = rightTmpVersion * 10 + version2.charAt(q) - '0';
+                ++q;
+            }
+            
+            if (leftTmpVersion > rightTmpVersion) {
+                return 1;
+            }
+            
+            if (leftTmpVersion < rightTmpVersion) {
+                return -1;
+            }
+                
+            ++p;
+            ++q;
+        }
+        
+        return 0;
+    }
+}
