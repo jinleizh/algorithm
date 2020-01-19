@@ -1,0 +1,139 @@
+public class MinimumWindow {
+  public String minWindow(String S, String T) {
+    //1) edge case
+    String ans = "";
+    if (S == null || T == null) {
+      return ans;
+    }
+    if (S.isEmpty() || T.isEmpty()) {
+      return ans;
+    }
+
+    //2) go through using left and right pointers
+    int left = 0;
+    int right = 0;
+    int minLen = Integer.MAX_VALUE;
+    while (right < S.length()) {
+      int index = 0;
+      while (right < S.length()) {
+        if (S.charAt(right) == T.charAt(index)) {
+          ++index;
+          if (index == T.length()) {
+            break;
+          }
+        }
+
+        ++right;
+      }
+
+      if (right == S.length()) {
+        break;
+      }
+
+      index = T.length() - 1;
+      left = right;
+      while (left >= 0) {
+        if (S.charAt(left) == T.charAt(index)) {
+          --index;
+          if (index < 0) {
+            break;
+          }
+        }
+        --left;
+      }
+
+      if (left >= 0) {
+        if (right - left + 1 < minLen) {
+          minLen = right - left + 1;
+          ans = S.substring(left, right + 1);
+        }
+
+        right = left + 1;
+      }
+    }
+
+    return ans;
+  }
+
+    /*
+    //1)edge case
+    String ans = "";
+    if (S.isEmpty() || T.isEmpty()) {
+      return ans;
+    }
+
+    if (S.length() < T.length()) {
+      return ans;
+    }
+
+    //2)create a hash-map and store the number of characters that target string includes
+    Map<Character, Integer> targetMap = getRequiredMap(T);
+
+    //3)traverse the source string use left and right pointers(main logic)
+    int minLen = Integer.MAX_VALUE;
+    int left = 0;
+    int right = 0;
+    int n = S.length();
+    int hopeToMatchCharNum = targetMap.size();
+    int currentMatchCharNum = 0;
+    char start = T.charAt(0);
+    char end = T.charAt(T.length() - 1);
+    Map<Character, Integer> tempMap = new HashMap<>();
+    while (right < n) {
+      char ch = S.charAt(right);
+      if (targetMap.containsKey(ch)) {
+        int count = tempMap.getOrDefault(ch, 0);
+        tempMap.put(ch, count + 1);
+        if (count + 1 == targetMap.get(ch)) {
+          currentMatchCharNum++;
+        }
+
+        if (S.charAt(right) == end) {
+          while (left < right && currentMatchCharNum == hopeToMatchCharNum) {
+            char currentCh = S.charAt(left);
+            if (currentCh == start) {
+              if (right - left + 1 < minLen) {
+                minLen = right - left + 1;
+                ans = S.substring(left, right + 1);
+              }
+            }
+
+            if (targetMap.containsKey(currentCh)) {
+              int count2 = tempMap.get(currentCh);
+              tempMap.put(currentCh, count2 - 1);
+              if (count2 - 1 < targetMap.get(currentCh)) {
+                currentMatchCharNum--;
+              }
+            }
+
+            ++left;
+          }
+        }
+      }
+
+      ++right;
+    }
+
+
+    return ans;
+  }
+
+  private Map<Character, Integer> getRequiredMap(String target) {
+    Map<Character, Integer> ans = new HashMap<>();
+    for (char c : target.toCharArray()) {
+      int curCount = ans.getOrDefault(c, 0);
+      curCount += 1;
+      ans.put(c, curCount);
+    }
+    return ans;
+  }
+  */
+
+  public static void main(String[] args) {
+    var obj = new MinimumWindow();
+    var s = "abcdebdde";
+    var t = "bde";
+    var ans = obj.minWindow(s, t);
+    System.out.println(ans);
+  }
+}
