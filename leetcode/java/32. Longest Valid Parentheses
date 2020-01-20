@@ -1,0 +1,42 @@
+class Solution {
+    //()()()
+    //dp[i - 1] is well formd
+    //dp[i] = 0 if s[i] == '('
+    //dp[i] = ? if s[i] == ')'
+    //int l = dp[i - 1]
+    //int j = i - len - 1; if (s[j] == '(') dp[i] = dp[i - 1] + 2 + dp[j - 1]
+    //dp[i] = 0 if s[i] == '('
+    //dp[i] = 0 if s[i] == ')' and s[j] == ')'
+    //dp[i] = dp[i - 1] + 2 + dp[j - 1] if (s[j] == '(')
+    public int longestValidParentheses(String s) {
+        //1. edge case
+        //2. build dp array
+        //3. go through dp array to find the ans
+        
+        //1.edge case
+        if (s == null || s.isEmpty()) return 0;
+        
+        //2.build dp array
+        int n = s.length();
+        int[] dp = new int[n];
+        int ans = 0;
+        dp[0] = 0;
+        for (int i = 1; i < n; i++) {
+            if (s.charAt(i) == '(') {
+                dp[i] = 0;
+            } else {
+                int j = i - dp[i - 1] - 1;
+                if (j >= 0) {
+                    if (s.charAt(j) == '(') {
+                        dp[i] = dp[i - 1] + 2;
+                        if (j - 1 >= 0) {
+                            dp[i] += dp[j - 1];
+                        }
+                    }
+                }
+            }
+            ans = Math.max(ans, dp[i]);
+        }
+        return ans;
+    }
+}
