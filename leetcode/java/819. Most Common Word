@@ -1,0 +1,39 @@
+class Solution {
+    public String mostCommonWord(String paragraph, String[] banned) {
+        //edge case
+        if (paragraph == null || paragraph.isEmpty()) return paragraph;
+        
+        paragraph += ".";
+        String ans = "";
+        int maxFreq = 0;
+        Set<String> strSet = new HashSet<>(Arrays.asList(banned));
+        Map<String, Integer> count = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        for (char c : paragraph.toCharArray()) {
+            if (isLetter(c)) {
+                sb.append(c);
+            } else {
+                String tmp = sb.toString().toLowerCase();
+                sb.setLength(0);
+                if (tmp.isEmpty()) continue;
+                
+                if (!tmp.isEmpty() && !strSet.contains(tmp)) {
+                    int num = count.getOrDefault(tmp, 0);
+                    num += 1;
+                    count.put(tmp, num);
+                    if (num > maxFreq) {
+                        maxFreq = num;
+                        ans = tmp;
+                    }
+                    
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+    private boolean isLetter(char c) {
+        return (c >= 'a' && c <='z') || (c >= 'A' && c <= 'Z');
+    }
+}
