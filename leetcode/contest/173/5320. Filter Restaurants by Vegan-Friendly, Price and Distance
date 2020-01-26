@@ -1,0 +1,58 @@
+class Solution {
+    static class Restaurant implements Comparable<Restaurant> {
+        private int id;
+        private int rating;
+        private int vegan;
+        private int price;
+        private int distance;
+        
+        public int compareTo(Restaurant other) {
+            if (this.rating != other.rating) {
+                return other.rating - this.rating;
+            }
+            
+            return other.id - this.id;
+        }
+        
+        public Restaurant(int id, int rating, int vegan, int price, int distance) {
+            this.id = id;
+            this.rating = rating;
+            this.vegan = vegan;
+            this.price = price;
+            this.distance = distance;
+        }
+        
+        public Restaurant(int[] arr) {
+            this.id = arr[0];
+            this.rating = arr[1];
+            this.vegan = arr[2];
+            this.price = arr[3];
+            this.distance = arr[4];
+        }
+    }
+    
+    public List<Integer> filterRestaurants(int[][] restaurants, int veganFriendly, int maxPrice, int maxDistance) {
+        //1.edge case
+        //2.filter
+        List<Restaurant> rests = new ArrayList<>();
+        int n = restaurants.length;
+        for (int i = 0; i < n; i++) {
+            if (veganFriendly == 1 && restaurants[i][2] == 0) continue;
+            if (restaurants[i][3] > maxPrice) continue;
+            if (restaurants[i][4] > maxDistance) continue;
+            
+            Restaurant rt = new Restaurant(restaurants[i]);
+            rests.add(rt);
+        }
+        //3.sort
+        Collections.sort(rests);
+        
+        //4.output
+        List<Integer> ans = new ArrayList<>();
+        for (Restaurant rt : rests) {
+            ans.add(rt.id);
+        }
+        
+        return ans;
+    }
+}
