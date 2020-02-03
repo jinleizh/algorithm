@@ -1,0 +1,36 @@
+class Solution {
+    public int minSetSize(int[] arr) {
+        Map<Integer, Integer> count = new HashMap<>();
+        int n = arr.length;
+        for (int d : arr) {
+            count.put(d, count.getOrDefault(d, 0) + 1);
+        }
+        
+        Map<Integer, List<Integer>> freq = new TreeMap<>(Collections.reverseOrder());
+        for (var entry : count.entrySet()) {
+            int value = entry.getKey();
+            int num = entry.getValue();
+            List<Integer> curList = freq.getOrDefault(num, new ArrayList<Integer>());
+            curList.add(value);
+            freq.put(num, curList);
+        }
+        
+        int sum = 0;
+        int ans = 0;
+        for (var entry : freq.entrySet()) {
+            int k = entry.getKey();
+            List<Integer> vals = entry.getValue();
+            for (int d : vals) {
+                // System.out.println("k=" + k + " d=" + d);
+                if (sum + k < n / 2) {
+                    sum += k;
+                    ans++;
+                } else {
+                    return ans + 1;
+                }
+            }
+        }
+        
+        return -1;
+    }
+}
