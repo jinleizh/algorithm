@@ -1,0 +1,57 @@
+TLE
+class Solution {
+    //dp[i][d] = max value of {i - 1, i - 2, ..., i - d , i + 1, i + 2, .. i + d}
+    //dp[i][d][2] - 0,left -1,right
+    //dp[i][d][0] = 
+    //for (int x = i - 1; x >= i - d; x--) {}
+    //for (int x = i + 1; x <= i + d; i++) {}
+    public int maxJumps(int[] arr, int d) {
+        int ans = 0;
+        int n = arr.length;
+        int[][][] dp = new int[n][d + 1][2];
+        
+        //initialization dp
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= d; j++) {
+                for (int k = 0; k < 2; k++) {
+                    dp[i][j][k] = 1;
+                }
+            }
+        }
+        
+        for (int k = 1; k <= d; k++) {
+            // left
+            for (int i = 0; i < n; i++) {
+                for (int x = 1; x <= k; x++) {
+                    if (i - x < 0) break;
+                    if (arr[i] <= arr[i - x]) break;
+                    int tmp = 1 + Math.max(dp[i - x][k][0], dp[i - x][k - 1][1]);
+                    dp[i][k][0] = Math.max(dp[i][k][0], tmp);
+                }
+            }
+                
+            //right
+            for (int i = n - 1; i >= 0; i--) {
+                for (int x = 1; x <= k; x++) {
+                    if (i + x >= n) break;
+                    if (arr[i] <= arr[i + x]) break;
+                    int tmp = 1 + Math.max(dp[i + x][k][1], dp[i + x][k - 1][0]);
+                    dp[i][k][1] = Math.max(dp[i][k][1], tmp);
+                }
+            }
+            
+            // for (int i = 0; i < n; i++) {
+            //     System.out.print(dp[i][k] + " ");
+            // }
+            // System.out.println("^^^^ k=" + k);
+        }
+    
+        for (int i = 0; i < n; i++) {
+            int tmp = Math.max(dp[i][d][0], dp[i][d][1]);
+            ans = Math.max(ans, tmp);
+        }
+        
+        return ans;
+    }
+}
+
