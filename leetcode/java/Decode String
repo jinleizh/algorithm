@@ -1,0 +1,57 @@
+class Solution {
+    //using stack
+    public String decodeString(String s) {
+        //edge case
+        if (s == null || s.isEmpty()) return s;
+        
+        //normal case
+        String ans = "";
+        Deque<Character> stack = new LinkedList<>();
+        for (var c : s.toCharArray()) {//c = 3
+            if (c != ']') {
+                stack.push(c);
+             } else {
+                String tmp = "";
+                while (!stack.isEmpty() && stack.peek() != '[') {
+                    tmp = stack.pop() + tmp;
+                }
+                // System.out.println(tmp);
+                stack.pop(); 
+                String num = "";
+                while (!stack.isEmpty() && stack.peek() >= '0' && stack.peek() <= '9') {
+                    num = stack.pop() + num;
+                }
+                
+                int cnt = Integer.valueOf(num);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < cnt; i++) {
+                    sb.append(tmp);
+                }
+                tmp = sb.toString();
+
+                if (stack.isEmpty()) {
+                    ans += tmp;
+                } else {
+                    for (var t : tmp.toCharArray()) {
+                        stack.push(t);
+                    }
+                }
+            }
+        }
+        
+        String last = "";
+        while (!stack.isEmpty()) {
+            last = stack.pop() + last;
+        }
+        
+        return ans + last;
+    }
+}
+//test case
+//null check
+//3[a]
+//c=3, stack={3}
+//c=[, stack={3, [}
+//c=], stack={3, [, a}, tmp=a
+//c=], stack={}, tmp=a num=3 ans=aaa
+//3[xxx]
