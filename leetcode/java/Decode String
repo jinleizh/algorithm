@@ -55,3 +55,60 @@ class Solution {
 //c=], stack={3, [, a}, tmp=a
 //c=], stack={}, tmp=a num=3 ans=aaa
 //3[xxx]
+
+
+//这道题的思路和使用queue，先序遍历构造一棵二叉树类似
+//先序遍历在queue中的存储结构是根左子树右子树, 左右子树的存储结构又分别是根左子树右子树
+//所以利用queue以及递归, 先解析出根节点, 再递归去解析左子树, 右子树
+//本题, 可以利用queue把数据输入进来, 然后解析表达式时, 可以根据方括号, 将其拆分成子表达式
+//子表达式中又包含子表达式, 可以利用递归的思想,
+//先求出数字, 然后遇到[ 方括号后, 计算子表达式, 拿到子表达式的返回值后, 再利用之前求得的信息
+//拼接出结果. 既然是递归, 就必须知道起点和终止条件.
+//起点是[, 看到它时，就表示需要求解子表达式了
+//终止条件时, ], 当看到]时, 表示本表达式的解析结束了. [和]总是成对出现的.
+//这里关键的一点是, 用了StringBuilder, 它在一直append字符串, 每个字表达式开始前, 都会先
+//初始化一个StringBuilder, 帮它求出解.
+
+class Solution {
+    //xyyyyyyzzzzzz=>we can use queue to solve thi problem
+    //3[4[5[a]]]
+    //same as preorder using queue
+    //dfs
+    //3[]
+    // 4[]
+    //  5[]
+    public String decodeString(String s) {
+        Deque<Character> q = new LinkedList<>();
+        for (var c : s.toCharArray()) {
+            q.offer(c);
+        }
+        
+        return helper(q);
+    }
+    
+    private String helper(final Deque<Character> q) {
+        int num = 0;
+        StringBuilder sb = new StringBuilder();
+        while (!q.isEmpty()) {
+            var ch = q.poll();
+            if (ch >= '0' && ch <= '9') {
+                num = num * 10 + ch - '0';
+            }
+            else if (ch == '[') {
+                String tmp = helper(q);
+                for (int i = 0; i < num; i++) {
+                    sb.append(tmp);
+                }
+                num = 0;
+            }
+            else if (ch == ']') {
+                break;
+            }
+            else {
+                sb.append(ch);
+            }
+        }
+        
+        return sb.toString();
+    }
+}
