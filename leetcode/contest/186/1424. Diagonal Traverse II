@@ -1,0 +1,33 @@
+class Solution {
+    //TreeMap - key is i + j, value is also a TreeMap whose key is j and value is nums[i][j]
+    public int[] findDiagonalOrder(List<List<Integer>> nums) {
+        TreeMap<Integer, TreeMap<Integer, Integer>> tree = new TreeMap<>();
+        int row = nums.size();
+        if (row == 0) return new int[0];
+        int col = nums.get(0).size();
+        if (col == 0) return new int[0];
+        
+        int size = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            for (int j = 0; j < nums.get(i).size(); j++) {
+                int levelKey = i + j;
+                if (!tree.containsKey(levelKey)) {
+                    tree.put(levelKey, new TreeMap<Integer, Integer>());
+                }
+                var tmp = tree.get(levelKey);
+                tmp.put(j, nums.get(i).get(j));
+                ++size;
+            }
+        }
+        
+        int[] ans = new int[size];
+        int id = 0;
+        for (var entry : tree.entrySet()) {
+            var innerMap = entry.getValue();
+            for (var ientry : innerMap.entrySet()) {
+                ans[id++] = ientry.getValue();
+            }
+        }
+        return ans;
+    }
+}
