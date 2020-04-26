@@ -31,3 +31,30 @@ class Solution {
         return ans;
     }
 }
+
+// the second solution
+class Solution {
+    public int[] findDiagonalOrder(List<List<Integer>> nums) {
+        int[][] data = new int[100001][];
+        int row = nums.size();
+        int sz = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < nums.get(i).size(); j++) {
+                data[sz++] = new int[] {i + j, j, nums.get(i).get(j)};
+            }
+        }
+        
+        var u = Arrays.copyOf(data, sz);
+        Arrays.sort(u, (a, b) -> {
+            if (a[0] != b[0]) return a[0] - b[0];
+            return a[1] - b[1];
+        });
+        
+        int[] ans = new int[sz];
+        for (int i = 0; i < sz; i++) {
+            ans[i] = u[i][2];
+        }
+        
+        return ans;
+    }
+}
