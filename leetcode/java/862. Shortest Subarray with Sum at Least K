@@ -1,0 +1,26 @@
+class Solution {
+    //monoq
+    public int shortestSubarray(int[] A, int K) {
+        int n = A.length;
+        Deque<Integer> monoq = new LinkedList<>();
+        long[] sum = new long[n + 1];
+        int ans = n + 1;
+        for (int i = 1; i <= n; i++) {
+            sum[i] = sum[i - 1] + A[i - 1];
+        }
+        
+        for (int i = 0; i <= n; i++) {
+            while (!monoq.isEmpty() && sum[i] < sum[monoq.peekLast()]) {
+                monoq.pollLast();
+            }
+            
+            while (!monoq.isEmpty() && sum[i] - sum[monoq.peekFirst()] >= K) {
+                ans = Math.min(ans, i - monoq.pollFirst());
+            }
+            
+            monoq.offer(i);
+        }
+        
+        return ans < n + 1 ? ans : -1;
+    }
+}
