@@ -1,0 +1,85 @@
+class Solution {
+    //monoq -> increasing and decreasing queue
+    //will maintain the index
+    public int longestSubarray(int[] nums, int limit) {
+        int ans = 0;
+        int n = nums.length;
+        Deque<Integer> bigQ = new LinkedList<>();
+        Deque<Integer> smallQ = new LinkedList<>();
+        int left = 0;
+        for (int i = 0; i < n; i++) {
+            if (i == 0) {
+                enterSamllQ(smallQ, nums, i);
+                enterBigQ(bigQ, nums, i);
+                ans = Math.max(ans, i - left + 1);
+            } else {
+                int curMax = nums[bigQ.peekFirst()];
+                int curMin = nums[smallQ.peekFirst()];
+                if ((nums[i] >= curMin && nums[i] <= curMax) 
+                    || (Math.abs(curMin - nums[i]) <= limit && Math.abs(curMax - nums[i]) <= limit)) {
+                    enterSamllQ(smallQ, nums, i);
+                    enterBigQ(bigQ, nums, i);
+                    // System.out.print("max=" + nums[bigQ.peekFirst()] + " min=" + nums[smallQ.peekFirst()] + " ans=" + ans + " ");
+                    // System.out.println("curAns=" + (i - left + 1));
+                    ans = Math.max(ans, i - left + 1);
+                } else if (curMin > nums[i]) {
+                    enterSamllQ(smallQ, nums, i);
+                    enterBigQ(bigQ, nums, i);
+                    int prev = -1;
+                    while (nums[bigQ.peekFirst()] - nums[i] > limit) {
+                        prev = bigQ.peekFirst();
+                        bigQ.poll();
+                    }
+                    
+                    if (prev != -1) {
+                        left = prev + 1;
+                    }
+                    ans = Math.max(ans, i - left + 1);
+                    // System.out.print("max=" + nums[bigQ.peekFirst()] + " min=" + nums[smallQ.peekFirst()] + " ans=" + ans + " ");
+                    // System.out.println("curAns=" + (i - left + 1));
+                } else {
+                    enterSamllQ(smallQ, nums, i);
+                    enterBigQ(bigQ, nums, i);
+                    int prev = -1;
+                    while (nums[i] - nums[smallQ.peekFirst()] > limit) {
+                        prev = smallQ.peekFirst();
+                        smallQ.poll();
+                    }
+                    
+                    if (prev != -1) {
+                         left = prev + 1;
+                    }
+                    ans = Math.max(ans, i - left + 1);
+                    // System.out.print("max=" + nums[bigQ.peekFirst()] + " min=" + nums[smallQ.peekFirst()] + " ans=" + ans + " ");
+                    // System.out.println(" curAns=" + (i - left + 1));
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+    // descreasing queue
+    private void enterBigQ(Deque<Integer> bigQ, int[] nums, int idx) {
+        if (bigQ.isEmpty()) {
+            bigQ.offer(idx);
+        } else {
+            while (!bigQ.isEmpty() && nums[bigQ.peekLast()] < nums[idx]) {
+                bigQ.pollLast();
+            }
+            bigQ.offer(idx);
+        }
+    }
+    
+    // increasing queue
+    private void enterSamllQ(Deque<Integer> smallQ, int[] nums, int idx) {
+        if (smallQ.isEmpty()) {
+            smallQ.offer(idx);
+        } else {
+            while (!smallQ.isEmpty() && nums[smallQ.peekLast()] > nums[idx]) {
+                smallQ.pollLast();
+            }
+            smallQ.offer(idx);
+        }
+    }
+}
