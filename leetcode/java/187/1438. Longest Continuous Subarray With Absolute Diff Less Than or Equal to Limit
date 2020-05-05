@@ -83,3 +83,36 @@ class Solution {
         }
     }
 }
+
+
+class Solution {
+    //slide window
+    //s1 - treeset
+    //use treeset , self-balancing BST
+    //insert O(logN), remove O(logN)
+    //overall O(NlogN)
+    //s2 - monotonic queue
+    //maxQ, minQ
+    //calculate the size
+    //O(N)
+    public int longestSubarray(int[] nums, int limit) {
+        //have to store index, because if nums has duplicate numbers
+        //the treeset will only include the unique numbers
+        TreeSet<Integer> ts = new TreeSet<>((a, b) -> {
+            if (nums[a] == nums[b]) return a - b;
+            return nums[a] - nums[b];
+        });
+        int ans = 0;
+        int i = 0;
+        for (int j = 0; j < nums.length; j++) {
+            //O(logN)
+            ts.add(j);
+            //O(logN)
+            while (nums[ts.last()] - nums[ts.first()] > limit) {
+                ts.remove(i++);
+            }
+            ans = Math.max(ans, j - i + 1);
+        }
+        return ans;
+    }
+}
