@@ -1,0 +1,72 @@
+注意 
+1)integer 比较的时候, 需要考虑最大值和最小值的情况,
+所以需要使用 Integer.compare去比较
+2)另外,对于最大tree和最小tree, 在插入元素的时候, 需要把这个元素先插入到另一个队里，把真正
+需要调整数找出来, 再把该数插入到你想要放的队里
+3)最后, priorityqueue的remove时间复杂度是O(n), 使用treeset时间复杂度是O(logn)
+因为一个是堆, 一个是binary search tree
+4)treeset自带first(), last(), ceiling(), floor(), higher(), lower(), pollFirst(), pollLast()
+时非常好用的数据结构
+
+class Solution {
+//     //TreeSet
+//     //just store index of the array
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        Comparator<Integer> comparator = (a, b) -> {
+            if (nums[a] == nums[b]) return a - b;
+            return Integer.compare(nums[a], nums[b]);
+        };
+        
+        TreeSet<Integer> bigTree = new TreeSet<>(comparator.reversed());
+        TreeSet<Integer> smallTree = new TreeSet<>(comparator);
+        for (int i = 0; i < k; i++) {
+            bigTree.add(i);
+        }
+        
+        Runnable balance = () -> {
+            while (bigTree.size() - smallTree.size() > 1) {
+                smallTree.add(bigTree.pollFirst());
+            }
+        };
+        
+        balance.run();
+        
+//         for (var d : bigTree) {
+//             System.out.print(nums[d] + " ");
+//         }
+//         System.out.println();
+        
+//         for (var c : smallTree) {
+//             System.out.print(nums[c] + " ");
+//         }
+//         System.out.println();
+        
+        Supplier<Double> median = (k % 2 == 0) ? 
+            () -> ((double) nums[bigTree.first()] + (double)nums[smallTree.first()]) / 2.0 :
+            () -> (double) nums[bigTree.first()];
+        
+        int n = nums.length;
+        double[] result = new double[n - k + 1];
+        int j = 0;
+        result[j] = median.get();
+        
+        for (int i = k; i < n; i++) {
+            // remove i - k
+            if (!bigTree.remove(i - k)) {
+                smallTree.remove(i - k);
+            }
+            
+            // insert to smallTree first and then poll back to bigTree
+            smallTree.add(i);
+            bigTree.add(smallTree.pollFirst());
+            
+            // balance
+            balance.run();
+            
+            // get median
+            result[++j] = median.get();
+        }
+        
+        return result;
+    }
+}
