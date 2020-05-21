@@ -1,0 +1,24 @@
+class Solution {
+    public int maxSatisfied(int[] customers, int[] grumpy, int X) {
+        //sliding window
+        int n = grumpy.length;
+        int satis = 0;
+        int unsatis = 0;
+        int maxUnSatis = 0;
+        for (int i = 0; i < n; i++) {
+            if (grumpy[i] == 0) {
+                satis += customers[i];
+            } else {
+                unsatis += customers[i];
+            }
+            
+            if (i >= X) {
+                unsatis -= grumpy[i - X] * customers[i - X];
+            }
+            
+            maxUnSatis = Math.max(maxUnSatis, unsatis);
+        }
+        
+        return satis + maxUnSatis;
+    }
+}
