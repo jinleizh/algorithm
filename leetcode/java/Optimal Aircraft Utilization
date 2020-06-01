@@ -1,0 +1,51 @@
+// Amazon | Online Assessment 2019 | Optimal Aircraft Utilization
+// https://leetcode.com/discuss/interview-question/318918/Amazon-or-Online-Assessment-2019-or-Optimal-Aircraft-Utilization
+
+public class Main {
+    public List<List<Integer>> aircraftUtilization(int target, int[][] a, int[][] b) {
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(a, (l, r) -> l[1] - r[1]);
+        Arrays.sort(b, (l, r) -> l[1] - r[1]);
+        int ap = 0;
+        int bp = b.length - 1;
+        int max = Integer.MIN_VALUE;
+        while (ap < a.length && bp >= 0) {
+            int sum = a[ap][1] + b[bp][1];
+            if (sum > target) {
+                --bp;
+            } else {
+                if (sum >= max) {
+                    if (sum > max) {
+                        ans.clear();
+                        max = sum;
+                    }
+                
+                    List<Integer> tmp = Arrays.asList(a[ap][0], b[bp][0]);
+                    ans.add(tmp);
+                    while (bp - 1 >= 0 && b[bp - 1][1] == b[bp][1]) {
+                        tmp = Arrays.asList(a[ap][0], b[bp - 1][0]);
+                        ans.add(tmp);
+                        --bp;
+                    }
+                }
+                
+                ++ap;
+            }
+        }
+        return ans;
+    }
+
+    public static void main(String[] args) {
+        Main main = new Main();
+        int[] maxTravelDists = {7000, 10000, 10000};
+        int[][][] forwardRouteLists ={ {{1, 2000}, {2, 4000}, {3, 6000}},
+                            {{1, 2000}, {2, 5000}, {3, 7000}, {4, 10000}},
+                                      {{1,3000},{2,5000},{3,7000},{4,10000}}}; 
+        int[][][] returnRouteLists ={ {{1, 2000}},
+                            {{1, 2000}, {2, 3000}, {3, 4000}, {4, 5000}},
+                                     {{1,2000},{2,2000},{3,4000},{4,4000}}}; 
+        for(int i = 0; i < maxTravelDists.length; ++i){
+            System.out.println(main.aircraftUtilization(maxTravelDists[i], forwardRouteLists[i], returnRouteLists[i]));
+        }
+    }
+}
