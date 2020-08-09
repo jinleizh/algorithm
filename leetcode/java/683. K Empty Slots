@@ -218,3 +218,35 @@ class Solution {
         return -1;
     }
 }
+
+class Solution {
+    // slide window
+    // check the range
+    public int kEmptySlots(int[] bulbs, int K) {
+        int left = 0, right = K + 1;
+        int n = bulbs.length;
+        int[] days = new int[n];
+        for (int j = 0; j < n; j++) {
+            days[bulbs[j] - 1] = j;
+        }
+
+        int ans = Integer.MAX_VALUE;
+        while (right < n) {
+            int i = left + 1;
+            for (; i < right; i++) {
+                if (days[i] < days[left] || days[i] < days[right]) {
+                    left = i;
+                    right = i + K + 1;
+                    break;
+                }   
+            }
+            
+            if (i == right) {
+                ans = Math.min(ans, Math.max(days[left], days[right]) + 1);
+                left = right;
+                right = right + K + 1;
+            }
+        }
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+}
