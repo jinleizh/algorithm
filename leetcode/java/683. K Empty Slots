@@ -250,3 +250,50 @@ class Solution {
         return ans == Integer.MAX_VALUE ? -1 : ans;
     }
 }
+
+class Solution {
+    //单调栈 - 这种数据结构可以用o(1)的时间求出距离当前数最近的一个比它小或者大的数
+    //进而可以在o(n)时间内求出整个数组
+    //如果用暴力的解法或者二分查找, 则需要o(n**2)或者o(nlogN)的时间复杂度
+    //如果数组有序则o(nlogN), 如果数组无序则o(n**2)
+    //本题需要构造days数组, 第i盆花开放的时间是days[i],则我们会尝试找到离它最近的两盆花, 左和右,
+    //这两盆花肯定要先与当前花开放, 所以我们就是找小于当前花开放时间的花，看下他俩的间距是不是K
+    //单调栈我们通常是存储下标的, 用于计算间隔, 这里存储的下标应该是花盆的位置
+    //比较的值是花盆的开放时间
+    public int kEmptySlots(int[] bulbs, int K) {
+        int n = bulbs.length;
+        int[] days = new int[n];
+        for (int i = 0; i < n; i++) {
+            days[bulbs[i] - 1] = i + 1;
+        }
+
+        int ans = Integer.MAX_VALUE;
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && days[stack.peek()] > days[i]) {
+                stack.pop();
+            }
+
+            if (!stack.isEmpty() && i - stack.peek() == K + 1) {
+                ans = Math.min(ans, days[i]);
+            }
+
+            stack.push(i);
+        }
+
+        stack = new LinkedList<>();
+        for (int i = n - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && days[stack.peek()] > days[i]) {
+                stack.pop();
+            }
+
+            if (!stack.isEmpty() && stack.peek() - i == K + 1) {
+                ans = Math.min(ans, days[i]);
+            }
+
+            stack.push(i);
+        }
+
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+}
