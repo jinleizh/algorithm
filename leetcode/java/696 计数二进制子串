@@ -1,0 +1,56 @@
+class Solution {
+    //中心扩展法
+    public int countBinarySubstrings(String s) {
+        int n = s.length();
+        int count = 0;
+        for (int i = 1; i < n; i++) {
+            count += calc(s, i);
+        }
+        return count;
+    }
+
+    private int calc(String s, int l) {
+        char a = s.charAt(l - 1);
+        char b = s.charAt(l);
+        if (a == b) return 0;
+        int count = 0;
+        int left = l - 1, right = l;
+        while (left >= 0 && right < s.length() && a == s.charAt(left) && b == s.charAt(right)) {
+            count++;
+            --left;
+            ++right;
+        }
+        return count;
+    }
+}
+
+class Solution {
+    //group
+    public int countBinarySubstrings(String s) {
+        List<Integer> group = new ArrayList<>();
+        int n = s.length();
+        char prev = ' ';
+        int tmpCnt = 0;
+        for (int i = 0; i < n; i++) {
+            if (prev == ' ') {
+                prev = s.charAt(i);
+            }
+
+            if (prev == s.charAt(i)) {
+                tmpCnt++;
+            } else {
+                group.add(tmpCnt);
+                prev = s.charAt(i);
+                tmpCnt = 1;
+            }
+        }
+
+        group.add(tmpCnt);
+
+        int ans = 0;
+        for (int i = 0; i < group.size() - 1; i++) {
+            ans += Math.min(group.get(i), group.get(i + 1));
+        }
+        return ans;
+    }
+}
