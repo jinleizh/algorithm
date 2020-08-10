@@ -1,0 +1,20 @@
+class Solution {
+    //顺序遍历字符串
+    public int lengthLongestPath(String input) {
+        int ans = 0;
+        int n = input.length();
+        int[] prefixSum = new int[n + 1];
+        String[] arr = input.split("\n");
+        for (String s : arr) {
+            int level = s.lastIndexOf('\t') + 2;
+            int dataLen = s.length() - (level - 1);
+            if (s.contains(".")) {
+                ans = Math.max(ans, prefixSum[level - 1] + dataLen);
+            } else {
+                prefixSum[level] = prefixSum[level - 1] + 1 + dataLen;
+            }
+        }
+
+        return ans;
+    }
+}
