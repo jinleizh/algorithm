@@ -1,0 +1,78 @@
+class Solution {
+    //正则表达式匹配方法
+    //. - match a single letter
+    //* - match two letters, the first is not asterisk, but the second is
+    //recursive solution
+    //eg. 
+    //bc
+    //aa
+    //a*b*c*d*
+    //空串的比较
+    public boolean isMatch(String s, String p) {
+        if (p.isEmpty()) return s.isEmpty();
+
+        if (!s.isEmpty()) {
+            boolean firstMatch = s.charAt(0) == p.charAt(0) || p.charAt(0) == '.';
+            if (p.length() >= 2 && p.charAt(1) == '*') {
+                return isMatch(s, p.substring(2)) || (firstMatch && isMatch(s.substring(1), p));
+            } else {
+                return firstMatch && isMatch(s.substring(1), p.substring(1));
+            }
+        } else {
+            if (p.length() == 1) return false;
+            if (p.charAt(1) == '*') return isMatch(s, p.substring(2));
+            return false;
+        }
+    }
+}
+
+class Solution {
+    //正则表达式匹配方法
+    //. - match a single letter
+    //* - match two letters, the first is not asterisk, but the second is
+    //recursive solution
+    //eg. 
+    //bc
+    //aa
+    //a*b*c*d*
+    //空串的比
+    public boolean isMatch(String s, String p) {
+        int ls = s.length();
+        int lp = p.length();
+        int[][] dp = new int[ls + 1][lp + 1];
+        for (int[] arr : dp) {
+            Arrays.fill(arr, -1);
+        }
+        return helper(s, p, 0, 0, dp) == 1 ? true : false;
+    }
+
+    private int helper(String x, String y, int i, int j, int[][] dp) {
+        String s = x.substring(i);
+        String p = y.substring(j);
+        if (p.isEmpty()) return s.isEmpty() ? 1 : 0;
+        if (dp[i][j] != -1) return dp[i][j];
+
+        if (!s.isEmpty()) {
+            boolean firstMatch = s.charAt(0) == p.charAt(0) || p.charAt(0) == '.';
+            if (p.length() >= 2 && p.charAt(1) == '*') {
+                dp[i][j] = helper(x, y, i, j + 2, dp) == 1 || (firstMatch && helper(x, y, i + 1, j, dp) == 1) ? 1 : 0;
+                return dp[i][j];
+            } else {
+                dp[i][j] = firstMatch && helper(x, y, i + 1, j + 1, dp) == 1 ? 1 : 0;
+                return dp[i][j];
+            }
+        } else {
+            if (p.length() == 1) {
+                dp[i][j] = 0;
+                return 0;
+            }
+            if (p.charAt(1) == '*') {
+                dp[i][j] = helper(x, y, i, j + 2, dp);
+                return dp[i][j];
+            }
+
+            dp[i][j] = 0;
+            return 0;
+        }
+    }
+}
