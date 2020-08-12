@@ -1,0 +1,30 @@
+class Solution {
+    public String multiply(String num1, String num2) {
+        int[] buff = new int[num1.length() + num2.length()];
+        for (int k = num2.length() - 1; k >= 0; k--) {
+            for (int p = num1.length() - 1; p >= 0; p--) {
+                int valK = num2.charAt(k) - '0';
+                int valP = num1.charAt(p) - '0';
+                int pos = k + p + 1;
+                int value = valK * valP + buff[pos];
+                buff[pos] = value % 10;
+                buff[pos - 1] += value / 10;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (i < buff.length && buff[i] == 0) {
+            ++i;
+        }
+
+        for (; i < buff.length; i++) {           
+            sb.append(buff[i]);
+        }
+        
+        String ret = sb.toString();
+        return ret.isEmpty() ? "0" : ret;
+    }
+}
+
+注意越界和乘数为0的情况
