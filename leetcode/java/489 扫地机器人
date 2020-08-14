@@ -1,0 +1,78 @@
+/**
+ * // This is the robot's control interface.
+ * // You should not implement it, or speculate about its implementation
+ * interface Robot {
+ *     // Returns true if the cell in front is open and robot moves into the cell.
+ *     // Returns false if the cell in front is blocked and robot stays in the current cell.
+ *     public boolean move();
+ *
+ *     // Robot will stay in the same cell after calling turnLeft/turnRight.
+ *     // Each turn will be 90 degrees.
+ *     public void turnLeft();
+ *     public void turnRight();
+ *
+ *     // Clean the current cell.
+ *     public void clean();
+ * }
+ */
+public class Node {
+    int x;
+    int y;
+    public Node(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Node b = (Node) o;
+        return this.x == b.x && this.y == b.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.x ^ this.y;
+    }
+}
+
+class Solution {
+    // dfs 
+    // 4 directions
+    // visited
+    // 机器人有三个状态
+    // (x,y,direction) -> (up, direction), (left, direction turn right), -> (down, direction turn 180)
+    // up - 0
+    // right - 1
+    // down - 2
+    // left - 3
+    public void cleanRoom(Robot robot) {
+        Set<Node> visited = new HashSet<>();
+        dfs(robot, 0, 0, 0, visited);
+    }
+
+    private void dfs(Robot robot, int x, int y, int d, Set<Node> visited) {
+        int[][] dirs = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};//up right down left
+        visited.add(new Node(x, y));
+        robot.clean();
+
+        for (int i = 0; i < 4; i++) {
+            int nd = (d + i) % 4;
+            int nx = x + dirs[nd][0];
+            int ny = y + dirs[nd][1];
+            if (!visited.contains(new Node(nx, ny)) && robot.move()) {
+                dfs(robot, nx, ny, nd, visited);
+                goBack(robot);
+            }
+            robot.turnRight();
+        }
+    }
+
+    private void goBack(Robot robot) {
+        robot.turnRight();
+        robot.turnRight();
+        robot.move();
+        robot.turnRight();
+        robot.turnRight();
+    }
+    
+}
