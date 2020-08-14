@@ -1,0 +1,47 @@
+class Solution {
+    String ans = "";
+    int diff = Integer.MAX_VALUE;
+    public String nextClosestTime(String time) {
+        Set<Character> options = new HashSet<>();
+        for (char ch : time.toCharArray()) {
+            if (ch == ':') continue;
+            options.add(ch);
+        }
+        int startValue = getValidTime(time);
+        //initialize
+        ans = time;
+        dfs(0, options, time, "", startValue);
+        return ans;
+    }
+    
+    private void dfs(int pos, Set<Character> options, String time, String cand, int startValue) {
+        if (pos == 4) {
+            int candValue = getValidTime(cand);
+            if (candValue != -1 && candValue != startValue) {
+                int gap = (candValue - startValue + 86400) % 86400;
+                if (gap < diff) {
+                    diff = gap;
+                    ans = cand;
+                }
+            }
+            return;
+        }
+
+        for (Character ch : options) {
+            if (pos != 2) {
+                dfs(pos + 1, options, time, cand + ch, startValue);
+            } else {
+                dfs(pos + 1, options, time, cand + ':' + ch, startValue);
+            }
+        }
+    }
+
+    private int getValidTime(String input) {
+        String hour = input.substring(0, 2);
+        String mins = input.substring(3, 5);
+        if (hour.compareTo("00") < 0 || hour.compareTo("23") > 0) return -1;
+        if (mins.compareTo("00") < 0 || mins.compareTo("59") > 0) return -1;
+
+        return Integer.valueOf(hour) * 60 + Integer.valueOf(mins);
+    }
+}
