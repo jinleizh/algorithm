@@ -1,0 +1,18 @@
+class Solution {
+    //使用1之前0的个数求解
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int m = 0;
+        int zero = 1;
+        for (int d : flowerbed) {
+            if (d == 0) {
+                zero++;
+            } else {
+                m += (zero - 1) / 2;
+                zero = 0;
+            }
+        }
+
+        m += zero / 2;
+        return m >= n;
+    }
+}
