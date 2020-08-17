@@ -43,3 +43,79 @@ class Solution {
 }
 
 
+class Solution {
+    // all premutation
+    // just use half of all charaters
+    Set<String> result = new HashSet<>();
+    public List<String> generatePalindromes(String s) {
+        int[] data = new int[128];
+        for (char ch : s.toCharArray()) {
+            data[ch]++;
+        }
+
+        int oddCnt = 0;
+        for (int i = 0; i < 128; i++) {
+            if (data[i] % 2 == 1) {
+                oddCnt++;
+                if (oddCnt > 1) return new ArrayList<>();
+            }
+        }
+        
+        char ch = 0;
+        char[] arr = new char[s.length() / 2];
+        int k = 0;
+        for (int i = 0; i < 128; i++) {
+            if (data[i] == 0) continue;
+            if (data[i] % 2 == 1) {
+                ch = (char) i;
+            }
+            for (int j = 0; j < data[i] / 2; j++) {
+                arr[k++] = (char) i;
+            }
+        }
+        
+        permute(arr, 0, ch);
+        return new ArrayList<String>(result);
+    }
+
+    private void permute(char[] arr, int pos, char ch) {
+        int n = arr.length;
+        if (pos == n) {
+            String left = new String(arr);
+            String right = reverse(left);
+            if (ch != 0) {
+                result.add(left + ch + right);
+            } else {
+                result.add(left + right);
+            }
+            return;
+        }
+
+        for (int i = pos; i < n; i++) {
+            if (i == pos || arr[pos] != arr[i]) {
+                swap(arr, pos, i);
+                permute(arr, pos + 1, ch);
+                swap(arr, pos ,i);
+            }
+        }
+    }
+
+    private String reverse(String t) {
+        char[] data = t.toCharArray();
+        int l = 0, r = data.length - 1;
+        while (l < r) {
+            char tmp = data[l];
+            data[l] = data[r];
+            data[r] = tmp;
+            ++l;
+            --r;
+        }
+        return new String(data);
+    }
+
+    private void swap(char[] arr, int l, int r) {
+        char tmp = arr[l];
+        arr[l] = arr[r];
+        arr[r] = tmp;
+    }
+}
