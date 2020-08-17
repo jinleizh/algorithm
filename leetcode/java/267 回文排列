@@ -1,0 +1,45 @@
+class Solution {
+    //
+    Set<String> allResult = new HashSet<>();
+    public List<String> generatePalindromes(String s) {
+        permute(s.toCharArray(), 0);
+        return new ArrayList<String>(allResult);
+    }
+
+    private void permute(char[] arr, int pos) {
+        if (pos == arr.length) {
+            if (check(arr)) {
+                allResult.add(new String(arr));
+                return;
+            }
+        }
+
+        for (int i = pos; i < arr.length; i++) {
+            swap(arr, pos, i);
+            permute(arr, pos + 1);
+            swap(arr, pos, i);
+        }
+    }
+    
+    private boolean check(char[] arr) {
+        int n = arr.length;
+        int l = 0, r = n - 1;
+        while (l < r) {
+            if (arr[l] == arr[r]) {
+                ++l;
+                --r;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void swap(char[] arr, int l, int r) {
+        char tmp = arr[l];
+        arr[l] = arr[r];
+        arr[r] = tmp;
+    }
+}
+
+
