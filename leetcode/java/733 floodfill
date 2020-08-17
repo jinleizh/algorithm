@@ -1,0 +1,28 @@
+class Solution {
+    int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        int row = image.length;
+        int col = image[0].length;
+        boolean[][] visited = new boolean[row][col];
+        dfs(image, sr, sc, newColor, visited, image[sr][sc]);
+        return image;
+    }
+
+    private void dfs(int[][] image, int sr, int sc, int newColor, boolean[][] visited, int target) {
+        visited[sr][sc] = true;
+        image[sr][sc] = newColor;
+        int row = image.length;
+        int col = image[0].length;
+        for (int[] dir : dirs) {
+            int nx = dir[0] + sr;
+            int ny = dir[1] + sc;
+            if (inGrid(nx, ny, row, col) && !visited[nx][ny] && image[nx][ny] == target) {
+                dfs(image, nx, ny, newColor, visited, target);
+            }
+        }
+    }
+
+    private boolean inGrid(int sr, int sc, int row, int col) {
+        return sr >= 0 && sr < row && sc >= 0 && sc < col;
+    }
+}
