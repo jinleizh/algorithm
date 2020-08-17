@@ -16,3 +16,18 @@ class Solution {
         return m >= n;
     }
 }
+
+class Solution {
+    //if we can get 3 continous zero that means we can plant a flower here
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int m = 0;
+        for (int i = 0; i < flowerbed.length; i++) {
+            if (flowerbed[i] == 0 && (i == 0 || flowerbed[i - 1] == 0) && (i == flowerbed.length - 1 || flowerbed[i + 1] == 0)) {
+                m++;
+                flowerbed[i] = 1;
+            }
+        }
+        
+        return m >= n;
+    }
+}
