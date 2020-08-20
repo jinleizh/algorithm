@@ -1,0 +1,77 @@
+// /**
+//  * // This is the Master's API interface.
+//  * // You should not implement it, or speculate about its implementation
+//  * interface Master {
+//  *     public int guess(String word) {}
+//  * }
+//  */
+class Solution {
+    // 构造列表, 每次从里面挑第一个去match - 不过, 需要优化取词策略
+    // 全局要最优, 所以从每个局部取出最差的部分, 然后从所有最差的部分中挑选出最优的
+    // 这样每一次做的选择算是能做的选择中最好的了, 但是这不能保证一定是最优的, 这只是一个策略
+    // 因为输入都是随机的, 即便你按照这个策略去搞, 花费的步数也无法保证是最优的
+    public void findSecretWord(String[] wordlist, Master master) {
+        int n = wordlist.length;
+        int h[][] = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                int match = 0;
+                for (int k = 0; k < 6; k++) {
+                    if (wordlist[i].charAt(k) == wordlist[j].charAt(k)) {
+                        match++;
+                    }
+                }
+                h[i][j] = h[j][i] = match;
+            }
+        }
+
+        int[] visited = new int[n];
+        int attempt = 10;
+        List<Integer> possible = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            possible.add(i);
+        }
+
+        while (true) {
+            if (possible.isEmpty()) return;
+            int guess = choose(h, possible, visited);
+            // System.out.println("xg=" + guess);
+            visited[guess] = 1;
+            int similar = master.guess(wordlist[guess]);
+            if (similar == 6) return;
+
+            List<Integer> tmp = new ArrayList<>();
+            for (int j : possible) {
+                if (h[guess][j] == similar && visited[j] != 1) {
+                    tmp.add(j);
+                }
+            }
+            possible = tmp;
+        }
+    }
+
+    private int choose(int[][] h, List<Integer> possible, int[] visited) {
+        int ans = -1;
+        int best = Integer.MAX_VALUE;
+        for (int d : possible) {
+            int[] group = new int[7]; 
+            int worst = Integer.MIN_VALUE;
+            for (int i = 0; i < h.length; i++) {
+                if (visited[i] == 1) continue;
+                group[h[d][i]]++;
+            }
+
+            for (int i = 0; i < 7; i++) {
+                if (worst < group[i]) {
+                    worst = group[i];
+                }
+            }
+
+            if (worst < best) {
+                best = worst;
+                ans = d;
+            }
+        }
+        return ans;
+    }
+}
