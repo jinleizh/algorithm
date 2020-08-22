@@ -1,0 +1,70 @@
+class Solution {
+    //奇数偶数跳跃
+    //利用经典的数据结构 -> 单调栈
+    //这个数据结构之前遇到过, 能想到用还是很难.
+    //我需要搞清楚它的使用场景
+    //单调栈的使用背景是 - 我们需要找到最近一个比当前元素大或小的元素, 左侧或者右侧
+    //本题第一眼看并不明显, 我要找下一跳, 找下一个比我大或者小的， 并且是最小的
+    //光使用单调栈只能帮你找到最近的，但是最近的未必是最大或者最小的
+    //所以这里就像能不能先排序, 是最近的要么是最大，要么是最小， 如果是升序排列就是最小，降序就是最大
+    //构造一个过程 -> 数据依次入队，我进行判断是不是解，是就得到结果，不是就继续
+    //本题是向后跳，所以可以认为是从右侧找, 奇数次找的是大的里面最小的，偶数次找的是小的里面最大的
+    //这里是利用排序 + 单调栈的方式让给最小或最大的元素一定优先出现在栈里
+    //这样可以求出下一跳的位置
+    //状态 i/j 0/1  dp[i][0] => dp[next[i]][1] -=> dp[next[next[i]]][0] => return all x that dp[x][0] = true
+    //选择 go to the next[i], we can get next[i] throught monotonic stack, 选择已经被限制死了
+    //目标值 true - false
+    //基础case dp[n - 1][0] = true dp[n - 1][1] = true
+    public int oddEvenJumps(int[] A) {
+        //by index
+        int n = A.length;
+        int[] pos = new int[n];
+        for (int i = 0; i < n; i++) {
+            pos[i] = i;
+        }
+
+        //increasing order
+        Arrays.sort(pos, (a, b) -> A[a] == A[b] ? a - b : A[a] - A[b]);
+        int[] oddNext = new int[n];
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && stack.top() < pos[i]) {
+                oddNext[stack.pop()] = pos[i];
+            }
+            stack.push(pos[i]);
+        }
+
+        //decreasing order
+        Arrays.sort(pos, (a, b) -> A[a] == A[b] ? b - a : A[b] - A[a]);
+        int[] evenNext = new int[n];
+        stack.clear();
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && stack.top() < pos[i]) {
+                evenNext[stack.pop()] = pos[i];
+            }
+            stack.push(pos[i]);
+        }
+
+        //states - (pos, odd/event jump)
+        int[][] dp = new int[n][2];
+
+        //base
+        dp[n - 1][0] = 1;
+        dp[n - 1][1] = 1;
+
+        //状态 i/j 0/1  dp[i][0] => dp[next[i]][1] -=> dp[next[next[i]]][0] => return all x that dp[x][0] = true
+        //选择 go to the next[i], we can get next[i] throught monotonic stack, 选择已经被限制死了
+        //目标值 true - false
+        //基础case dp[n - 1][0] = true dp[n - 1][1] = true
+        for (int i = n - 2; i >= 0; i--) {
+            dp[i][0] = dp[oddNext[i]][1];
+            dp[i][1] = dp[evenNext[i]][0];
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (dp[i][0] == 1) ++ans;
+        }
+        return ans;
+    }
+}
