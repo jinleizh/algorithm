@@ -68,3 +68,60 @@ class Solution {
         return ans;
     }
 }
+
+class Solution {
+    //Treemap
+    //首先保证顺序是从小到大, 然后要保证向后查询
+    //所以需要倒着插入元素, 利用Treemap会自动排好序的方式
+    //找到上届和下届, 然后构造出下一跳的数组既可解决问题
+    public int oddEvenJumps(int[] A) {
+        int n = A.length;
+        //key - item value, value - index
+        TreeMap<Integer, Integer> data = new TreeMap<>();
+        int[] oddNext = new int[n];
+        Arrays.fill(oddNext, -1);
+        int[] evenNext = new int[n];
+        Arrays.fill(evenNext, -1);
+        for (int i = n - 1; i >= 0; i--) {
+            if (!data.isEmpty()) {
+                if (data.containsKey(A[i])) {
+                    oddNext[i] = data.get(A[i]);
+                    evenNext[i] = data.get(A[i]);
+                } else {
+                    Integer oddCand = data.higherKey(A[i]);
+                    if (oddCand != null) {
+                        oddNext[i] = data.get(oddCand);
+                        // System.out.println("i=" + i + " oddCand=" + oddCand);
+                    } 
+
+                    Integer evenCand = data.lowerKey(A[i]);               
+                    if (evenCand != null) {
+                        evenNext[i] = data.get(evenCand);
+                        // System.out.println("i=" + i + " evenCand=" + evenCand);
+                    }
+                }
+            }
+            data.put(A[i], i);
+        }
+
+        // dp 
+        int[][] dp = new int[n][2];
+        dp[n - 1][0] = 1;
+        dp[n - 1][1] = 1;
+        for (int i = n - 2; i >= 0; i--) {
+            if (oddNext[i] != -1) {
+                dp[i][0] = dp[oddNext[i]][1];
+            }
+
+            if (evenNext[i] != -1) {
+                dp[i][1] = dp[evenNext[i]][0];
+            }
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (dp[i][0] == 1) ++ans;
+        }
+        return ans;
+    }
+}
