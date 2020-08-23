@@ -1,0 +1,48 @@
+class Solution {
+    //options -> n - 1
+    //option -> min
+    //choose -> Max{ min1, min2, min3 ...}
+    //repeate -> this process -> dfs(n)
+    //MinMax algorithm -> 
+    //O(N^3)
+    private int[][] dp;
+    public int stoneGameV(int[] stoneValue) {
+        int n = stoneValue.length;
+        int[] sum = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            sum[i] = sum[i - 1] + stoneValue[i - 1];
+        }
+        
+        dp = new int[n + 1][n + 1];
+        for (int[] t : dp) {
+            Arrays.fill(t, -1);
+        }
+        
+        return dfs(sum, 1, n);
+    }
+    
+    private int dfs(int[] sum, int l, int r) {
+        if (l == r) {
+            return 0;
+        }
+        
+        if (dp[l][r] != -1) return dp[l][r];
+        
+        int ans = 0;
+        for (int opt = l; opt < r; opt++) {
+            int left = sum[opt] - sum[l - 1];
+            int right = sum[r] - sum[opt];
+            if (left < right) {
+                ans = Math.max(ans, left + dfs(sum, l, opt));
+            } else if (left > right) {
+                ans = Math.max(ans, right + dfs(sum, opt + 1, r));
+            } else {
+                ans = Math.max(ans, left + dfs(sum, l, opt));
+                ans = Math.max(ans, right + dfs(sum, opt + 1, r));
+            }
+        }
+        
+        dp[l][r] = ans;
+        return ans;
+    }
+}
