@@ -61,3 +61,63 @@ class NumArray {
  * obj.update(i,val);
  * int param_2 = obj.sumRange(i,j);
  */
+ 
+ 
+ 
+ 
+ class FenwickTree {
+    private int[] sum;
+    FenwickTree(int n) {
+        this.sum = new int[n + 1];
+    }
+    
+    public void update(int pos, int val) {
+        while (pos < sum.length) {
+            sum[pos] += val;
+            pos += lowbit(pos);
+        }
+    }
+
+    public int query(int pos) {
+        int ans = 0;
+        while (pos > 0) {
+            ans += sum[pos];
+            pos -= lowbit(pos);
+        }
+        return ans;
+    }
+
+    private int lowbit(int pos) {
+        return pos & (-pos);
+    }
+}
+
+public class NumArray {
+    private FenwickTree tree;
+    private int[] data;
+    public NumArray(int[] nums) {
+        if (nums == null || nums.length == 0) return;
+        this.data = nums;
+        tree = new FenwickTree(nums.length + 1);
+        for (int i = 0; i < nums.length; i++) {
+            tree.update(i + 1, nums[i]);
+        }
+    }
+    
+    public void update(int i, int val) {
+        int delta = val - data[i];
+        tree.update(i + 1, delta);
+        data[i] = val;
+    }
+    
+    public int sumRange(int i, int j) {
+        return tree.query(j + 1) - tree.query(i);
+    }
+}
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray obj = new NumArray(nums);
+ * obj.update(i,val);
+ * int param_2 = obj.sumRange(i,j);
+ */
