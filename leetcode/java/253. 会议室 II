@@ -1,0 +1,29 @@
+class Solution {
+    //对会议的开始时间和结束时间进行标识
+    //开会 +1， 结束会议-1
+    //最大值就是需要多少间会议室
+    public int minMeetingRooms(int[][] intervals) {
+        List<int[]> data = new ArrayList<>();
+        //1 - start time
+        //2 - end time
+        for (int[] d : intervals) {
+            data.add(new int[] {d[0], 1});
+            data.add(new int[] {d[1], 2});
+        }
+
+        // 优先关闭时间, 这样节省会议室
+        Collections.sort(data, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);
+
+        int cnt = 0;
+        int ans = 0;
+        for (int[] d : data) {
+            if (d[1] == 1) {
+                ++cnt;
+                ans = Math.max(ans, cnt);
+            } else {
+                --cnt;
+            }
+        }
+        return ans;
+    }
+}
