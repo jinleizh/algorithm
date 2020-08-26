@@ -1,0 +1,61 @@
+class Solution {
+    //把开始和结束时间标记出来, 整体进行排序
+    //遇到结束时间, 看下是谁的结束时间, 表示该用户当前空闲
+    //空闲开始时间是第二个人free的开始时间
+    //遇到结束时间时, 减去开始时间, 判断是否符合要求
+    public List<Integer> minAvailableDuration(int[][] slots1, int[][] slots2, int duration) {
+        List<int[]> data = new ArrayList<>();
+        boolean aFree = false, bFree = false;
+        int beginTime = 0;
+        for (int[] d : slots1) {
+            //1-开始时间 0-结束时间
+            data.add(new int[] {d[0], 1, 1});
+            data.add(new int[] {d[1], 0, 1});
+        }
+
+        for (int[] d :slots2) {
+            data.add(new int[] {d[0], 1, 2});
+            data.add(new int[] {d[1], 0, 2});
+        }
+
+        Collections.sort(data, (a, b) -> a[0] - b[0]);
+        // for (int[] d : data) {
+        //     System.out.println(d[0] + " " + d[1] + " " + d[2]);
+        // }
+        
+        for (int[] d : data) {
+            //开始时间
+            if (d[1] == 1) {
+                if (d[2] == 1) {
+                    aFree = true;
+                } else {
+                    bFree = true;
+                }
+            }
+
+            if (aFree && bFree) {
+                //两人同时空闲的开始时间
+                if (d[1] == 1) {
+                    beginTime = d[0];
+                } else {
+                    //有一个结束了
+                    // System.out.println("d[0]=" + d[0] + " bt=" + beginTime);
+                    if (d[0] - beginTime >= duration) {
+                        return Arrays.asList(beginTime, beginTime + duration);
+                    }
+                }
+            }
+
+            // 结束时间
+            if (d[1] == 0) {
+                if (d[2] == 1) {
+                    aFree = false;
+                } else {
+                    bFree = false;
+                }
+            }
+        }
+
+        return new ArrayList<>();
+    }
+}
