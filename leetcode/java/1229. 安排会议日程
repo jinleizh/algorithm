@@ -59,3 +59,27 @@ class Solution {
         return new ArrayList<>();
     }
 }
+
+class Solution {
+    //双指针, 按照结束时间排序
+    public List<Integer> minAvailableDuration(int[][] slots1, int[][] slots2, int duration) {
+        Arrays.sort(slots1, (a, b) -> a[1] - b[1]);
+        Arrays.sort(slots2, (a, b) -> a[1] - b[1]);
+        
+        int i = 0, j = 0;
+        while (i < slots1.length && j < slots2.length) {
+            int endA = slots1[i][1];
+            int endB = slots2[j][1];
+            int start = Math.max(slots1[i][0], slots2[j][0]);
+            if (endA >= endB) {
+                if (endB - start >= duration) return Arrays.asList(start, start + duration);
+                j++;
+            } else {
+                if (endA - start >= duration) return Arrays.asList(start, start + duration);
+                i++;
+            }
+        }
+
+        return new ArrayList<>();
+    }
+}
