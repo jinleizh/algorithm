@@ -1,0 +1,44 @@
+class Solution {
+    //dp[i][0] - positive
+    //dp[i][1] - negative
+    //dp[i][2] - 0
+    //dp[i][0] -> max{self, self > 0, dp[i][0] + 1, self < 0, dp[i][1] + 1}
+    
+    public int getMaxLen(int[] nums) {
+        int n = nums.length;
+        int a = 0, b = 0, c = 0, d = 0;
+        if (nums[0] > 0) {
+            a = 1;
+        } else if (nums[0] < 0) {
+            b = 1;
+        }
+        
+        int ans = Math.max(0, a);
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > 0) {
+                c = 1 + a;
+
+                if (b > 0) {
+                    d = 1 + b;
+                }
+            } else if (nums[i] < 0) {
+                if (b > 0) {
+                    c = 1 + b;
+                }
+
+                d = 1 + a;
+            } else {
+                c = 0;
+                d = 0;
+            }
+            
+            a = c;
+            b = d;
+            c = 0;
+            d = 0;
+            
+            ans = Math.max(ans, a);
+        }
+        return ans;
+    }
+}
