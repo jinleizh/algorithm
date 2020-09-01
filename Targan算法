@@ -1,0 +1,119 @@
+目的: 寻找图中所有的连通图
+
+思路:
+dfn[] - dfs的序号
+low[] - 当前节点可以回溯到的最小的节点号
+stack - 用来存储可能的连通分量节点
+index - 用于计算dfs的序号
+
+伪代码:
+for u in nodes:
+   if dfn[u] == 0: 表示这个节点之前没有访问过, 根据本算法的处理过程, 当前节点必定在一个新的连通图里
+     targan(u)
+ 
+     
+targan(u):
+  dfn[u] = low[u] = ++index 为当前节点编号, 初始时, low 和 dfn 相同, 这里index的大小反应的是递归的次序
+  stack.push(u)
+  for edge(u, v):
+    if (dfn[v] == 0): 表示v节点之前没访问过, 它可能是一个备选节点
+      targan(v)
+      low[u] = min(low[u], low[v])
+    else if (stack.contains(v)): 表示v节点之前访问过了, 并且还在栈里, 这表示从u又回到了v, 但是因为v比u先入栈, v的low现在还没有求出来
+    //所以这里使用
+      low[u] = min(low[u], dfs[v]) : 先记住, 慢慢消化, 重要的点是上面的, v被访问过, 并且在栈里, 因为根据本算法, 如果两个点不在一个连通图里, 
+      //那么它们是不可能同时出现在同一个栈里的, 因为通过dfs不可达对方, 也就不可能入栈对方了
+  
+  ans = ""
+  if (low[u] == dfn[u]):
+    while (stack.peek() != u):
+      ans += stack.pop() + " "
+    
+    if (stack.peek() == u):
+      ans += stack.pop()
+
+  print ans
+
+
+Java代码:
+
+package com;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+public class Targan {
+  static int[] dfn = new int[9];
+  static int[] low = new int[9];
+  static Deque<Integer> stack = new LinkedList<>();
+  static Map<Integer, List<Integer>> graph = new HashMap<>();
+  static int index = 0;
+  public static void main(String[] args) {
+//    graph.put(6, Arrays.asList(8));
+    graph.put(1, Arrays.asList(2, 3));
+    graph.put(2, Arrays.asList(4));
+    graph.put(3, Arrays.asList(4, 5));
+    graph.put(4, Arrays.asList(1, 6));
+    graph.put(5, Arrays.asList(6));
+
+    for (int i = 1; i <= 6; i++) {
+      if (dfn[i] == 0) {
+        targan(i);
+      }
+    }
+  }
+
+  /**
+   * 思路: 找一个新起点, 根据每条边, (u, v) -> 依次判断
+   * for edge in edges of u
+   *  if (v is new) {
+   *    targan(v)
+   *    low[u] = min(low[u], low[v])
+   *  } 
+   *  else 如果是访问过的点 且 在栈中, 则可能是同一个连通图中的, 这里不能用low[v]是因为v还在栈里, 显然它的
+   *  low[v]还没有求出来. 这里先记住这个模板, 慢慢消化
+   *  {
+   *    low[u] = min(low[u], dfn[v);
+   *  }
+   *
+   *  所有边都处理过之后
+   *  if (low[u] == dfn[u]) - 表明找到了连通图的终点, 把栈中位于它之后的所有点输出
+   *  while (stack.peek() != u) {
+   *    print stack.pop()
+   *  }
+   * @param u
+   */
+  private static void targan(int u) {
+    dfn[u] = low[u] = ++index;
+    stack.push(u);
+    List<Integer> nodes = graph.getOrDefault(u, new ArrayList<>());
+    if (!nodes.isEmpty()) {
+      for (var v : nodes) {
+        if (dfn[v] == 0) {
+          targan(v);
+          low[u] = Math.min(low[u], low[v]);
+        } else if (stack.contains(v)) {
+          low[u] = Math.min(low[u], dfn[v]);
+        }
+      }
+    }
+
+    String ans = "";
+    if (low[u] == dfn[u]) {
+      while (stack.peek() != u) {
+        ans += stack.pop() + " ";
+      }
+
+      if (stack.peek() == u) {
+        ans += stack.pop();
+      }
+
+      System.out.println(ans);
+    }
+  }
+}
