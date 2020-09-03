@@ -1,0 +1,36 @@
+注意Java中取负数时, 会越界的问题, 通常先直接赋值给long, 然后再做
+
+思路: n 是奇数 还是 偶数
+如果是奇数, ans *= x, 然后x翻倍, n减倍
+如果是偶数, 则x直接翻倍, n减倍
+一直到n 等于 1 是, ans 和 x的乘积即为最终结果
+
+递归的思路也是类似的.
+dfs(x, n)
+- x % 2 == 0 return dfs(x * x, n / 2)
+- x % 2 == 1 return x * dfs(x * x, n / 2)
+
+class Solution {
+    //快速幂 - java 去负数时要考虑溢出的问题
+    public double myPow(double x, int n) {
+        long b = n;
+        if (b == 0) return 1;
+        if (b == 1) return x;
+        if (b < 0) {
+            b = -b;
+            x = 1.0 / x;
+        }
+
+        double ans = 1.0;
+        while (b > 0) {
+            if (b % 2 == 1) {
+                ans *= x;
+            }
+
+            x *= x;
+            b >>= 1;
+        }
+
+        return ans;
+    }
+}
