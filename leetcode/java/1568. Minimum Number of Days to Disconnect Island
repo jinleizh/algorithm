@@ -1,0 +1,50 @@
+class Solution {
+    public int minDays(int[][] grid) {
+        int cnt = noOfIsland(grid);
+        if (cnt != 1) return 0;
+        
+        int n = grid.length;
+        int m = grid[0].length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    grid[i][j] = 0;
+                    cnt = noOfIsland(grid);
+                    if (cnt != 1) return 1;
+                    grid[i][j] = 1;
+                }
+            }
+        }
+        return 2;
+    }
+    
+    private int noOfIsland(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        int[][] visited = new int[n][m];
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (visited[i][j] == 0 && grid[i][j] == 1) {
+                    ++cnt;
+                    if (cnt == 2) return cnt;
+                    dfs(visited, grid, i, j, n, m);
+                }
+            }
+        }
+        
+        return cnt;
+    }
+    
+    private void dfs(int[][] visited, int[][] grid, int x, int y, int row, int col) {
+        visited[x][y] = 1;
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (int[] dir : dirs) {
+            int nx = x + dir[0];
+            int ny = y + dir[1];
+            if (nx >= 0 && nx < row && ny >= 0 && ny < col && visited[nx][ny] == 0 && grid[nx][ny] == 1) {
+                dfs(visited, grid, nx, ny, row, col);
+            }
+        }
+    }
+}
