@@ -1,0 +1,112 @@
+class Solution {
+    //idea: use union find
+    //reason: i try to group the node, if the vertices of an edge already belong to a group
+    //that means they have already been added into this group by other edges
+    //so we don't need to add them into group again
+    //that means we can remove the current edge
+    //for this question, order matters, so we will try to use shared edges to group vertices
+    //then go through alice and bob
+    public int maxNumEdgesToRemove(int n, int[][] edges) {
+        DJSet both = new DJSet(n);
+        DJSet alice = new DJSet(n);
+        DJSet bob = new DJSet(n);
+        
+        int ans = 0;
+        for (int[] e : edges) {
+            if (e[0] == 3) {
+                //handle both DJSet, alice's and bob's
+                int x = e[1] - 1;
+                int y = e[2] - 1;
+                boolean ret = both.union(x, y);
+                if (ret) {
+                    //The edge can be removed
+                    ++ans;
+                } else {
+                    alice.union(x, y);
+                    bob.union(x, y);
+                }
+            }
+        }
+        
+        //alice
+        for (int[] e : edges) {
+            if (e[0] == 1) {
+                // handle alice
+                int x = e[1] - 1;
+                int y = e[2] - 1;
+                boolean ret = alice.union(x, y);
+                if (ret) {
+                    ++ans;
+                }
+            }
+        }
+        
+        //bob
+        for (int[] e : edges) {
+            if (e[0] == 2) {
+                //handle bob
+                int x = e[1] - 1;
+                int y = e[2] - 1;
+                boolean ret = bob.union(x, y);
+                if (ret) {
+                    ++ans;
+                }
+            }
+        }
+        
+        if (alice.count() != 1 || bob.count() != 1) return -1;
+        return ans;
+    }
+    
+    //disjoint-set union find
+    class DJSet {
+        private int[] up;
+        public DJSet(int n) {
+            up = new int[n];
+            Arrays.fill(up, -1);
+        }
+        
+        // start from 0
+        public int root(int x) {
+            if (up[x] < 0) return x;// It means this is a root node
+            int ret = root(up[x]);// find the root
+            up[x] = ret;//compress the path
+            return ret;
+        }
+        
+        // union
+        public boolean union(int x, int y) {
+            int rx = root(x);//return the position of x in array
+            int ry = root(y);//return the position of y in array
+            if (rx != ry) {
+                if (up[ry] < up[rx]) {
+                    int tmp = rx;
+                    rx = ry;
+                    ry = tmp;
+                }
+                up[rx] += up[ry];
+                up[ry] = rx;
+            }
+            
+            // if rx == ry, that means we don't need to union them
+            // whereas, we need to union them.
+            // so true - means no need to union
+            // or you can think union will check if x root equals to y root
+            return rx == ry;
+        }
+        
+        public boolean equal(int x, int y) {
+            return root(x) == root(y);
+        }
+        
+        public int count() {
+            int groupNum = 0;
+            for (int val : up) {
+                if (val < 0) {
+                    groupNum++;
+                }
+            }
+            return groupNum;
+        }
+    }
+}
