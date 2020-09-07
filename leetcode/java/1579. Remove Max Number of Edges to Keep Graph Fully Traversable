@@ -1,0 +1,82 @@
+class Solution {
+    public int maxNumEdgesToRemove(int n, int[][] edges) {
+        DJSet both = new DJSet(n);
+        DJSet alice = new DJSet(n);
+        DJSet bob = new DJSet(n);
+        
+        int ans = 0;
+        for (int[] e : edges) {
+            //handle both
+            if (e[0] == 3) {
+                int x = e[1] - 1;
+                int y = e[2] - 1;
+                boolean ret = both.union(x, y);
+                if (!ret) {
+                    ++ans;
+                } else {
+                    alice.union(x, y);
+                    bob.union(x, y);
+                }
+            }
+        }
+        
+        for (int[] e : edges) {
+            int t = e[0];
+            int x = e[1] - 1;
+            int y = e[2] - 1;
+            if (t == 1) {
+                boolean ret = alice.union(x, y);
+                if (!ret) ++ans;
+            }
+            
+            if (t == 2) {
+                boolean ret = bob.union(x, y);
+                if (!ret) ++ans;
+            }
+        }
+        
+        if (alice.count() != 1 || bob.count() != 1) return -1;
+        return ans;
+    }
+    
+    class DJSet {
+        public int[] up;
+        public DJSet(int n) {
+            up = new int[n];
+            Arrays.fill(up, -1);
+        }
+        
+        public int root(int x) {
+            if (up[x] < 0) return x;
+            int ret = root(up[x]);
+            up[x] = ret;
+            return ret;
+        }
+        
+        public boolean union(int x, int y) {
+            int rx = root(x);
+            int ry = root(y);
+            if (rx == ry) return false;
+            if (up[ry] < up[rx]) {
+                int tmp = rx;
+                rx = ry;
+                ry = tmp;
+            }
+            up[rx] += up[ry];
+            up[ry] = rx;
+            return true;
+        }
+        
+        public int count() {
+            int cnt = 0;
+            for (int d : up) {
+                if (d < 0) ++cnt;
+            }
+            return cnt;
+        }
+        
+        public boolean equal(int x, int y) {
+            return root(x) == root(y);
+        }
+    }
+}
