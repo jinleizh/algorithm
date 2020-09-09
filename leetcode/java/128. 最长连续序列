@@ -1,0 +1,79 @@
+class Solution {
+    //union find
+    //idea, if two numbers difference is one, than I will group them together
+    public int longestConsecutive(int[] nums) {
+        //remove duplicate
+        Set<Integer> data = new HashSet<>();
+        for (int d : nums) {
+            data.add(d);
+        }
+
+        // make sure the order
+        List<Integer> dataList = new ArrayList<>(data);
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < dataList.size(); i++) {
+            map.put(dataList.get(i), i);
+        }
+
+        int n = dataList.size();
+        DJSet group = new DJSet(n);
+        for (int i = 0; i < n; i++) {
+            int d = dataList.get(i);
+            if (map.containsKey(d - 1)) {
+                group.union(i, map.get(d - 1));
+            }
+
+            if (map.containsKey(d + 1)) {
+                group.union(i, map.get(d + 1));
+            }
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans = Math.max(ans, -group.up[i]);
+        }
+        return ans;
+    }
+
+    //just to maintain groups
+    public class DJSet {
+        public int[] up;
+        public DJSet(int n) {
+            up = new int[n];
+            Arrays.fill(up, -1);
+        }
+        
+        public int root(int x) {
+            if (up[x] < 0) return x;
+            int ret = root(up[x]);
+            up[x] = ret;//compress path
+            return ret;
+        }
+
+        public boolean union(int x, int y) {
+            int rx = root(x);
+            int ry = root(y);
+            if (rx == ry) return false; //no union happened
+            if (up[ry] < up[rx]) {
+                int tmp = rx;
+                rx = ry;
+                ry = tmp;
+            }
+            up[rx] += up[ry];
+            up[ry] = rx;
+            return true;
+        }
+
+        public boolean equv(int x, int y) {
+            return root(x) == root(y);
+        }
+
+        public int count() {
+            int cnt = 0;
+            for (int d : up) {
+                if (d < 0) ++cnt;
+            }
+            return cnt;
+        }
+    }
+}
