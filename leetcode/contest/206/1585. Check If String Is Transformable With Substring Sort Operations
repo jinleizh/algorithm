@@ -1,0 +1,51 @@
+class Solution {
+    // check the possibility from '9' to '0'
+    // 1) the number of characters should be the same
+    // 2) check the position, positions in s should be less than or equal to postions in t
+    public boolean isTransformable(String s, String t) {
+        if (s.length() != t.length()) return false;
+        String ss = s;
+        String tt = t;
+        for (char ch = '9'; ch >= '0'; ch--) {
+            List<Integer> posS = new ArrayList<>();
+            List<Integer> posT = new ArrayList<>();
+            for (int i = 0; i < ss.length(); i++) {
+                if (ss.charAt(i) == ch) {
+                    posS.add(i);
+                }
+            }
+            
+            for (int i = 0; i < tt.length(); i++) {
+                if (tt.charAt(i) == ch) {
+                    posT.add(i);
+                }
+            }
+            
+            // check total numbers
+            if (posS.size() != posT.size()) return false;
+            
+            // check position
+            for (int i = 0; i < posS.size(); i++) {
+                if (posS.get(i) > posT.get(i)) return false;
+            }
+            
+            StringBuilder sb = new StringBuilder();
+            for (char e : ss.toCharArray()) {
+                if (e < ch) {
+                    sb.append(e);
+                }
+            }
+            ss = sb.toString();
+            
+            sb.setLength(0);
+            for (char e : tt.toCharArray()) {
+                if (e < ch) {
+                    sb.append(e);
+                }
+            }
+            tt = sb.toString();
+        }
+        
+        return true;
+    }
+}
