@@ -1,0 +1,45 @@
+//重点关注5个点, 不同的题目在此基础上会演变
+//left
+//right
+//consecutive
+//check condition - 满足条件则增大窗口, 并重新计算结果, 不满足则缩小窗口, 继续判断. 有些题目会在这做文章, 不需要缩小窗口, 直接整个窗口滑动, 这种通常都是最优解只跟窗口大小有关, 同时通过当前
+//窗口元素就可以判断出是否能形成更优解
+//update answer
+
+class Solution {
+    //滑动窗口 - 思路
+    //left
+    //right
+    //根据是否满足条件来判断
+    //key - substring means consecutive
+    //window is also consecutive
+    //left, right, condition, consecutive
+    //check condition, if meets then right++, also get the updated answer
+    //not meet then left++ until meet condition again
+    //return the final answer
+    public int characterReplacement(String s, int k) {
+        int left = 0, right = 0;
+        int ans = 0;
+        int[] mp = new int[26];
+        for (; right < s.length(); right++) {
+            char ch = s.charAt(right);
+            mp[ch - 'A']++;
+            int range = getMax(mp);
+            while (left <= right && right - left + 1 - range > k) {
+                mp[s.charAt(left) - 'A']--;
+                ++left;
+                range = getMax(mp);
+            }
+            ans = Math.max(ans, right - left + 1);
+        }
+        return ans;
+    }
+
+    private int getMax(int[] arr) {
+        int ans = 0;
+        for (int i = 0; i < 26; i++) {
+            ans = Math.max(ans, arr[i]);
+        }
+        return ans;
+    }
+}
