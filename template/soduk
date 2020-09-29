@@ -1,0 +1,67 @@
+class Solution {
+    //brute force
+    //dfs -> try all possible solutions
+    //step1. count how many empty cells we have
+    //step2. start at an empty cell, update column and row options
+    //step3. go to next step, repeate step 2
+    //step4. if reach to the number of empty cell, return, otherwise, reverse the status
+    public void solveSudoku(char[][] board) {
+        int r = board.length;
+        int c = board[0].length;
+        int[][] row = new int[r][10];
+        int[][] col = new int[c][10];
+        int[][] p = new int[9][10];
+
+        int totalEmptyCellNum = 0;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                char d = board[i][j];
+                if (d != '.') {
+                    row[i][d - '0'] = 1;
+                    col[j][d - '0'] = 1;
+                    int m = i / 3 * 3 + j / 3;
+                    p[m][d - '0'] = 1;
+                }
+            }
+        }
+
+        dfs(0, board, row, col, p);
+    }
+
+    private boolean dfs(int id, char[][] board, int[][] row, int[][] col, int[][] p) {
+        if (id == 81) return true;
+        int x = id / 9;
+        int y = id % 9;
+
+        if (board[x][y] != '.') {
+            return dfs(id + 1, board, row, col, p);
+        }
+
+        // options
+        List<Integer> options = new ArrayList<>();
+        int gx = x / 3 * 3 + y / 3;
+        for (int k = 1; k <= 9; k++) {
+            if (row[x][k] == 0 && col[y][k] == 0 && p[gx][k] == 0) {
+                options.add(k);
+            }
+        }
+
+        // dfs each option
+        for (int opt : options) {
+            board[x][y] = (char) (opt + '0');
+            row[x][opt] = 1;
+            col[y][opt] = 1;
+            p[gx][opt] = 1;
+
+            boolean ret = dfs(id + 1, board, row, col, p);
+            if (ret) return ret;
+
+            row[x][opt] = 0;
+            col[y][opt] = 0;
+            p[gx][opt] = 0;
+            board[x][y] = '.';
+        }
+
+        return false;
+    }
+}
