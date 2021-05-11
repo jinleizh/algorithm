@@ -1,0 +1,16 @@
+# 倒着插入, 从第二个元素开始遍历
+# 用当前元素去比较之前位置的所有元素
+def insertion_order(arr=None):
+  for i in range(1, len(arr)):
+    j = i - 1
+    key = arr[i]
+    while j >= 0 and arr[j] > key:
+      arr[j + 1] = arr[j]
+      j -= 1
+    arr[j + 1] = key
+
+
+if __name__ == '__main__':
+  data = [5, 7, 1, 2, 4]
+  insertion_order(data)
+  print(data)
