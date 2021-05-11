@@ -1,0 +1,27 @@
+# 计数排序使用到了前缀和
+# 前缀和的目的是计算出最后出现的位置
+# 遍历数组, 把当前遍历到的元素放到其最后应该出现的位置, 再将最后出现的位置减1
+def counting_sort(arr=None, max_value=10):
+  # step1 counting
+  cnt = [0] * (max_value + 1)
+  for d in arr:
+    cnt[d] += 1
+
+  # step2 use prefix sum to get the last position of an item
+  for i in range(1, max_value + 1):
+    cnt[i] += cnt[i - 1]
+
+  # step3 output
+  b = [0] * len(arr)
+  print(len(b))
+  for d in arr:
+    last_pos = cnt[d] - 1
+    cnt[d] -= 1
+    print(last_pos)
+    b[last_pos] = d
+  print(b)
+
+
+if __name__ == '__main__':
+  data = [6, 7, 1, 2, 0, 10, 2, 6, 6, 10, 1, 1, 1]
+  counting_sort(data, 10)
