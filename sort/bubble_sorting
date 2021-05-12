@@ -1,0 +1,14 @@
+def bubble_sort(data=None):
+  unsorted = True
+  while unsorted:
+    unsorted = False
+    for i in range(len(data) - 1):
+      if data[i] > data[i + 1]:
+        unsorted = True
+        data[i], data[i + 1] = data[i + 1], data[i]
+
+
+if __name__ == '__main__':
+  data = [3, 4, 5, 1, 2, 0, 9]
+  bubble_sort(data)
+  print(data)
