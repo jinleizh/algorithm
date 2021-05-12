@@ -1,0 +1,13 @@
+def selection_order(data=None):
+  for i in range(len(data)):
+    candidate_pos = i
+    for j in range(i + 1, len(data)):
+      if data[j] < data[candidate_pos]:
+        candidate_pos = j
+    data[i], data[candidate_pos] = data[candidate_pos], data[i]
+
+
+if __name__ == '__main__':
+  data = [3, 4, 5, 1, 2, 0]
+  selection_order(data)
+  print(data)
