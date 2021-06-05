@@ -1,0 +1,17 @@
+def shell_sorting(arr):
+  n = len(arr)
+  while n > 1:
+    n /= 2
+    for i in range(n + 1):
+      for j in range(i + n, len(arr), n):
+        value = arr[j]
+        k = j - n
+        while k >= 0 and arr[k] > value:
+          arr[k + n] = arr[k]
+          k -= n
+        arr[k + n] = value
+
+
+arr = [6, 7, 8, 1, 6, 11, 4]
+shell_sorting(arr)
+print arr
